@@ -1,0 +1,8 @@
+port: 8080
+pages_dir: ../pages/
+public_dir: ../public/
+
+# DEBUG || INFO ||  WARN || ERROR (from lowest to highest priority) 
+log_level: INFO
+is_json_log: false
+
