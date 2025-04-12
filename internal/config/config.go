@@ -20,14 +20,17 @@ type Cfg struct {
 // config keys
 const (
 	// app's port
-	KeyPort = "port"
+	KeyPort = "app.port"
 
 	// html pages dir
-	KeyPagesDir  = "pages_dir"  // string
-	KeyPublicDir = "public_dir" // string
+	KeyPagesDir  = "app.pages_dir"  // string
+	KeyPublicDir = "app.public_dir" // string
 
-	keyLogLevel  = "log_level"
-	keyIsJsonLog = "is_json_log" // bool
+	KeyJwtSecret      = "app.jwt_secret"       // string
+	KeyJwtExpDuration = "app.jwt_exp_duration" // string (time.Duration)
+
+	keyLogLevel  = "app.log_level"
+	keyIsJsonLog = "app.is_json_log" // bool
 )
 
 // log keys

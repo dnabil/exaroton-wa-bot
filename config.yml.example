@@ -1,8 +1,10 @@
-port: 8080
-pages_dir: ../pages/
-public_dir: ../public/
+app:
+  port: 8080
+  pages_dir: ../pages/
+  public_dir: ../public/
+  jwt_secret: secretkey-123
+  jwt_exp_duration: 24h 
 
-# DEBUG || INFO ||  WARN || ERROR (from lowest to highest priority) 
-log_level: INFO
-is_json_log: false
-
+  # DEBUG || INFO ||  WARN || ERROR (from lowest to highest priority) 
+  log_level: DEBUG
+  is_json_log: false
