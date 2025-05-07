@@ -7,10 +7,10 @@ import (
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 )
 
-func Recover(cfg *config.Cfg) echo.MiddlewareFunc {
+func (m *Middleware) Recover() echo.MiddlewareFunc {
 	mdwConfig := echoMiddleware.DefaultRecoverConfig
 	mdwConfig.LogErrorFunc = func(c echo.Context, err error, stack []byte) error {
-		config.ErrLog(c.Request().Context(), cfg.Args, err, stack)
+		config.ErrLog(c.Request().Context(), err, stack)
 		return err // let custom http error handler properly response to client.
 	}
 

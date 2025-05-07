@@ -1,13 +1,16 @@
 package config
 
 import (
-	"exaroton-wa-bot/internal/errs"
+	"errors"
+	"exaroton-wa-bot/internal/constants/errs"
 	"fmt"
 	"log/slog"
+	"path/filepath"
 
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
+	"github.com/spf13/pflag"
 )
 
 type Cfg struct {
@@ -26,11 +29,21 @@ const (
 	KeyPagesDir  = "app.pages_dir"  // string
 	KeyPublicDir = "app.public_dir" // string
 
-	KeyJwtSecret      = "app.jwt_secret"       // string
-	KeyJwtExpDuration = "app.jwt_exp_duration" // string (time.Duration)
+	KeySessionSecret = "app.session_secret" // string
+	KeyAuthDuration  = "app.auth_duration"  // string (time.Duration)
 
-	keyLogLevel  = "app.log_level"
+	keyLogLevel  = "app.log_level"   // string
 	keyIsJsonLog = "app.is_json_log" // bool
+
+	keyDBDialect    = "db.dialect"        // string
+	keySQLiteDBPath = "db.sqlite_db_path" // string
+	KeyDBDisableLog = "db.disable_log"    // bool
+	keyDBLogLevel   = "db.log_level"      // string
+
+	keyWADBDialect      = "wa-db.dialect"          // string
+	keyWASQLiteDBPath   = "wa-db.sqlite_db_path"   // string
+	keyWADBLogLevel     = "wa-db.log_level"        // string
+	keyWAClientLogLevel = "wa-db.client_log_level" // string
 )
 
 // log keys
@@ -45,6 +58,9 @@ const (
 
 	// uri request (string)
 	KeyLogURI = "uri"
+
+	// method request (string)
+	KeyLogMethod = "method"
 )
 
 // app environment
@@ -69,6 +85,21 @@ func InitConfig(args *Args) (*Cfg, error) {
 	}
 
 	return cfg, nil
+}
+
+func ParseFlags() (args *Args, err error) {
+	args = &Args{}
+
+	pflag.StringVarP(&args.Env, "env", "e", EnvProduction, "App's environment (production || development). Default: production")
+	pflag.StringVarP(&args.CfgPath, "cfg", "c", "../config.yml", "Path to the config file (optional) e.g: ../config.yml")
+	pflag.Parse()
+
+	args.CfgPath, err = filepath.Abs(args.CfgPath)
+	if err != nil {
+		return nil, errors.New("invalid config path: " + args.CfgPath)
+	}
+
+	return args, nil
 }
 
 func (cfg *Cfg) LoadYmlConfig() error {

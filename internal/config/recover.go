@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 	"fmt"
-	"os"
 	"runtime/debug"
 )
 
@@ -16,8 +15,6 @@ func Recover(ctx context.Context, args *Args) {
 			err = fmt.Errorf("%v", r)
 		}
 
-		ErrLog(ctx, args, err, debug.Stack())
-
-		os.Exit(1)
+		ErrLog(ctx, err, debug.Stack())
 	}
 }

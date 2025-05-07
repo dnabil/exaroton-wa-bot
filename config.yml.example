@@ -2,9 +2,21 @@ app:
   port: 8080
   pages_dir: ../pages/
   public_dir: ../public/
-  jwt_secret: secretkey-123
-  jwt_exp_duration: 24h 
+  session_secret: secretkey-123
+  auth_duration: 24h
 
-  # DEBUG || INFO ||  WARN || ERROR (from lowest to highest priority) 
+  # DEBUG || INFO ||  WARN || ERROR
   log_level: DEBUG
   is_json_log: false
+
+db:
+  dialect: sqlite3
+  # path to sqlite db file (not required for other dialects)
+  sqlite_db_path: ../db/data.db
+
+wa-db:
+  dialect: sqlite3
+  sqlite_db_path: ../db/wa-data.db
+  # DEBUG || INFO || WARN || ERROR
+  log_level: DEBUG
+  client_log_level: DEBUG

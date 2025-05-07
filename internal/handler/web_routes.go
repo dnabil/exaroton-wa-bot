@@ -2,31 +2,61 @@ package handler
 
 import (
 	"exaroton-wa-bot/internal/config"
-	"exaroton-wa-bot/internal/middleware"
-	"exaroton-wa-bot/pages"
 	"fmt"
-	"net/http"
 	"path/filepath"
 
 	"github.com/labstack/echo/v4"
 )
 
-func (w *Web) routes() {
-	staticDir, err := filepath.Abs(w.cfg.MustString(config.KeyPublicDir))
+// shared web routes
+var (
+	homepageRoute *echo.Route
+
+	loginPageRoute *echo.Route
+	loginRoute     *echo.Route
+
+	waLoginPageRoute *echo.Route
+	waLoginQRRoute   *echo.Route
+)
+
+func (web *Web) LoadRoutes() {
+	// MAIN GROUP
+	webGroup := web.Router.Group("")
+
+	staticDir, err := filepath.Abs(web.cfg.MustString(config.KeyPublicDir))
 	if err != nil {
 		panic(fmt.Sprintf("failed to get public dir (key: %s)", config.KeyPublicDir))
 	}
 
 	// static files
-	w.Router.Static("/public", staticDir)
-	w.Router.File("/favicon.ico", filepath.Join(staticDir, "favicon.ico"))
+	webGroup.Static("/public", staticDir)
+	webGroup.File("/favicon.ico", filepath.Join(staticDir, "favicon.ico"))
 
-	// global middlewares
-	w.Router.Use(middleware.Loggger(w.cfg))
-	w.Router.Use(middleware.Recover(w.cfg))
+	// middlewares
+	webGroup.Use(web.middleware.Session())
+	webGroup.Use(web.middleware.Logger())
+	webGroup.Use(web.middleware.Recover())
 
-	// routes
-	w.Router.GET("/", func(c echo.Context) error {
-		return c.Render(http.StatusOK, pages.Index, nil)
-	})
+	// other middlewares
+	authMdw := web.middleware.Auth()
+	guestMdw := web.middleware.Guest()
+	waAuthMdw := web.middleware.WhatsappLoggedIn(false)
+	waGuestMdw := web.middleware.WhatsappLoggedIn(true)
+
+	// homepage route
+	homepageRoute = webGroup.GET("/", web.HomePage(), authMdw, waAuthMdw)
+
+	// user routes
+	userGroup := webGroup.Group("/user")
+	{
+		loginPageRoute = userGroup.GET("/login", web.UserLoginPage(nil), guestMdw)
+		loginRoute = userGroup.POST("/login", web.UserLogin(), guestMdw)
+	}
+
+	// whatsapp routes
+	waGroup := webGroup.Group("/wa")
+	{
+		waLoginPageRoute = waGroup.GET("/login", web.WhatsappLoginPage(), authMdw, waGuestMdw)
+		waLoginQRRoute = waGroup.GET("/qr", web.WhatsappQRLogin(), authMdw, waGuestMdw)
+	}
 }

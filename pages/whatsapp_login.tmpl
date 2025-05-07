@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <title>WhatsApp Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/public/styles/pico.min.css" />
+    <style>
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background-color: var(--pico-background-color);
+            padding: 2rem;
+        }
+
+        main {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        #qr-container {
+            min-height: 256px;
+            width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: #006D46;
+            border-radius: var(--pico-border-radius);
+            box-shadow: var(--pico-box-shadow);
+        }
+
+        #qr-container img {
+            max-width: 256px;
+            height: 256px;
+        }
+
+        #error-message {
+            color: #fff;
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: var(--pico-border-radius);
+            background: #006D46;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 256px;
+        }
+
+        .loading::after {
+            content: "";
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--pico-muted-border-color);
+            border-top-color: var(--pico-primary);
+            border-radius: 50%;
+            animation: loading 1s linear infinite;
+        }
+
+        @keyframes loading {
+            to {
+                transform: rotate(1turn);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>WhatsApp Login</h1>
+        <p>Scan the QR code with your WhatsApp mobile app to log in</p>
+        <div id="qr-container">
+            <div class="loading"></div>
+        </div>
+        <div id="error-message"></div>
+    </main>
+
+    <script src="/public/scripts/qrcode.min.js"></script>
+    <script>
+        // constants
+        const homePath = "{{ .HomePath }}";
+        const wsPath = "{{ .WSPath }}";
+        const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+        const wsUrl = `${wsProtocol}://${window.location.host}${wsPath}`;
+
+        // trackers
+        let lastEvent = ''; // Track the last event we received
+        let isReconnecting = false;
+
+
+        // helpers =============================
+        const qrContainer = document.getElementById('qr-container');
+        const errorMessage = document.getElementById('error-message');
+        function qrLoading() {
+            qrContainer.innerHTML = '';
+            qrContainer.innerHTML = '<div class="loading"></div>';
+            errorMessage.textContent = '';
+        }
+
+        qrLoading(); // initialize loading
+
+        function renderQRCode(code) {
+            console.log("Rendering QR code:", code);
+
+            qrContainer.innerHTML = '';
+            new QRCode(qrContainer, {
+                text: code,
+                width: 128,
+                height: 128,
+                correctLevel: QRCode.CorrectLevel.L
+            });
+        }
+
+        function qrError(event, msg) {
+            if (event === 'error-is-pairing') {
+                showSuccess(msg);
+                return
+            }
+
+            qrContainer.innerHTML = '';
+            qrContainer.innerHTML = `<button class="outline  " style="color: white; border-color: white;" onclick="qrRefresh()">
+                <span>🔄 Refresh</span>
+                </button>`;
+            errorMessage.textContent = msg;
+            // show countdown with loading
+        }
+
+        // connect to websocket
+        let socket = new WebSocket(wsUrl);
+
+        // refresh the websocket connection
+        function qrRefresh() {
+            socket.close();
+            qrLoading(); // automatically removes the refresh button
+
+            setTimeout(() => {
+                socket = new WebSocket(wsUrl);
+                setupWebSocketHandlers();
+            }, 1000);
+        }
+
+        function showSuccess(msg) {
+            const loginSuccessCountdown = { value: 10 };
+
+            const modal = document.createElement('dialog');
+            modal.setAttribute('id', 'login-success-modal');
+            modal.innerHTML = `
+                <article style="text-align: center;">
+                    <h3>👤🔐✅</h3>
+                    <p>${msg}</p>
+                    <p id="login-countdown">${loginSuccessCountdown.value}</p>
+                </article>
+            `;
+            modal.addEventListener('cancel', (e) => e.preventDefault());
+            document.body.appendChild(modal);
+            modal.showModal();
+
+            const countdownText = modal.querySelector('#login-countdown');
+            const interval = setInterval(() => {
+                loginSuccessCountdown.value--;
+                countdownText.textContent = `${loginSuccessCountdown.value}`;
+
+                if (loginSuccessCountdown.value <= 0) {
+                    console.log("Countdown finished, redirecting to home");
+                    clearInterval(interval);
+                    // TODO: home or goback
+                    window.location.href = homePath;
+                }
+            }, 1000);
+        }
+
+        // ============================= end of helpers
+        function setupWebSocketHandlers() {
+            socket.addEventListener('message', (event) => {
+                const data = JSON.parse(event.data);
+                console.log("Received:", data);
+                lastEvent = data.event;
+
+                if (data.event === 'code') {
+                    renderQRCode(data.code);
+                    return;
+                }
+
+                if (data.event.startsWith('error')) {
+                    qrError(data.event, data.error || "An unknown error occurred.");
+                    return;
+                }
+
+                showSuccess(data.message);
+                return;
+            });
+
+            socket.addEventListener('error', (err) => {
+                lastEvent = 'error';
+                qrError("error", "Can’t establish a connection.");
+                console.error("WebSocket error:", err);
+            });
+
+            socket.addEventListener('close', () => {
+                console.log("WebSocket connection closed. Last event:", lastEvent);
+
+                if (!lastEvent || lastEvent === 'code') {
+                    qrError("error", "Connection lost, please refresh.");
+                }
+            });
+        }
+
+        setupWebSocketHandlers();
+    </script>
+</body>
+
+</html>

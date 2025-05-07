@@ -2,16 +2,28 @@ package handler
 
 import (
 	"errors"
+	"exaroton-wa-bot/internal/constants/errs"
+	"log/slog"
+	"strings"
+
+	// exaroton-wa-bot/internal/constants/errs
 	"exaroton-wa-bot/pages"
 	"net/http"
 
-	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/labstack/echo/v4"
 )
 
-func webErrorHandler() echo.HTTPErrorHandler {
+// error handler implementation
+func errorHandler() echo.HTTPErrorHandler {
 	return func(err error, c echo.Context) {
-		if c.Response().Committed {
+		if err == nil || c.Response().Committed {
+			return
+		}
+
+		// web socket errors should be handled by the handler itself
+		// so no need to handle them here
+		if strings.HasPrefix(c.Request().Header.Get("Upgrade"), "websocket") {
+			slog.Error("web socket error", "error", err)
 			return
 		}
 
@@ -24,15 +36,34 @@ func webErrorHandler() echo.HTTPErrorHandler {
 			}
 		}
 
+		// custom error check
 		switch {
-		case errors.As(err, &validation.Errors{}):
-			httpErr.Code = http.StatusBadRequest
-			httpErr.Message = "validation fail"
+		// already logged in
+		case errors.Is(err, errs.ErrUserAlreadyLoggedIn) || errors.Is(err, errs.ErrWAAlreadyLoggedIn):
+			// TODO send flash message
+			c.Redirect(http.StatusSeeOther, homepageRoute.Path)
+			return
+
+		// is not logged in
+		case errors.Is(err, errs.ErrUserNotLoggedIn):
+			c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+			return
+
+		// is not logged in (whatsapp)
+		case errors.Is(err, errs.ErrWANotLoggedIn):
+			c.Redirect(http.StatusSeeOther, waLoginPageRoute.Path)
+			return
+
+		case errors.Is(err, errs.ErrLoginFailed):
+			httpErr.Code = http.StatusUnauthorized
+			httpErr.Message = "invalid credentials"
+			c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+			return
 		}
 
 		// end of custom error check
 
-		c.Render(httpErr.Code, pages.Error, echo.Map{
+		_ = c.Render(httpErr.Code, pages.Error, echo.Map{
 			"Code":        httpErr.Code,
 			"Message":     httpErr.Message,
 			"Description": "Something went wrong :(",

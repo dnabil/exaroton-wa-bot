@@ -1,9 +1,10 @@
 # Getting Started (developers)
 
+## Quick Start
 To run the project, please put the binary or cwd in {root project}/bin/
 Overall, either for dev/prod the project looks like this:
 
-```
+```text
 bin/
     web_app (binary)
 
@@ -29,7 +30,7 @@ launch.json example for vscode users:
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/cmd/web/main.go",
+            "program": "${workspaceFolder}/cmd/app/main.go",
             "output": "${workspaceFolder}/bin/debug_web",
             "cwd": "${workspaceFolder}/bin/",
             "args": [
@@ -42,7 +43,7 @@ launch.json example for vscode users:
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/cmd/web/main.go",
+            "program": "${workspaceFolder}/cmd/app/main.go",
             "output": "${workspaceFolder}/bin/debug_web",
             "cwd": "${workspaceFolder}/bin/",
             "args": [
@@ -53,3 +54,27 @@ launch.json example for vscode users:
     ]
 }
 ```
+
+
+## Development Dependencies
+
+Before starting development, please install the following dependencies:
+
+1. **Mockery v3** - For auto-generating mocks
+   - Install from: https://vektra.github.io/mockery/v3/
+   - Used for generating mock objects in tests
+
+2. **YQ v4** - YAML processor used in Makefile
+   - Install from: https://github.com/mikefarah/yq/releases
+   - Required for parsing config.yml (used in makefile)
+
+3. **Goose** - Database migration tool
+   - Install from: https://github.com/pressly/goose
+   - Used for managing SQLite database migrations
+
+4. **GCC Compiler**
+   - Required for compiling the sqlite3 package (https://github.com/mattn/go-sqlite3)
+   - Install using your system's package manager:
+     - Ubuntu/Debian: `sudo apt install gcc`
+     - macOS: Install Xcode Command Line Tools
+     - Windows: Install MinGW or MSYS2

@@ -2,6 +2,8 @@ package handler
 
 import (
 	"exaroton-wa-bot/internal/config"
+	"exaroton-wa-bot/internal/dto"
+	"exaroton-wa-bot/internal/middleware"
 	"exaroton-wa-bot/internal/service"
 	"fmt"
 	"html/template"
@@ -9,44 +11,65 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 )
 
-type Web struct {
-	Router *echo.Echo
+var (
+	wsUpgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
+)
 
-	svc *service.Service
-	cfg *config.Cfg
+type Web struct {
+	Router  *echo.Echo
+	cfg     *config.Cfg
+	session dto.WebSession
+
+	middleware *middleware.Middleware
+	svc        *service.Service
 }
 
 func NewWeb(cfg *config.Cfg, svc *service.Service) *Web {
-	rest := &Web{
-		svc:    svc,
-		Router: config.NewEcho(),
-		cfg:    cfg,
-	}
+	router := config.NewEcho()
+	router.HTTPErrorHandler = errorHandler()
 
-	return rest
-}
-
-func (w *Web) Run() error {
-	pagesDir, err := filepath.Abs(w.cfg.MustString(config.KeyPagesDir))
+	// mount pages
+	pagesDir, err := filepath.Abs(cfg.MustString(config.KeyPagesDir))
 	if err != nil {
 		panic(fmt.Sprintf("failed to get pages dir (key: %s)", config.KeyPagesDir))
 	}
 
 	hotReload := false
-	if w.cfg.Args.Env == config.EnvDevelopment {
+	if cfg.Args.Env == config.EnvDevelopment {
 		hotReload = true
 	}
 
-	w.Router.Renderer = NewRenderer(pagesDir, hotReload)
-	w.Router.HTTPErrorHandler = webErrorHandler()
-	w.routes()
+	router.Renderer = NewRenderer(pagesDir, hotReload)
 
+	webSession := dto.NewWebSession()
+
+	router.Validator = config.NewValidator()
+	middleware := middleware.NewMiddleware(cfg, svc.AuthService, webSession)
+
+	web := &Web{
+		Router:     router,
+		cfg:        cfg,
+		middleware: middleware,
+		svc:        svc,
+		session:    webSession,
+	}
+
+	web.LoadRoutes()
+
+	return web
+}
+
+func (h *Web) RunHTTP(port int) error {
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", w.cfg.String(config.KeyPort)),
-		Handler: w.Router,
+		Addr:    fmt.Sprintf(":%d", port),
+		Handler: h.Router,
 	}
 
 	return srv.ListenAndServe()

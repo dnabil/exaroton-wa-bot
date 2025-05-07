@@ -1,0 +1,26 @@
+all: false
+filename: '{{.Mock}}{{.InterfaceName}}.go'
+force-file-write: true
+formatter: goimports
+log-level: info
+structname: '{{.Mock}}{{.InterfaceName}}'
+pkgname: '{{.SrcPackageName}}'
+require-template-schema-exists: true
+template: testify
+template-schema: '{{.Template}}.schema.json'
+packages:
+  exaroton-wa-bot/internal/dto:
+    config:
+      all: true
+      recursive: true
+      dir: './internal/mocks/dto'
+  exaroton-wa-bot/internal/service:
+    config:
+      all: true
+      recursive: true
+      dir: './internal/mocks/service'
+  exaroton-wa-bot/internal/repository:
+    config:
+      all: true
+      recursive: true
+      dir: './internal/mocks/repository'

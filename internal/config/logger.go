@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
@@ -9,24 +10,16 @@ import (
 	"github.com/google/uuid"
 )
 
-func InitLogger(cfg *Cfg) {
-	isJsonLog := cfg.Bool(keyIsJsonLog)
-
-	opt := &slog.HandlerOptions{
-		Level: strToSlogLevel(cfg.String(keyLogLevel)),
-	}
-
-	if isJsonLog {
-		slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, opt)))
-	} else {
-		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, opt)))
-	}
+// sets the default logger (slog.Default()) for the whole app.
+func InitAppLogger(cfg *Cfg) {
+	appLogger := newSlogger(cfg, keyLogLevel)
+	slog.SetDefault(appLogger)
 }
 
 // Centalizing err log implementation, use this on every err/panic.
 //
 // errStack indicates that app panicked. just nil if for normal errs.
-func ErrLog(ctx context.Context, args *Args, err error, errStack []byte, attrs ...slog.Attr) {
+func ErrLog(ctx context.Context, err error, errStack []byte, attrs ...slog.Attr) {
 	attrs = append(attrs, slog.String(KeyLogErr, err.Error()))
 
 	// if panic happens, add id & print trace on debug
@@ -58,4 +51,27 @@ func strToSlogLevel(s string) slog.Level {
 	default:
 		return slog.LevelWarn
 	}
+}
+
+// centralizing logger initialization, use this on every logger.
+func newSlogger(cfg *Cfg, keyLogLevel string) *slog.Logger {
+	isJsonLog := cfg.Bool(keyIsJsonLog)
+
+	slogLevelStr := cfg.String(keyLogLevel)
+	opt := &slog.HandlerOptions{
+		Level: strToSlogLevel(slogLevelStr),
+	}
+
+	if slogLevelStr == "" {
+		// NOTE: may want to create a new level implementation IF custom level exists.
+		slog.Warn(fmt.Sprintf("(%s) log level not set, using default: %s", keyLogLevel, opt.Level.Level().String()))
+	}
+
+	if isJsonLog {
+		slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, opt)))
+	} else {
+		slog.SetDefault(slog.New(slog.NewTextHandler(os.Stdout, opt)))
+	}
+
+	return slog.Default()
 }

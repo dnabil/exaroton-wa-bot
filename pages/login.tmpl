@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/public/styles/pico.min.css" />
+    <style>
+        small {
+            color: var(--del-color, #e53e3e);
+            display: block;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="container" style="max-width: 400px; margin-top: 5rem;">
+        <h2>Login</h2>
+
+        <form id="login-form" method="POST" action="/user/login" novalidate>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required minlength="3" />
+            <small id="username-error">{{with .Validation}}{{.Username}}{{end}}</small>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required minlength="5" />
+            <small id="password-error">{{with .Validation}}{{.Password}}{{end}}</small>
+
+            <input type="hidden" name="redirect" id="redirect">
+
+            <button type="submit">Login</button>
+        </form>
+
+        <script>
+            const username = document.getElementById("username");
+            const password = document.getElementById("password");
+            const usernameErr = document.getElementById("username-error");
+            const passwordErr = document.getElementById("password-error");
+
+            // fill redirect field
+            const params = new URLSearchParams(window.location.search);
+            const redirect = params.get('redirect') || '/';
+            document.getElementById('redirect').value = redirect;
+
+            function validateForm() {
+                let valid = true;
+
+                // reset
+                usernameErr.textContent = "";
+                passwordErr.textContent = "";
+
+                if (!username.checkValidity()) {
+                    usernameErr.textContent = username.validationMessage;
+                    valid = false;
+                }
+
+                if (!password.checkValidity()) {
+                    passwordErr.textContent = password.validationMessage;
+                    valid = false;
+                }
+
+                return valid;
+            }
+
+            document.getElementById("login-form").addEventListener("submit", function (e) {
+                if (!validateForm()) {
+                    e.preventDefault(); // stop form from submitting
+                    return
+                }
+            });
+        </script>
+    </main>
+
+</body>
+
+</html>
