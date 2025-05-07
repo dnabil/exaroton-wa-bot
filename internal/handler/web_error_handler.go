@@ -40,7 +40,6 @@ func errorHandler() echo.HTTPErrorHandler {
 		switch {
 		// already logged in
 		case errors.Is(err, errs.ErrUserAlreadyLoggedIn) || errors.Is(err, errs.ErrWAAlreadyLoggedIn):
-			// TODO send flash message
 			c.Redirect(http.StatusSeeOther, homepageRoute.Path)
 			return
 
