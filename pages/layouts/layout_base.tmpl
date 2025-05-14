@@ -1,0 +1,27 @@
+{{ define "layout_base" }}
+
+{{ $title := .Title }}
+{{ if not $title }}{{ $title = "My App" }}{{ end }}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/public/styles/main.css" />
+    <link rel="stylesheet" href="/public/styles/pico.min.css" />
+    <title>{{ $title }}</title>
+    {{ template "_layout_base_head" . }}
+</head>
+
+<body>
+    <header>
+        {{ template "com_nav" . }}
+    </header>
+
+    {{ template "_layout_base_content" . }}
+</body>
+
+</html>
+{{ end }}

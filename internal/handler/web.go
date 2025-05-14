@@ -5,6 +5,7 @@ import (
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/internal/middleware"
 	"exaroton-wa-bot/internal/service"
+	"exaroton-wa-bot/pages"
 	"fmt"
 	"html/template"
 	"io"
@@ -84,36 +85,45 @@ type Renderer struct {
 	hotReload bool
 }
 
-func (t *Renderer) LoadTemplates() {
-	t.template = template.New("")
-
-	tmp, err := t.template.ParseGlob(filepath.Join(t.location, "*.tmpl"))
-	if err != nil {
-		panic(err)
-	}
-
-	if tmp != nil {
-		t.template = tmp
-	}
-}
-
-func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	if t.hotReload {
-		t.LoadTemplates()
-	}
-
-	return t.template.ExecuteTemplate(w, name, data)
-}
-
 func NewRenderer(location string, hotReload bool) echo.Renderer {
 	renderer := &Renderer{
 		location:  location,
 		hotReload: hotReload,
 	}
 
-	renderer.LoadTemplates()
+	renderer.init()
 
 	return renderer
+}
+
+func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	if t.hotReload {
+		t.init()
+	}
+
+	return t.template.ExecuteTemplate(w, name, data)
+}
+
+func (t *Renderer) init() {
+	// views/pages path & register functions
+	tmpl, err := template.New("").Funcs(pages.TmplFunc).ParseGlob(filepath.Join(t.location, "*.tmpl"))
+	if err != nil {
+		panic(err)
+	}
+
+	// components path
+	tmpl, err = tmpl.ParseGlob(filepath.Join(t.location, "components/*.tmpl"))
+	if err != nil {
+		panic(err)
+	}
+
+	// layouts path
+	tmpl, err = tmpl.ParseGlob(filepath.Join(t.location, "layouts/*.tmpl"))
+	if err != nil {
+		panic(err)
+	}
+
+	t.template = tmpl
 }
 
 // ==============================================================================

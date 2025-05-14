@@ -1,41 +1,60 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
+{{ template "layout_base" Map
+"Title" "Home"
+"CurrentPage" "index"
+}}
 
-<head>
-    <meta charset="utf-8" />
-    <title>Welcome</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="stylesheet" href="/public/styles/pico.min.css" />
-    <style>
-        body {
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background-color: var(--pico-background-color);
-            padding: 2rem;
-        }
+{{ define "_layout_base_head" }}
+<style>
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--pico-border-radius);
+        box-shadow: var(--pico-box-shadow);
+    }
+</style>
+{{ end }}
 
-        main {
-            text-align: center;
-            max-width: 600px;
-        }
+{{ define "_layout_base_content" }}
 
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: var(--pico-border-radius);
-            box-shadow: var(--pico-box-shadow);
-        }
-    </style>
-</head>
+<main>
+    <div id="welcome">
 
-<body>
-    <main>
-        <img src="/public/images/welcome.gif" alt="Welcome .gif" />
-        <h1>Welcome 👋</h1>
-        <p>~ in development ~</p>
-    </main>
-</body>
+    </div>
 
-</html>
+    <br>
+
+    <h1>Homepage</h1> <br>
+
+    <h3>Quick Guide</h3>
+    <img src="/public/images/welcome.gif" alt="Welcome .gif" />
+    <p><strong>This bot only works on groups.</strong></p>
+    <ol>
+        <li>Add your
+            <strong>Exaroton API key</strong> and
+            <strong>your server ID</strong>
+            (you can get it <a href="#">here</a>, and add it <a href="#">here</a>).
+        </li>
+        <li>Add the bot to the group.</li>
+        <li>Go to the <a href="#">groups page</a> and authorize the group.</li>
+        <li>Add authorized numbers (include country code, e.g., <code>+62...</code>) on <a href="#">this page</a>.</li>
+        <li>You and your friends (the authorized ones) can fiddle with the server through the group 😄 Enjoy gaming!
+        </li>
+    </ol>
+
+    <h3>Basic Commands</h3>
+    @ the bot to get started, then use follow it with these:
+    <p>
+
+    <ul>
+        <li> <code>/help</code> shows the manual page/guide thru WhatsApp chat for commands available</li>
+        <li> <code>/servers</code> shows available server ids</li>
+        <li> <code>/start [server-id]</code> starts the server specified by its id</li>
+        <li> <code>/stop [server-id]</code> stops the server specified by its id</li>
+        <li> <code>/info [server-id]</code> shows the current server info</li>
+        <li> <code>/players [server-id]</code> shows the players that are currently online on a server</li>
+    </ul>
+
+    <br> <br>
+</main>
+
+{{ end }}
