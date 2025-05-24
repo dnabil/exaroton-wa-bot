@@ -19,7 +19,7 @@ func (r *UserLoginReq) Validate() error {
 	)
 }
 
-func UserLoginReqFromValidation(validation *validation.Errors) *UserLoginReq {
+func UserLoginReqFromValidation(validation validation.Errors) *UserLoginReq {
 	b, err := validation.MarshalJSON()
 	if err != nil {
 		return nil

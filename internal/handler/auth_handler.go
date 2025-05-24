@@ -14,10 +14,6 @@ import (
 )
 
 func (w *Web) UserLoginPage(data *dto.LoginPageData) echo.HandlerFunc {
-	if data == nil {
-		data = &dto.LoginPageData{}
-	}
-
 	return func(c echo.Context) error {
 		return c.Render(http.StatusOK, pages.Login, data)
 	}
@@ -29,7 +25,7 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		if err := w.shouldBind(c, req); err != nil {
 			if errors.As(err, &validation.Errors{}) {
 				return w.UserLoginPage(&dto.LoginPageData{
-					Validation: dto.UserLoginReqFromValidation(err.(*validation.Errors)),
+					Validation: dto.UserLoginReqFromValidation(err.(validation.Errors)),
 				})(c)
 			}
 

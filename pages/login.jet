@@ -24,11 +24,15 @@
         <form id="login-form" method="POST" action="/user/login" novalidate>
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required minlength="3" />
-            <small id="username-error">{{with .Validation}}{{.Username}}{{end}}</small>
+            <small id="username-error">
+                {{if isset(.Validation)}}{{.Validation.Username}}{{end}}
+            </small>
 
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required minlength="5" />
-            <small id="password-error">{{with .Validation}}{{.Password}}{{end}}</small>
+            <small id="password-error">
+                {{if isset(.Validation)}}{{.Validation.Password}}{{end}}
+            </small>
 
             <input type="hidden" name="redirect" id="redirect">
 

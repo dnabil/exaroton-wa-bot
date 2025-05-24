@@ -1,6 +1,4 @@
-{{ define "com_nav" }}
-
-{{ $currentPage := .CurrentPage }}
+{{ block com_nav() }}
 
 <!-- Sidebar (collapsible) -->
 <div id="sidebar" style="
@@ -18,12 +16,12 @@
     <aside>
         <ul style="margin-top: 4rem; ">
             <li>
-                <a href="/" {{ if eq $currentPage "index" }}class="contrast" {{ end }}>
+                <a href="/" {{ if currentPage=="index.jet" }}class="contrast" {{ end }}>
                     Homepage
                 </a>
             </li>
             <li>
-                <a href="/settings" {{ if eq $currentPage "settings" }}class="contrast" {{ end }}>
+                <a href="/settings" {{ if currentPage=="settings.jet" }}class="contrast" {{ end }}>
                     Settings
                 </a>
             </li>
@@ -49,13 +47,12 @@
     </ul>
 
     <ul>
-        <li><a href="https://github.com/dnabil/exaroton-wa-bot" target="_blank">
+        <li>
+            <a href="https://github.com/dnabil/exaroton-wa-bot" target="_blank">
                 <img style="width: 30px; height: 30px;" src="/public/images/icons/github-mark_white.svg" alt="Github" />
-            </a></li>
+            </a>
+        </li>
     </ul>
 </nav>
-
-<script>
-</script>
 
 {{ end }}

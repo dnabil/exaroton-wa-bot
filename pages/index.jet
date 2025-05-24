@@ -1,28 +1,11 @@
-{{ template "layout_base" Map
-"Title" "Home"
-"CurrentPage" "index"
-}}
+{{ extends "./layouts/layout_base.jet" }}
 
-{{ define "_layout_base_head" }}
-<style>
-    img {
-        max-width: 100%;
-        height: auto;
-        border-radius: var(--pico-border-radius);
-        box-shadow: var(--pico-box-shadow);
-    }
-</style>
+{{ block layout_base_title() }}
+Homepage
 {{ end }}
 
-{{ define "_layout_base_content" }}
-
+{{ block layout_base_body() }}
 <main>
-    <div id="welcome">
-
-    </div>
-
-    <br>
-
     <h1>Homepage</h1> <br>
 
     <h3>Quick Guide</h3>
@@ -56,5 +39,4 @@
 
     <br> <br>
 </main>
-
 {{ end }}

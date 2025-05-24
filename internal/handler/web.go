@@ -7,11 +7,12 @@ import (
 	"exaroton-wa-bot/internal/service"
 	"exaroton-wa-bot/pages"
 	"fmt"
-	"html/template"
 	"io"
 	"net/http"
 	"path/filepath"
+	"reflect"
 
+	"github.com/CloudyKit/jet/v6"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 )
@@ -80,7 +81,7 @@ func (h *Web) RunHTTP(port int) error {
 // HTML Renderer
 
 type Renderer struct {
-	template  *template.Template
+	template  *jet.Set
 	location  string
 	hotReload bool
 }
@@ -97,30 +98,34 @@ func NewRenderer(location string, hotReload bool) echo.Renderer {
 }
 
 func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	if t.hotReload {
-		t.init()
+	jetTempl, err := t.template.GetTemplate(name)
+	if err != nil {
+		return err
 	}
 
-	return t.template.ExecuteTemplate(w, name, data)
+	if data == nil {
+		data = make(map[string]interface{})
+	}
+
+	return jetTempl.Execute(w, jet.VarMap{
+		"currentPage": reflect.ValueOf(name),
+	}, data)
 }
 
 func (t *Renderer) init() {
-	// views/pages path & register functions
-	tmpl, err := template.New("").Funcs(pages.TmplFunc).ParseGlob(filepath.Join(t.location, "*.tmpl"))
-	if err != nil {
-		panic(err)
+	opts := []jet.Option{}
+
+	if t.hotReload {
+		opts = append(opts, jet.InDevelopmentMode())
 	}
 
-	// components path
-	tmpl, err = tmpl.ParseGlob(filepath.Join(t.location, "components/*.tmpl"))
-	if err != nil {
-		panic(err)
-	}
+	tmpl := jet.NewSet(
+		jet.NewOSFileSystemLoader(t.location),
+		opts...,
+	)
 
-	// layouts path
-	tmpl, err = tmpl.ParseGlob(filepath.Join(t.location, "layouts/*.tmpl"))
-	if err != nil {
-		panic(err)
+	for key, fn := range pages.TmplFunc {
+		tmpl = tmpl.AddGlobalFunc(key, fn)
 	}
 
 	t.template = tmpl
