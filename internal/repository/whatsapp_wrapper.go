@@ -23,7 +23,7 @@ type waClient struct {
 //
 // defer Disconnect()
 func NewWAClient(db *config.WhatsappDB) (*waClient, error) {
-	deviceStore, err := db.Container.GetFirstDevice()
+	deviceStore, err := db.Container.GetFirstDevice(context.TODO())
 	if err != nil {
 		return nil, err
 	}
