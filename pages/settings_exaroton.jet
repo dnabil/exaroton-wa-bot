@@ -1,0 +1,110 @@
+{{ extends "./layouts/layout_base.jet" }}
+
+{{ block layout_base_title() }}
+Exaroton | Settings
+{{ end }}
+
+{{ block layout_base_body() }}
+
+{{ apiKeyValidation := "" }}
+{{ if isset(.Validation) }}
+{{dump("wkwkw")}}
+{{ apiKeyValidation = .Validation["api_key"] }}
+{{ end }}
+
+<main>
+    <h1>Exaroton Settings</h1>
+    <h2> API Key</h2>
+
+    <input id="api_key" type="text" name="api_key" placeholder="API Key" aria-label="API Key" value="{{ .APIKey }}"
+        aria-describedby="api_key-helper" required {{ if isset(apiKeyValidation) }} aria-invalid="true" {{ end }} />
+    <small id="api_key-helper">
+        {{ apiKeyValidation }}
+    </small>
+
+    <button id="btn-save">Save</button>
+    <button id="btn-validate" class="contrast">Validate</button>
+
+    <br />
+    <br />
+    <br />
+
+    <div class="profile">
+        {{ if isset(.AccountInfo) }}
+        <h3>Profile</h3>
+        <dl>
+            <p><strong>Name:</strong> John Doe</p>
+            <p><strong>Email:</strong> john@example.com</p>
+            <p><strong>Credits:</strong> 100.00</p>
+            <p><strong>Verified:</strong>{{ if .AccountInfo.Verified }}✅{{ else }}❌{{ end }}</p>
+        </dl>
+        {{ end }}
+</main>
+
+<script src="/public/scripts/validation.js"></script>
+<script>
+    const btnSave = document.getElementById("btn-save")
+    const btnValidate = document.getElementById("btn-validate")
+
+    const apiKey = document.getElementById("api_key")
+    const apiKeyHelper = document.getElementById("api_key-helper")
+
+    let inputFields = [
+        apiKey, apiKeyHelper
+    ]
+
+    setupValidationListeners(inputFields)
+
+    // SAVE BUTTON
+    document.getElementById("btn-save").addEventListener("click", function () {
+        if (!validateInput(inputFields)) return;
+
+        btnSave.setAttribute("aria-busy", "true")
+        // const cleanup = () => btnSave.setAttribute("aria-busy", "false")
+
+
+        const form = document.createElement('form')
+        form.method = 'POST'
+        form.action = '/settings/server/exaroton'
+
+        const input = Object.assign(document.createElement('input'), {
+            type: 'hidden',
+            name: 'api_key'
+        })
+        input.value = apiKey.value
+
+        form.appendChild(input)
+        document.body.appendChild(form)
+
+        setTimeout(() => {
+            form.submit()
+            cleanup()
+        }, 0)
+    })
+
+    // VALIDATE BUTTON
+    document.getElementById("btn-validate").addEventListener("click", function () {
+        if (!validateInput(inputFields)) return;
+
+        btnValidate.setAttribute("aria-busy", "true")
+        // const cleanup = () => btnValidate.setAttribute("aria-busy", "false")
+
+        const form = document.createElement('form')
+        form.method = 'POST'
+        form.action = '/settings/server/exaroton/me'
+
+        const input = Object.assign(document.createElement('input'), {
+            type: 'hidden',
+            name: 'api_key',
+        })
+        input.value = apiKey.value
+
+        form.appendChild(input)
+        document.body.appendChild(form)
+
+        setTimeout(() => {
+            form.submit()
+        }, 0)
+    })
+</script>
+{{ end }}

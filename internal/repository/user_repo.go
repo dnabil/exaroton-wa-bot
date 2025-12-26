@@ -9,21 +9,19 @@ import (
 )
 
 type IUserRepo interface {
-	GetUserByUsername(ctx context.Context, username string) (*entity.User, error)
+	GetUserByUsername(ctx context.Context, tx *gorm.DB, username string) (*entity.User, error)
 }
 
-type UserRepo struct {
-	*repoTmpl
+type UserRepo struct{}
+
+func newUserRepo() IUserRepo {
+	return &UserRepo{}
 }
 
-func newUserRepo(tmpl *repoTmpl) *UserRepo {
-	return &UserRepo{repoTmpl: tmpl}
-}
-
-func (r *UserRepo) GetUserByUsername(ctx context.Context, username string) (*entity.User, error) {
+func (r *UserRepo) GetUserByUsername(ctx context.Context, tx *gorm.DB, username string) (*entity.User, error) {
 	user := &entity.User{}
 
-	if err := r.db.Where("username = ?", username).First(user).Error; err != nil {
+	if err := tx.Where("username = ?", username).First(user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}

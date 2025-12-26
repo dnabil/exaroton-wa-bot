@@ -2,10 +2,10 @@
 
 <!-- Sidebar (collapsible) -->
 <div id="sidebar" style="
-        width: 250px; 
+        width: 20rem;
         position: fixed; 
         top: 0; 
-        left: -250px; 
+        left: -20rem;
         height: 100%; 
         background: #000; 
         color: #fff; 
@@ -21,9 +21,19 @@
                 </a>
             </li>
             <li>
-                <a href="/settings" {{ if currentPage=="settings.jet" }}class="contrast" {{ end }}>
-                    Settings
-                </a>
+                <details name="server_settings" open>
+                    <summary>
+                        Server Settings
+                    </summary>
+                    <ul>
+                        <li>
+                            <a href="/settings/server/exaroton" {{ if currentPage=="settings_exaroton.jet" }}
+                                class="contrast" {{ end }}>
+                                Exaroton
+                            </a>
+                        </li>
+                    </ul>
+                </details>
             </li>
         </ul>
     </aside>
@@ -36,7 +46,7 @@
         <div style="position: absolute; top: 20px; left: 20px; cursor: pointer;" onclick="
             var sidebar = document.getElementById('sidebar');
             var isOpen = sidebar.style.left === '0px';
-            sidebar.style.left = isOpen ? '-250px' : '0px';
+            sidebar.style.left = isOpen ? '-20rem' : '0px';
         ">
             <img src="/public/images/icons/menu-burger_white.svg" alt="Side menu" />
         </div>

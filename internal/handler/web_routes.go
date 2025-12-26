@@ -53,10 +53,22 @@ func (web *Web) LoadRoutes() {
 		loginRoute = userGroup.POST("/login", web.UserLogin(), guestMdw)
 	}
 
-	// whatsapp routes
+	// whatsapp login routes
 	waGroup := webGroup.Group("/wa")
 	{
 		waLoginPageRoute = waGroup.GET("/login", web.WhatsappLoginPage(), authMdw, waGuestMdw)
 		waLoginQRRoute = waGroup.GET("/qr", web.WhatsappQRLogin(), authMdw, waGuestMdw)
+	}
+
+	// settings
+	settingsGroup := webGroup.Group("/settings", authMdw, waAuthMdw)
+	{
+		// server settings ()
+		serverGroup := settingsGroup.Group("/server")
+		{
+			serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
+			serverGroup.POST("/exaroton", web.SettingsExarotonUpdate())
+			serverGroup.POST("/exaroton/me", web.SettingsExarotonValidateApiKey())
+		}
 	}
 }

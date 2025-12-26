@@ -25,7 +25,7 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		if err := w.shouldBind(c, req); err != nil {
 			if errors.As(err, &validation.Errors{}) {
 				return w.UserLoginPage(&dto.LoginPageData{
-					Validation: dto.UserLoginReqFromValidation(err.(validation.Errors)),
+					Validation: (err.(validation.Errors)),
 				})(c)
 			}
 
@@ -36,7 +36,9 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		if err != nil {
 			if errors.Is(err, errs.ErrLoginFailed) {
 				return w.UserLoginPage(&dto.LoginPageData{
-					Validation: &dto.UserLoginReq{Password: err.Error()},
+					Validation: map[string]error{
+						"password": err,
+					},
 				})(c)
 			}
 

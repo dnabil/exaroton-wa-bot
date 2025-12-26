@@ -9,6 +9,7 @@ import (
 	"exaroton-wa-bot/internal/database/entity"
 
 	mock "github.com/stretchr/testify/mock"
+	"gorm.io/gorm"
 )
 
 // NewMockIUserRepo creates a new instance of MockIUserRepo. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
@@ -39,8 +40,8 @@ func (_m *MockIUserRepo) EXPECT() *MockIUserRepo_Expecter {
 }
 
 // GetUserByUsername provides a mock function for the type MockIUserRepo
-func (_mock *MockIUserRepo) GetUserByUsername(ctx context.Context, username string) (*entity.User, error) {
-	ret := _mock.Called(ctx, username)
+func (_mock *MockIUserRepo) GetUserByUsername(ctx context.Context, tx *gorm.DB, username string) (*entity.User, error) {
+	ret := _mock.Called(ctx, tx, username)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetUserByUsername")
@@ -48,18 +49,18 @@ func (_mock *MockIUserRepo) GetUserByUsername(ctx context.Context, username stri
 
 	var r0 *entity.User
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) (*entity.User, error)); ok {
-		return returnFunc(ctx, username)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *gorm.DB, string) (*entity.User, error)); ok {
+		return returnFunc(ctx, tx, username)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) *entity.User); ok {
-		r0 = returnFunc(ctx, username)
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *gorm.DB, string) *entity.User); ok {
+		r0 = returnFunc(ctx, tx, username)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*entity.User)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = returnFunc(ctx, username)
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *gorm.DB, string) error); ok {
+		r1 = returnFunc(ctx, tx, username)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -73,14 +74,15 @@ type MockIUserRepo_GetUserByUsername_Call struct {
 
 // GetUserByUsername is a helper method to define mock.On call
 //   - ctx
+//   - tx
 //   - username
-func (_e *MockIUserRepo_Expecter) GetUserByUsername(ctx interface{}, username interface{}) *MockIUserRepo_GetUserByUsername_Call {
-	return &MockIUserRepo_GetUserByUsername_Call{Call: _e.mock.On("GetUserByUsername", ctx, username)}
+func (_e *MockIUserRepo_Expecter) GetUserByUsername(ctx interface{}, tx interface{}, username interface{}) *MockIUserRepo_GetUserByUsername_Call {
+	return &MockIUserRepo_GetUserByUsername_Call{Call: _e.mock.On("GetUserByUsername", ctx, tx, username)}
 }
 
-func (_c *MockIUserRepo_GetUserByUsername_Call) Run(run func(ctx context.Context, username string)) *MockIUserRepo_GetUserByUsername_Call {
+func (_c *MockIUserRepo_GetUserByUsername_Call) Run(run func(ctx context.Context, tx *gorm.DB, username string)) *MockIUserRepo_GetUserByUsername_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(string))
 	})
 	return _c
 }
@@ -90,7 +92,7 @@ func (_c *MockIUserRepo_GetUserByUsername_Call) Return(user *entity.User, err er
 	return _c
 }
 
-func (_c *MockIUserRepo_GetUserByUsername_Call) RunAndReturn(run func(ctx context.Context, username string) (*entity.User, error)) *MockIUserRepo_GetUserByUsername_Call {
+func (_c *MockIUserRepo_GetUserByUsername_Call) RunAndReturn(run func(ctx context.Context, tx *gorm.DB, username string) (*entity.User, error)) *MockIUserRepo_GetUserByUsername_Call {
 	_c.Call.Return(run)
 	return _c
 }

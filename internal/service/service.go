@@ -8,7 +8,8 @@ import (
 )
 
 type Service struct {
-	AuthService IAuthService
+	AuthService           IAuthService
+	ServerSettingsService IServerSettingsService
 }
 
 func New(cfg *config.Cfg, db *gorm.DB, repo *repository.Repo) *Service {
@@ -16,14 +17,17 @@ func New(cfg *config.Cfg, db *gorm.DB, repo *repository.Repo) *Service {
 
 	// register services here...
 	return &Service{
-		AuthService: NewAuthService(svcTmpl, repo.WhatsappRepo, repo.UserRepo),
+		AuthService:           NewAuthService(svcTmpl, repo.WhatsappRepo, repo.UserRepo),
+		ServerSettingsService: NewServerSettingsService(svcTmpl, repo.ServerSettingsRepo, repo.ExarotonRepo),
 	}
 }
 
 func newSvcTmpl(cfg *config.Cfg, db *gorm.DB) *svcTmpl {
+	sqlTx := repository.NewSqlTx(db)
+
 	return &svcTmpl{
 		cfg: cfg,
-		db:  db,
+		tx:  sqlTx,
 	}
 }
 
@@ -33,7 +37,9 @@ func newSvcTmpl(cfg *config.Cfg, db *gorm.DB) *svcTmpl {
 type svcTmpl struct {
 	cfg *config.Cfg
 
-	// use for transactions only.
-	// for testing, mock the underlying sql.DB
-	db *gorm.DB
+	// maindb
+	//
+	// every start on service func should use this to begin transaction when using
+	// repository layer for maindb.
+	tx repository.SqlTx
 }

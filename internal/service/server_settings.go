@@ -1,0 +1,65 @@
+package service
+
+import (
+	"context"
+	"exaroton-wa-bot/internal/constants"
+	"exaroton-wa-bot/internal/database/entity"
+	"exaroton-wa-bot/internal/dto"
+	"exaroton-wa-bot/internal/repository"
+)
+
+type IServerSettingsService interface {
+	GetExarotonAPIKey(ctx context.Context) (string, error)
+	UpdateExarotonAPIKey(ctx context.Context, apiKey string) error
+
+	ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
+}
+
+type ServerSettingsService struct {
+	*svcTmpl
+	serverSettingsRepo repository.IServerSettingsRepo
+	exarotonRepo       repository.IExarotonRepo
+}
+
+func NewServerSettingsService(svcTmpl *svcTmpl, serverSettingsRepo repository.IServerSettingsRepo, exarotonRepo repository.IExarotonRepo) IServerSettingsService {
+	return &ServerSettingsService{
+		svcTmpl:            svcTmpl,
+		serverSettingsRepo: serverSettingsRepo,
+		exarotonRepo:       exarotonRepo,
+	}
+}
+
+func (s *ServerSettingsService) GetExarotonAPIKey(ctx context.Context) (string, error) {
+	tx := s.tx.Begin(ctx)
+	defer s.tx.Rollback(tx)
+
+	settings, err := s.serverSettingsRepo.Get(ctx, tx, constants.ExarotonAPIKey)
+	if err != nil {
+		return "", err
+	}
+
+	if settings == nil {
+		return "", nil
+	}
+
+	return settings.Value, nil
+}
+
+func (s *ServerSettingsService) UpdateExarotonAPIKey(ctx context.Context, apiKey string) error {
+	tx := s.tx.Begin(ctx)
+	defer s.tx.Rollback(tx)
+
+	err := s.serverSettingsRepo.Upsert(ctx, tx, &entity.ServerSettings{
+		Key:   constants.ExarotonAPIKey,
+		Value: apiKey,
+	})
+	if err != nil {
+		return err
+	}
+
+	return s.tx.Commit(tx)
+}
+
+func (s *ServerSettingsService) ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error) {
+	return s.exarotonRepo.ValidateApiKey(ctx, apiKey)
+}

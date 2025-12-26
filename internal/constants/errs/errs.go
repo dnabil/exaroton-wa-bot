@@ -8,7 +8,10 @@ var (
 	ErrWarnJwtDurationNotSet = errors.New("JWT exp duration is not set")
 )
 
+// general errors
 var (
+	ErrUnauthorized = errors.New("Unauthorized")
+
 	ErrUserAlreadyLoggedIn = errors.New("User is already logged in")
 	ErrUserNotLoggedIn     = errors.New("User is not logged in")
 	ErrLoginFailed         = errors.New("Wrong credentials")
@@ -24,4 +27,9 @@ var (
 	ErrWAQRIsPairing         = errors.New("Whatsapp is already pairing, please wait for it to finish.")
 	ErrWAQRClientOutdated    = errors.New("Whatsapp client is outdated, please update this app.")
 	ErrWAQREnableMultidevice = errors.New("Whatsapp is not enabled for multidevice, please enable it.")
+)
+
+// Game server specific errors
+var (
+	ErrGSIsDown = errors.New("Game server might be down")
 )

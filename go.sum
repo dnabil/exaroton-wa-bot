@@ -141,3 +141,5 @@ modernc.org/memory v1.9.1 h1:V/Z1solwAVmMW1yttq3nDdZPJqV1rM05Ccq6KMSZ34g=
 modernc.org/memory v1.9.1/go.mod h1:/JP4VbVC+K5sU2wZi9bHoq2MAkCnrt2r98UGeSK7Mjw=
 modernc.org/sqlite v1.36.2 h1:vjcSazuoFve9Wm0IVNHgmJECoOXLZM1KfMXbcX2axHA=
 modernc.org/sqlite v1.36.2/go.mod h1:ADySlx7K4FdY5MaJcEv86hTJ0PjedAloTUuif0YS3ws=
+pkg.icikowski.pl/exaroton v1.2.0 h1:eoY0tsjwHdRYWEz6HfhVZlsMBOmRFEqDco5vdm9li+k=
+pkg.icikowski.pl/exaroton v1.2.0/go.mod h1:QY6t0Ax1PH/QRXXrF6Xnn5oW64WmI5q1jsruvqhtCfI=

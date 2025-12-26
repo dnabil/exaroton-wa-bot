@@ -10,6 +10,8 @@ const (
 	Error         = "error.jet"
 	Login         = "login.jet"
 	WhatsappLogin = "whatsapp_login.jet"
+
+	SettingsExaroton = "settings_exaroton.jet"
 )
 
 // ==============================================================================

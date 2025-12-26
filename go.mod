@@ -21,6 +21,7 @@ require (
 	golang.org/x/crypto v0.37.0
 	gorm.io/driver/sqlite v1.5.7
 	gorm.io/gorm v1.25.12
+	pkg.icikowski.pl/exaroton v1.2.0
 )
 
 require (

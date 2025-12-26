@@ -34,7 +34,10 @@ func NewAuthService(svcTmpl *svcTmpl, waRepo repository.IWhatsappRepo, userRepo 
 }
 
 func (s *AuthService) Login(ctx context.Context, req *dto.UserLoginReq) (*dto.UserClaims, time.Duration, error) {
-	user, err := s.userRepo.GetUserByUsername(ctx, req.Username)
+	tx := s.tx.Begin(ctx)
+	defer s.tx.Rollback(tx)
+
+	user, err := s.userRepo.GetUserByUsername(ctx, tx, req.Username)
 	if err != nil {
 		return nil, 0, err
 	}
