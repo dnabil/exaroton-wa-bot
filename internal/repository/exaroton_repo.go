@@ -15,6 +15,7 @@ import (
 
 type IExarotonRepo interface {
 	ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
+	ListServers(ctx context.Context, apiKey string) ([]dto.ExarotonServerInfo, error)
 }
 
 func newExarotonRepo() IExarotonRepo {
@@ -41,6 +42,49 @@ func (r *ExarotonRepo) ValidateApiKey(ctx context.Context, apiKey string) (*dto.
 		Credits:  acc.Credits,
 	}, nil
 }
+
+func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]dto.ExarotonServerInfo, error) {
+	client, err := exaroton.NewClient(apiKey)
+	if err != nil {
+		return nil, err
+	}
+
+	serversResponse, raw, err := client.GetServers(ctx)
+	if err := handleExarotonError(err, raw.Error); err != nil {
+		return nil, fmt.Errorf("exaroton repo ListServers error: %w", err)
+	}
+
+	servers := make([]dto.ExarotonServerInfo, 0, len(serversResponse))
+	for _, srv := range serversResponse {
+		servers = append(servers, dto.ExarotonServerInfo{
+			ID:      srv.ID,
+			Name:    srv.Name,
+			Address: srv.Address,
+			Motd:    srv.Motd,
+			Status:  dto.ServerStatus(srv.Status),
+			Host:    srv.Host,
+			Port:    srv.Port,
+			Shared:  srv.Shared,
+			Players: dto.ExarotonServerPlayers{
+				Max:   srv.Players.Max,
+				Count: srv.Players.Count,
+				List:  srv.Players.List,
+			},
+			Software: &dto.ServerSoftware{
+				ID:      srv.Software.ID,
+				Name:    srv.Software.Name,
+				Version: srv.Software.Version,
+			},
+		})
+	}
+
+	// TODO: fix appropiate response
+	return servers, nil
+}
+
+// =================================================================
+// Helpers
+// =================================================================
 
 func handleExarotonError(err error, msg *string) error {
 	if err == nil {
