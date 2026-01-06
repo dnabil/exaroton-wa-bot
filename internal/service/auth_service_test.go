@@ -13,6 +13,7 @@ import (
 	"github.com/knadh/koanf/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 	"go.mau.fi/whatsmeow"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -32,7 +33,7 @@ func setupTestAuthService(t *testing.T) (
 	cfg := &config.Cfg{
 		Koanf: koanf.New("."),
 	}
-	cfg.Set(config.KeyAuthDuration, "24h")
+	require.NoError(t, cfg.Set(config.KeyAuthDuration, "24h"))
 
 	svcTmpl := &svcTmpl{
 		cfg: cfg,

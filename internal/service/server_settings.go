@@ -6,6 +6,7 @@ import (
 	"exaroton-wa-bot/internal/database/entity"
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/internal/repository"
+	"log/slog"
 )
 
 type IServerSettingsService interface {
@@ -31,7 +32,11 @@ func NewServerSettingsService(svcTmpl *svcTmpl, serverSettingsRepo repository.IS
 
 func (s *ServerSettingsService) GetExarotonAPIKey(ctx context.Context) (string, error) {
 	tx := s.tx.Begin(ctx)
-	defer s.tx.Rollback(tx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
 
 	settings, err := s.serverSettingsRepo.Get(ctx, tx, constants.ExarotonAPIKey)
 	if err != nil {
@@ -47,7 +52,11 @@ func (s *ServerSettingsService) GetExarotonAPIKey(ctx context.Context) (string, 
 
 func (s *ServerSettingsService) UpdateExarotonAPIKey(ctx context.Context, apiKey string) error {
 	tx := s.tx.Begin(ctx)
-	defer s.tx.Rollback(tx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
 
 	err := s.serverSettingsRepo.Upsert(ctx, tx, &entity.ServerSettings{
 		Key:   constants.ExarotonAPIKey,

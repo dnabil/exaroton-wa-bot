@@ -20,6 +20,14 @@ func errorHandler() echo.HTTPErrorHandler {
 			return
 		}
 
+		// ensure any errors in this function is logged
+		var err2 error
+		defer func() {
+			if err2 != nil {
+				slog.ErrorContext(c.Request().Context(), "error in error handler", "error", err2)
+			}
+		}()
+
 		// web socket errors should be handled by the handler itself
 		// so no need to handle them here
 		if strings.HasPrefix(c.Request().Header.Get("Upgrade"), "websocket") {
@@ -40,23 +48,21 @@ func errorHandler() echo.HTTPErrorHandler {
 		switch {
 		// already logged in
 		case errors.Is(err, errs.ErrUserAlreadyLoggedIn) || errors.Is(err, errs.ErrWAAlreadyLoggedIn):
-			c.Redirect(http.StatusSeeOther, homepageRoute.Path)
+			err2 = c.Redirect(http.StatusSeeOther, homepageRoute.Path)
 			return
 
 		// is not logged in
 		case errors.Is(err, errs.ErrUserNotLoggedIn):
-			c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+			err2 = c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
 			return
 
 		// is not logged in (whatsapp)
 		case errors.Is(err, errs.ErrWANotLoggedIn):
-			c.Redirect(http.StatusSeeOther, waLoginPageRoute.Path)
+			err2 = c.Redirect(http.StatusSeeOther, waLoginPageRoute.Path)
 			return
 
 		case errors.Is(err, errs.ErrLoginFailed):
-			httpErr.Code = http.StatusUnauthorized
-			httpErr.Message = "invalid credentials"
-			c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+			err2 = c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
 			return
 		}
 

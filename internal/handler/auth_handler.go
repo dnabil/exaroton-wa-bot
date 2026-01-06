@@ -24,9 +24,11 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		req := new(dto.UserLoginReq)
 		if err := w.shouldBind(c, req); err != nil {
 			if errors.As(err, &validation.Errors{}) {
-				w.session.SetValidationError(c, err.(validation.Errors))
-				c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
-				return nil
+				if errV := w.session.SetValidationError(c, err.(validation.Errors)); errV != nil {
+					return errV
+				}
+
+				return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
 			}
 
 			return err
@@ -35,11 +37,11 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		userClaims, expDuration, err := w.svc.AuthService.Login(c.Request().Context(), req)
 		if err != nil {
 			if errors.Is(err, errs.ErrLoginFailed) {
-				w.session.SetValidationError(c, map[string]error{
-					"password": err,
-				})
-				c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
-				return nil
+				if errV := w.session.SetValidationError(c, map[string]error{"password": err}); errV != nil {
+					return errV
+				}
+
+				return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
 			}
 
 			return err
@@ -71,10 +73,14 @@ func (w *Web) WhatsappQRLogin() echo.HandlerFunc {
 
 		qrChan, err := w.svc.AuthService.WhatsappLogin(c.Request().Context())
 		if err != nil {
-			ws.WriteJSON(dto.WhatsappQRWSRes{
+			err2 := ws.WriteJSON(dto.WhatsappQRWSRes{
 				Event: dto.WhatsappQREventError,
 				Error: err.Error(),
 			})
+			if err2 != nil {
+				return err2
+			}
+
 			return err
 		}
 

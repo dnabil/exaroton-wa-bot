@@ -13,7 +13,7 @@ var (
 	homepageRoute *echo.Route
 
 	loginPageRoute *echo.Route
-	loginRoute     *echo.Route
+	loginRoute     *echo.Route //lint:ignore U1000 Ignore unused function temporarily
 
 	waLoginPageRoute *echo.Route
 	waLoginQRRoute   *echo.Route
