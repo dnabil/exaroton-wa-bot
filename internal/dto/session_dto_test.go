@@ -3,6 +3,7 @@ package dto
 import (
 	"encoding/gob"
 	"encoding/json"
+	"errors"
 	"exaroton-wa-bot/internal/constants"
 	"exaroton-wa-bot/internal/constants/errs"
 	"net/http"
@@ -35,7 +36,7 @@ func setupTestContext() (echo.Context, *httptest.ResponseRecorder) {
 	})(func(c echo.Context) error {
 		return nil
 	})
-	h(c)
+	_ = h(c)
 
 	return c, rec
 }
@@ -57,7 +58,7 @@ func TestWebSession_GetUser(t *testing.T) {
 				}
 				userJson, _ := json.Marshal(user)
 				sess.Values[constants.AuthCookieKey] = userJson
-				sess.Save(c.Request(), c.Response().Writer)
+				require.NoError(t, sess.Save(c.Request(), c.Response().Writer))
 			},
 			expectedError: nil,
 			expectedUser: &UserClaims{
@@ -202,33 +203,42 @@ func TestWeSession_GetSetValidationError(t *testing.T) {
 
 	tests := []struct {
 		name       string
-		setValErrs []WebValidationErrors
+		setValErrs []map[string]error
 	}{
 		{
 			name: "success",
-			setValErrs: []WebValidationErrors{
+			setValErrs: []map[string]error{
 				{
-					"email":    "Invalid email address",
-					"password": "Password must be at least 8 characters",
+					"email":    errors.New("invalid email address"),
+					"password": errors.New("Password must be at least 8 characters"),
 				},
 			},
 		},
 		{
 			name: "success_override",
-			setValErrs: []WebValidationErrors{
+			setValErrs: []map[string]error{
 				{
-					"email":    "Invalid email address",
-					"password": "Password must be at least 8 characters",
+					"email":    errors.New("invalid email address"),
+					"password": errors.New("Password must be at least 8 characters"),
+				},
+			},
+		},
+		{
+			name: "success_override",
+			setValErrs: []map[string]error{
+				{
+					"email":    errors.New("Invalid email address"),
+					"password": errors.New("Password must be at least 8 characters"),
 				},
 				{
-					"email":    "OVERRIDEN VALUE",
-					"password": "OVERRIDEN VALUE",
+					"email":    errors.New("OVERRIDEN VALUE"),
+					"password": errors.New("OVERRIDEN VALUE"),
 				},
 			},
 		},
 		{
 			name:       "success_empty",
-			setValErrs: []WebValidationErrors{},
+			setValErrs: []map[string]error{},
 		},
 	}
 
@@ -250,7 +260,7 @@ func TestWeSession_GetSetValidationError(t *testing.T) {
 			combinedErrs := make(WebValidationErrors)
 			for _, valErr := range tt.setValErrs {
 				for k, v := range valErr {
-					combinedErrs[k] = v
+					combinedErrs[k] = v.Error()
 				}
 			}
 

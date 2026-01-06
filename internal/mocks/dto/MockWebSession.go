@@ -403,7 +403,7 @@ func (_c *MockWebSession_SetUser_Call) RunAndReturn(run func(c echo.Context, use
 }
 
 // SetValidationError provides a mock function for the type MockWebSession
-func (_mock *MockWebSession) SetValidationError(c echo.Context, valErr dto.WebValidationErrors) error {
+func (_mock *MockWebSession) SetValidationError(c echo.Context, valErr map[string]error) error {
 	ret := _mock.Called(c, valErr)
 
 	if len(ret) == 0 {
@@ -411,7 +411,7 @@ func (_mock *MockWebSession) SetValidationError(c echo.Context, valErr dto.WebVa
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(echo.Context, dto.WebValidationErrors) error); ok {
+	if returnFunc, ok := ret.Get(0).(func(echo.Context, map[string]error) error); ok {
 		r0 = returnFunc(c, valErr)
 	} else {
 		r0 = ret.Error(0)
@@ -431,9 +431,9 @@ func (_e *MockWebSession_Expecter) SetValidationError(c interface{}, valErr inte
 	return &MockWebSession_SetValidationError_Call{Call: _e.mock.On("SetValidationError", c, valErr)}
 }
 
-func (_c *MockWebSession_SetValidationError_Call) Run(run func(c echo.Context, valErr dto.WebValidationErrors)) *MockWebSession_SetValidationError_Call {
+func (_c *MockWebSession_SetValidationError_Call) Run(run func(c echo.Context, valErr map[string]error)) *MockWebSession_SetValidationError_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context), args[1].(dto.WebValidationErrors))
+		run(args[0].(echo.Context), args[1].(map[string]error))
 	})
 	return _c
 }
@@ -443,7 +443,7 @@ func (_c *MockWebSession_SetValidationError_Call) Return(err error) *MockWebSess
 	return _c
 }
 
-func (_c *MockWebSession_SetValidationError_Call) RunAndReturn(run func(c echo.Context, valErr dto.WebValidationErrors) error) *MockWebSession_SetValidationError_Call {
+func (_c *MockWebSession_SetValidationError_Call) RunAndReturn(run func(c echo.Context, valErr map[string]error) error) *MockWebSession_SetValidationError_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -36,6 +36,7 @@ func (web *Web) LoadRoutes() {
 	webGroup.Use(web.middleware.Session())
 	webGroup.Use(web.middleware.Logger())
 	webGroup.Use(web.middleware.Recover())
+	webGroup.Use(web.middleware.FlashValidationError())
 
 	// other middlewares
 	authMdw := web.middleware.Auth()

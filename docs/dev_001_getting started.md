@@ -60,7 +60,7 @@ launch.json example for vscode users:
 
 Before starting development, please install the following dependencies:
 
-1. **Mockery v3** - For auto-generating mocks
+1. **Mockery v3** - For auto-generating mocks (v3.2.5 or higher)
    - Install from: https://vektra.github.io/mockery/v3/
    - Used for generating mock objects in tests
 

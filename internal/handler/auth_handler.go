@@ -24,9 +24,9 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		req := new(dto.UserLoginReq)
 		if err := w.shouldBind(c, req); err != nil {
 			if errors.As(err, &validation.Errors{}) {
-				return w.UserLoginPage(&dto.LoginPageData{
-					Validation: (err.(validation.Errors)),
-				})(c)
+				w.session.SetValidationError(c, err.(validation.Errors))
+				c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+				return nil
 			}
 
 			return err
@@ -35,11 +35,11 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		userClaims, expDuration, err := w.svc.AuthService.Login(c.Request().Context(), req)
 		if err != nil {
 			if errors.Is(err, errs.ErrLoginFailed) {
-				return w.UserLoginPage(&dto.LoginPageData{
-					Validation: map[string]error{
-						"password": err,
-					},
-				})(c)
+				w.session.SetValidationError(c, map[string]error{
+					"password": err,
+				})
+				c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+				return nil
 			}
 
 			return err

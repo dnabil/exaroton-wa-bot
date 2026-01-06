@@ -24,7 +24,7 @@ type WebSession interface {
 	// Get and clear validation error
 	GetValidationError(c echo.Context) (WebValidationErrors, error)
 	// Set validation error
-	SetValidationError(c echo.Context, valErr WebValidationErrors) error
+	SetValidationError(c echo.Context, valErr map[string]error) error
 	// Get and clear old input
 	GetOldInput(c echo.Context) (WebOldInput, error)
 	// Set old input
@@ -167,13 +167,19 @@ func (s *webSession) GetValidationError(c echo.Context) (WebValidationErrors, er
 	return res, nil
 }
 
-func (s *webSession) SetValidationError(c echo.Context, valErr WebValidationErrors) error {
+func (s *webSession) SetValidationError(c echo.Context, valErr map[string]error) error {
 	sess, err := session.Get(sessionBaseName, c)
 	if err != nil {
 		return err
 	}
 
-	sess.AddFlash(valErr, sessionValErrName)
+	// turn map[string]error to WebValidationErrors
+	webValErr := make(WebValidationErrors)
+	for k, v := range valErr {
+		webValErr[k] = v.Error()
+	}
+
+	sess.AddFlash(webValErr, sessionValErrName)
 
 	return sess.Save(c.Request(), c.Response())
 }

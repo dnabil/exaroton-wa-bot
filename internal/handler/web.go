@@ -2,6 +2,7 @@ package handler
 
 import (
 	"exaroton-wa-bot/internal/config"
+	"exaroton-wa-bot/internal/constants"
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/internal/middleware"
 	"exaroton-wa-bot/internal/service"
@@ -107,8 +108,15 @@ func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Con
 		data = make(map[string]interface{})
 	}
 
+	// validation error
+	valErr, valErrI := make(dto.WebValidationErrors), c.Get(constants.FlashValErrCtxKey)
+	if ve, ok := valErrI.(dto.WebValidationErrors); ok {
+		valErr = ve
+	}
+
 	return jetTempl.Execute(w, jet.VarMap{
-		"currentPage": reflect.ValueOf(name),
+		"currentPage":      reflect.ValueOf(name),
+		"validationErrors": reflect.ValueOf(valErr),
 	}, data)
 }
 

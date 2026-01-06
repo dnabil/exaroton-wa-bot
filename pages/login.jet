@@ -8,16 +8,6 @@
     <link rel="stylesheet" href="/public/styles/pico.min.css" />
 </head>
 
-{{ usernameValidation := "" }}
-{{ if isset(.Validation) }}
-{{ usernameValidation = .Validation["username"] }}
-{{ end }}
-
-{{ passwordValidation := "" }}
-{{ if isset(.Validation) }}
-{{ passwordValidation = .Validation["password"] }}
-{{ end }}
-
 <body>
     <main class="container" style="max-width: 400px; margin-top: 5rem;">
         <h2>Login</h2>
@@ -25,17 +15,16 @@
         <form id="login-form" method="POST" action="/user/login">
             <label for="username">Username</label>
             <input id="username" type="text" name="username" required minlength="3" aria-describedby="username-helper"
-                {{ if isset(.Validation)}} aria-invalid="true" {{ end }} />
+                {{ if isset(validationErrors["username"])}} aria-invalid="true" {{ end }} />
             <small id="username-helper">
-                {{ usernameValidation }}
+                {{ validationErrors["username"] }}
             </small>
 
             <label for="password">Password</label>
             <input id="password" type="password" name="password" required minlength="5"
-                aria-describedby="password-helper" {{ if isset(.Validation) }} aria-invalid="true" {{ end }} />
+                aria-describedby="password-helper" {{ if isset(validationErrors["password"]) }} aria-invalid="true" {{ end }} />
             <small id="password-helper">
-                {{ passwordValidation }}
-
+                {{ validationErrors["password"] }}
             </small>
 
             <button type="submit">Login</button>
@@ -55,13 +44,6 @@
             ];
 
             setupValidationListeners(inputElements);
-
-            document.getElementById("login-form").addEventListener("submit", function (e) {
-                if (!validateInput(inputElements)) {
-                    e.preventDefault(); // stop form from submitting
-                    return
-                }
-            });
         </script>
     </main>
 
