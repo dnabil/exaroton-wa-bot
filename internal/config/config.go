@@ -80,6 +80,8 @@ func InitConfig(args *Args) (*Cfg, error) {
 		Args:  args,
 	}
 
+	RegisterGobs()
+
 	if err := cfg.LoadYmlConfig(); err != nil {
 		return nil, err
 	}

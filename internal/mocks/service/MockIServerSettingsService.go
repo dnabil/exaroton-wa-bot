@@ -6,6 +6,7 @@ package service
 
 import (
 	"context"
+	"exaroton-wa-bot/internal/dto"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -133,6 +134,63 @@ func (_c *MockIServerSettingsService_UpdateExarotonAPIKey_Call) Return(err error
 }
 
 func (_c *MockIServerSettingsService_UpdateExarotonAPIKey_Call) RunAndReturn(run func(ctx context.Context, apiKey string) error) *MockIServerSettingsService_UpdateExarotonAPIKey_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// ValidateExarotonAPIKey provides a mock function for the type MockIServerSettingsService
+func (_mock *MockIServerSettingsService) ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error) {
+	ret := _mock.Called(ctx, apiKey)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ValidateExarotonAPIKey")
+	}
+
+	var r0 *dto.ExarotonAccountInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) (*dto.ExarotonAccountInfo, error)); ok {
+		return returnFunc(ctx, apiKey)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) *dto.ExarotonAccountInfo); ok {
+		r0 = returnFunc(ctx, apiKey)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.ExarotonAccountInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = returnFunc(ctx, apiKey)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIServerSettingsService_ValidateExarotonAPIKey_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ValidateExarotonAPIKey'
+type MockIServerSettingsService_ValidateExarotonAPIKey_Call struct {
+	*mock.Call
+}
+
+// ValidateExarotonAPIKey is a helper method to define mock.On call
+//   - ctx
+//   - apiKey
+func (_e *MockIServerSettingsService_Expecter) ValidateExarotonAPIKey(ctx interface{}, apiKey interface{}) *MockIServerSettingsService_ValidateExarotonAPIKey_Call {
+	return &MockIServerSettingsService_ValidateExarotonAPIKey_Call{Call: _e.mock.On("ValidateExarotonAPIKey", ctx, apiKey)}
+}
+
+func (_c *MockIServerSettingsService_ValidateExarotonAPIKey_Call) Run(run func(ctx context.Context, apiKey string)) *MockIServerSettingsService_ValidateExarotonAPIKey_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockIServerSettingsService_ValidateExarotonAPIKey_Call) Return(exarotonAccountInfo *dto.ExarotonAccountInfo, err error) *MockIServerSettingsService_ValidateExarotonAPIKey_Call {
+	_c.Call.Return(exarotonAccountInfo, err)
+	return _c
+}
+
+func (_c *MockIServerSettingsService_ValidateExarotonAPIKey_Call) RunAndReturn(run func(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)) *MockIServerSettingsService_ValidateExarotonAPIKey_Call {
 	_c.Call.Return(run)
 	return _c
 }

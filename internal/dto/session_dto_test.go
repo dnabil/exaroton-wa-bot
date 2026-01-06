@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"encoding/gob"
 	"encoding/json"
 	"exaroton-wa-bot/internal/constants"
 	"exaroton-wa-bot/internal/constants/errs"
@@ -13,6 +14,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func setupTestContext() (echo.Context, *httptest.ResponseRecorder) {
@@ -133,6 +135,188 @@ func TestWebSession_SetUser(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+		})
+	}
+}
+
+func TestWeSession_GetSetFlash(t *testing.T) {
+	gob.Register(WebFlashMessage{})
+
+	tests := []struct {
+		name         string
+		setFlashMsgs []WebFlashMessage
+	}{
+		{
+			name: "success",
+			setFlashMsgs: []WebFlashMessage{
+				{
+					Type:    "success",
+					Message: "Test message",
+				},
+			},
+		},
+		{
+			name: "success_multiple",
+			setFlashMsgs: []WebFlashMessage{
+				{
+					Type:    "info",
+					Message: "First message",
+				},
+				{
+					Type:    "warning",
+					Message: "Second message",
+				},
+			},
+		},
+		{
+			name:         "success_empty",
+			setFlashMsgs: []WebFlashMessage{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, _ := setupTestContext()
+
+			ws := NewWebSession()
+
+			for _, msg := range tt.setFlashMsgs {
+				err := ws.SetFlash(c, msg)
+				require.NoError(t, err)
+			}
+
+			res, err := ws.GetFlash(c)
+			require.NoError(t, err)
+
+			// assert
+			assert.Len(t, res, len(tt.setFlashMsgs))
+			for i, msg := range tt.setFlashMsgs {
+				assert.Equal(t, msg, res[i])
+			}
+		})
+	}
+}
+
+func TestWeSession_GetSetValidationError(t *testing.T) {
+	gob.Register(WebValidationErrors{})
+
+	tests := []struct {
+		name       string
+		setValErrs []WebValidationErrors
+	}{
+		{
+			name: "success",
+			setValErrs: []WebValidationErrors{
+				{
+					"email":    "Invalid email address",
+					"password": "Password must be at least 8 characters",
+				},
+			},
+		},
+		{
+			name: "success_override",
+			setValErrs: []WebValidationErrors{
+				{
+					"email":    "Invalid email address",
+					"password": "Password must be at least 8 characters",
+				},
+				{
+					"email":    "OVERRIDEN VALUE",
+					"password": "OVERRIDEN VALUE",
+				},
+			},
+		},
+		{
+			name:       "success_empty",
+			setValErrs: []WebValidationErrors{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, _ := setupTestContext()
+
+			ws := NewWebSession()
+
+			for _, valErr := range tt.setValErrs {
+				err := ws.SetValidationError(c, valErr)
+				require.NoError(t, err)
+			}
+
+			res, err := ws.GetValidationError(c)
+			require.NoError(t, err)
+
+			// get combined errors from testcase
+			combinedErrs := make(WebValidationErrors)
+			for _, valErr := range tt.setValErrs {
+				for k, v := range valErr {
+					combinedErrs[k] = v
+				}
+			}
+
+			assert.Equal(t, combinedErrs, res)
+		})
+	}
+}
+
+func TestWeSession_GetSetOldInput(t *testing.T) {
+	gob.Register(WebOldInput{})
+
+	tests := []struct {
+		name        string
+		setOldInput []WebOldInput
+	}{
+		{
+			name: "success",
+			setOldInput: []WebOldInput{
+				{
+					"email":    "asd@",
+					"password": "Password",
+				},
+			},
+		},
+		{
+			name: "success_override",
+			setOldInput: []WebOldInput{
+				{
+					"email":    "asd@",
+					"password": "Password",
+				},
+				{
+					"email":    "OVERRIDEN VALUE",
+					"password": "OVERRIDEN VALUE",
+				},
+			},
+		},
+		{
+			name:        "success_empty",
+			setOldInput: []WebOldInput{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, _ := setupTestContext()
+
+			ws := NewWebSession()
+
+			for _, oldInput := range tt.setOldInput {
+				err := ws.SetOldInput(c, oldInput)
+				require.NoError(t, err)
+			}
+
+			res, err := ws.GetOldInput(c)
+			require.NoError(t, err)
+
+			// get combined oldinput from testcase
+			combinedErrs := make(WebOldInput)
+			for _, valErr := range tt.setOldInput {
+				for k, v := range valErr {
+					combinedErrs[k] = v
+				}
+			}
+
+			assert.Equal(t, combinedErrs, res)
 		})
 	}
 }
