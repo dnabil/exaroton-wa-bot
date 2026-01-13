@@ -145,33 +145,24 @@ func TestWeSession_GetSetFlash(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		setFlashMsgs []WebFlashMessage
+		setFlashMsgs WebFlashMessage
 	}{
 		{
 			name: "success",
-			setFlashMsgs: []WebFlashMessage{
-				{
-					Type:    "success",
-					Message: "Test message",
-				},
+			setFlashMsgs: WebFlashMessage{
+				"success": "Test message",
 			},
 		},
 		{
 			name: "success_multiple",
-			setFlashMsgs: []WebFlashMessage{
-				{
-					Type:    "info",
-					Message: "First message",
-				},
-				{
-					Type:    "warning",
-					Message: "Second message",
-				},
+			setFlashMsgs: WebFlashMessage{
+				"info":    "First message",
+				"warning": "Second message",
 			},
 		},
 		{
 			name:         "success_empty",
-			setFlashMsgs: []WebFlashMessage{},
+			setFlashMsgs: WebFlashMessage{},
 		},
 	}
 
@@ -181,8 +172,8 @@ func TestWeSession_GetSetFlash(t *testing.T) {
 
 			ws := NewWebSession()
 
-			for _, msg := range tt.setFlashMsgs {
-				err := ws.SetFlash(c, msg)
+			for key, msg := range tt.setFlashMsgs {
+				err := ws.SetFlash(c, key, msg)
 				require.NoError(t, err)
 			}
 
@@ -194,6 +185,11 @@ func TestWeSession_GetSetFlash(t *testing.T) {
 			for i, msg := range tt.setFlashMsgs {
 				assert.Equal(t, msg, res[i])
 			}
+
+			// check if the flash messages are deleted after getting them
+			res, err = ws.GetFlash(c)
+			require.NoError(t, err)
+			assert.Len(t, res, 0)
 		})
 	}
 }
@@ -265,7 +261,24 @@ func TestWeSession_GetSetValidationError(t *testing.T) {
 			}
 
 			assert.Equal(t, combinedErrs, res)
+
+			// check if the flash messages are deleted after getting them
+			res, err = ws.GetValidationError(c)
+			require.NoError(t, err)
+			assert.Len(t, res, 0)
 		})
+	}
+}
+
+type oldInpputStructTest struct {
+	Email    string
+	Password string
+}
+
+func (o oldInpputStructTest) ToMap() map[string]string {
+	return map[string]string{
+		"email":    o.Email,
+		"password": o.Password,
 	}
 }
 
@@ -274,33 +287,33 @@ func TestWeSession_GetSetOldInput(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		setOldInput []WebOldInput
+		setOldInput []oldInpputStructTest
 	}{
 		{
 			name: "success",
-			setOldInput: []WebOldInput{
+			setOldInput: []oldInpputStructTest{
 				{
-					"email":    "asd@",
-					"password": "Password",
+					Email:    "asd@",
+					Password: "Password",
 				},
 			},
 		},
 		{
 			name: "success_override",
-			setOldInput: []WebOldInput{
+			setOldInput: []oldInpputStructTest{
 				{
-					"email":    "asd@",
-					"password": "Password",
+					Email:    "asd@",
+					Password: "Password",
 				},
 				{
-					"email":    "OVERRIDEN VALUE",
-					"password": "OVERRIDEN VALUE",
+					Email:    "OVERRIDEN VALUE",
+					Password: "OVERRIDEN VALUE",
 				},
 			},
 		},
 		{
 			name:        "success_empty",
-			setOldInput: []WebOldInput{},
+			setOldInput: []oldInpputStructTest{},
 		},
 	}
 
@@ -321,12 +334,18 @@ func TestWeSession_GetSetOldInput(t *testing.T) {
 			// get combined oldinput from testcase
 			combinedErrs := make(WebOldInput)
 			for _, valErr := range tt.setOldInput {
-				for k, v := range valErr {
+				valErrMap := valErr.ToMap()
+				for k, v := range valErrMap {
 					combinedErrs[k] = v
 				}
 			}
 
 			assert.Equal(t, combinedErrs, res)
+
+			// check if the flash messages are deleted after getting them
+			res, err = ws.GetOldInput(c)
+			require.NoError(t, err)
+			assert.Len(t, res, 0)
 		})
 	}
 }

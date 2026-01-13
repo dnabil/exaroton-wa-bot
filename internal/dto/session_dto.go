@@ -17,18 +17,18 @@ type WebSession interface {
 	GetUser(c echo.Context) (*UserClaims, error)
 	SetUser(c echo.Context, user *UserClaims, expDuration time.Duration) error
 
-	// Get and clear flash message
-	GetFlash(c echo.Context) ([]WebFlashMessage, error)
+	// Get and clear flash message (used in middleware)
+	GetFlash(c echo.Context) (WebFlashMessage, error)
 	//	Set flash message
-	SetFlash(c echo.Context, flashMessage WebFlashMessage) error
-	// Get and clear validation error
+	SetFlash(c echo.Context, key string, msg string) error
+	// Get and clear validation error (used in middleware)
 	GetValidationError(c echo.Context) (WebValidationErrors, error)
 	// Set validation error
 	SetValidationError(c echo.Context, valErr map[string]error) error
-	// Get and clear old input
+	// Get and clear old input (used in middleware)
 	GetOldInput(c echo.Context) (WebOldInput, error)
 	// Set old input
-	SetOldInput(c echo.Context, oldInput WebOldInput) error
+	SetOldInput(c echo.Context, oldInput Mappable) error
 }
 
 type webSession struct{}
@@ -90,17 +90,20 @@ func (s *webSession) SetUser(c echo.Context, user *UserClaims, expDuration time.
 
 // ===============================
 // Flash message types
-type WebFlashMessage struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
-}
-
+type WebFlashMessage map[string]string
 type WebValidationErrors map[string]string
 
 type WebOldInput map[string]string
 
+type Mappable interface {
+	ToMap() map[string]string
+}
+
 // ===============================
 
+// session names
+// prob best to put in constant pkg but
+// isn't use anywhere else so here it is (more readable imo).
 var (
 	sessionBaseName     = "session"
 	sessionFlashName    = "_flash"
@@ -108,18 +111,20 @@ var (
 	sessionOldInputName = "_old_input"
 )
 
-func (s *webSession) GetFlash(c echo.Context) ([]WebFlashMessage, error) {
+func (s *webSession) GetFlash(c echo.Context) (WebFlashMessage, error) {
 	sess, err := session.Get(sessionBaseName, c)
 	if err != nil {
 		return nil, err
 	}
 
 	flashes := sess.Flashes(sessionFlashName) // alr delete after getting
-	res := make([]WebFlashMessage, len(flashes))
+	res := make(WebFlashMessage)
 
-	for i, f := range flashes {
+	for _, f := range flashes {
 		if flashMessage, ok := f.(WebFlashMessage); ok {
-			res[i] = flashMessage
+			for k, v := range flashMessage {
+				res[k] = v
+			}
 		}
 	}
 
@@ -128,16 +133,28 @@ func (s *webSession) GetFlash(c echo.Context) ([]WebFlashMessage, error) {
 		return nil, err
 	}
 
+	if len(res) == 0 {
+		return nil, nil
+	}
+
 	return res, nil
 }
 
-func (s *webSession) SetFlash(c echo.Context, flashMessage WebFlashMessage) error {
+func (s *webSession) SetFlash(c echo.Context, key string, msg string) error {
+	if key == "" || msg == "" {
+		return nil
+	}
+
 	sess, err := session.Get(sessionBaseName, c)
 	if err != nil {
 		return err
 	}
 
-	sess.AddFlash(flashMessage, sessionFlashName)
+	// turn WebFlashMessage
+	flashMsg := make(WebFlashMessage)
+	flashMsg[key] = msg
+
+	sess.AddFlash(flashMsg, sessionFlashName)
 
 	return sess.Save(c.Request(), c.Response())
 }
@@ -168,6 +185,10 @@ func (s *webSession) GetValidationError(c echo.Context) (WebValidationErrors, er
 }
 
 func (s *webSession) SetValidationError(c echo.Context, valErr map[string]error) error {
+	if len(valErr) == 0 {
+		return nil
+	}
+
 	sess, err := session.Get(sessionBaseName, c)
 	if err != nil {
 		return err
@@ -209,13 +230,17 @@ func (s *webSession) GetOldInput(c echo.Context) (WebOldInput, error) {
 	return res, nil
 }
 
-func (s *webSession) SetOldInput(c echo.Context, oldInput WebOldInput) error {
+func (s *webSession) SetOldInput(c echo.Context, oldInput Mappable) error {
+	if oldInput == nil {
+		return nil
+	}
+
 	sess, err := session.Get(sessionBaseName, c)
 	if err != nil {
 		return err
 	}
 
-	sess.AddFlash(oldInput, sessionOldInputName)
+	sess.AddFlash(WebOldInput(oldInput.ToMap()), sessionOldInputName)
 
 	return sess.Save(c.Request(), c.Response())
 }

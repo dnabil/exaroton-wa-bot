@@ -13,10 +13,12 @@ var (
 	homepageRoute *echo.Route
 
 	loginPageRoute *echo.Route
-	loginRoute     *echo.Route //lint:ignore U1000 Ignore unused function temporarily
+	loginRoute     *echo.Route //lint:ignore U1000 Ignore unused var temporarily
 
 	waLoginPageRoute *echo.Route
 	waLoginQRRoute   *echo.Route
+
+	settingsExarotonPageRoute *echo.Route //lint:ignore U1000 Ignore unused var temporarily
 )
 
 func (web *Web) LoadRoutes() {
@@ -36,6 +38,8 @@ func (web *Web) LoadRoutes() {
 	webGroup.Use(web.middleware.Session())
 	webGroup.Use(web.middleware.Logger())
 	webGroup.Use(web.middleware.Recover())
+	webGroup.Use(web.middleware.FlashMessage())
+	webGroup.Use(web.middleware.FlashOldInput())
 	webGroup.Use(web.middleware.FlashValidationError())
 
 	// other middlewares
@@ -67,7 +71,7 @@ func (web *Web) LoadRoutes() {
 		// server settings ()
 		serverGroup := settingsGroup.Group("/server")
 		{
-			serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
+			settingsExarotonPageRoute = serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
 			serverGroup.POST("/exaroton", web.SettingsExarotonUpdate())
 			serverGroup.POST("/exaroton/me", web.SettingsExarotonValidateApiKey())
 		}
