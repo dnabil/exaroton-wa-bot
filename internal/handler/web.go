@@ -65,6 +65,7 @@ func NewWeb(cfg *config.Cfg, svc *service.Service) *Web {
 	}
 
 	web.LoadRoutes()
+	web.LoadAPIRoutes()
 
 	return web
 }

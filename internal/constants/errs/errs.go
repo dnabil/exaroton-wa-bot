@@ -10,6 +10,7 @@ var (
 
 // general errors
 var (
+	ErrForbidden    = errors.New("Forbidden")
 	ErrUnauthorized = errors.New("Unauthorized")
 
 	ErrUserAlreadyLoggedIn = errors.New("User is already logged in")
@@ -31,5 +32,6 @@ var (
 
 // Game server specific errors
 var (
-	ErrGSIsDown = errors.New("Game server might be down")
+	ErrGSIsDown        = errors.New("Game server might be down")
+	ErrGSInvalidAPIKey = errors.New("Invalid API key")
 )

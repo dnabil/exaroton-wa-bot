@@ -32,6 +32,10 @@ func (r *ExarotonRepo) ValidateApiKey(ctx context.Context, apiKey string) (*dto.
 
 	acc, raw, err := client.GetAccount(ctx)
 	if err := handleExarotonError(err, raw.Error); err != nil {
+		if errors.Is(err, errs.ErrForbidden) {
+			return nil, errs.ErrGSInvalidAPIKey
+		}
+
 		return nil, fmt.Errorf("exaroton repo ValidateApiKey error: %w", err)
 	}
 
@@ -106,6 +110,8 @@ func handleExarotonError(err error, msg *string) error {
 	switch httpCode {
 	case http.StatusUnauthorized:
 		err = errs.ErrUnauthorized
+	case http.StatusForbidden:
+		err = errs.ErrForbidden
 	}
 
 	return fmt.Errorf("error: %w, http code: %d, error message: %s", err, httpCode, errMsg)

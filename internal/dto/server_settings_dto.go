@@ -19,7 +19,7 @@ type SettingsExarotonPageData struct {
 }
 
 type SettingsExarotonReq struct {
-	APIKey string `json:"api_key" form:"api_key"`
+	APIKey string `json:"api_key"`
 }
 
 func (r *SettingsExarotonReq) Validate() error {

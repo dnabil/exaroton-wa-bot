@@ -68,12 +68,9 @@ func (web *Web) LoadRoutes() {
 	// settings
 	settingsGroup := webGroup.Group("/settings", authMdw, waAuthMdw)
 	{
-		// server settings ()
 		serverGroup := settingsGroup.Group("/server")
 		{
 			settingsExarotonPageRoute = serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
-			serverGroup.POST("/exaroton", web.SettingsExarotonUpdate())
-			serverGroup.POST("/exaroton/me", web.SettingsExarotonValidateApiKey())
 		}
 	}
 }

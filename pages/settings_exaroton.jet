@@ -6,21 +6,14 @@ Exaroton | Settings
 
 {{ block layout_base_body() }}
 
-{{ apiKeyValidation := "" }}
-{{ if isset(.Validation) }}
-{{dump("wkwkw")}}
-{{ apiKeyValidation = .Validation["api_key"] }}
-{{ end }}
 
 <main>
     <h1>Exaroton Settings</h1>
     <h2> API Key</h2>
 
     <input id="api_key" type="text" name="api_key" placeholder="API Key" aria-label="API Key" value="{{ .APIKey }}"
-        aria-describedby="api_key-helper" required {{ if isset(apiKeyValidation) }} aria-invalid="true" {{ end }} />
-    <small id="api_key-helper">
-        {{ apiKeyValidation }}
-    </small>
+        aria-describedby="api_key-helper" required />
+    <small id="api_key-helper"></small>
 
     <button id="btn-save">Save</button>
     <button id="btn-validate" class="contrast">Validate</button>
@@ -29,16 +22,15 @@ Exaroton | Settings
     <br />
     <br />
 
-    <div class="profile">
-        {{ if isset(.AccountInfo) }}
+    <div id="profile-info" hidden>
         <h3>Profile</h3>
         <dl>
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Email:</strong> john@example.com</p>
-            <p><strong>Credits:</strong> 100.00</p>
-            <p><strong>Verified:</strong>{{ if .AccountInfo.Verified }}✅{{ else }}❌{{ end }}</p>
+            <p><strong>Name:</strong> <span id="profile-name"></span></p>
+            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+            <p><strong>Credits:</strong> <span id="profile-credits"></span></p>
+            <p><strong>Verified:</strong> <span id="profile-verified"></span></p>
         </dl>
-        {{ end }}
+    </div>
 </main>
 
 <script src="/public/scripts/validation.js"></script>
@@ -49,6 +41,12 @@ Exaroton | Settings
     const apiKey = document.getElementById("api_key")
     const apiKeyHelper = document.getElementById("api_key-helper")
 
+    const profileBox = document.getElementById("profile-info");
+    const profileName = document.getElementById("profile-name");
+    const profileEmail = document.getElementById("profile-email");
+    const profileCredits = document.getElementById("profile-credits");
+    const profileVerified = document.getElementById("profile-verified");
+
     let inputFields = [
         apiKey, apiKeyHelper
     ]
@@ -56,55 +54,98 @@ Exaroton | Settings
     setupValidationListeners(inputFields)
 
     // SAVE BUTTON
-    document.getElementById("btn-save").addEventListener("click", function () {
+    document.getElementById("btn-save").addEventListener("click", async () => {
         if (!validateInput(inputFields)) return;
 
         btnSave.setAttribute("aria-busy", "true")
-        // const cleanup = () => btnSave.setAttribute("aria-busy", "false")
+        apiKeyHelper.textContent = "";
 
+        try {
+            const response = await fetch("/api/settings/server/exaroton/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    api_key: apiKey.value,
+                }),
+            });
 
-        const form = document.createElement('form')
-        form.method = 'POST'
-        form.action = '/settings/server/exaroton'
+            const result = await response.json();
 
-        const input = Object.assign(document.createElement('input'), {
-            type: 'hidden',
-            name: 'api_key'
-        })
-        input.value = apiKey.value
+            // 400
+            if (response.status === 400 || response.status === 401) {
+                apiKey.setAttribute("aria-invalid", "true");
+                if (result?.data?.api_key) {
+                    apiKeyHelper.textContent = result.data.api_key;
+                } else {
+                    apiKeyHelper.textContent = result.message;
+                }
+                return;
+            }
 
-        form.appendChild(input)
-        document.body.appendChild(form)
+            // other errors
+            if (!response.ok) {
+                apiKeyHelper.textContent = result.message || "Something went wrong";
+                return;
+            }
 
-        setTimeout(() => {
-            form.submit()
-            cleanup()
-        }, 0)
+            // 200 success
+            apiKeyHelper.textContent = result.message;
+
+        } catch (error) {
+            console.error(error);
+            apiKeyHelper.textContent = "Network error. Please try again.";
+        } finally {
+            btnSave.setAttribute("aria-busy", "false");
+        }
     })
 
     // VALIDATE BUTTON
-    document.getElementById("btn-validate").addEventListener("click", function () {
+    document.getElementById("btn-validate").addEventListener("click", async () => {
         if (!validateInput(inputFields)) return;
 
         btnValidate.setAttribute("aria-busy", "true")
-        // const cleanup = () => btnValidate.setAttribute("aria-busy", "false")
+        apiKeyHelper.textContent = "";
+        profileBox.hidden = true;
 
-        const form = document.createElement('form')
-        form.method = 'POST'
-        form.action = '/settings/server/exaroton/me'
+        try {
+            const response = await fetch("/api/settings/server/exaroton/validate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ api_key: apiKey.value }),
+            });
 
-        const input = Object.assign(document.createElement('input'), {
-            type: 'hidden',
-            name: 'api_key',
-        })
-        input.value = apiKey.value
+            const data = await response.json();
 
-        form.appendChild(input)
-        document.body.appendChild(form)
+            // 400 || 401
+            if (response.status === 400 || response.status === 401) {
+                apiKey.setAttribute("aria-invalid", "true");
+                apiKeyHelper.textContent = data?.data?.api_key || data.message;
+                return;
+            }
 
-        setTimeout(() => {
-            form.submit()
-        }, 0)
+            // other
+            if (!response.ok) {
+                apiKeyHelper.textContent =
+                    data.message || "Something went wrong";
+                return;
+            }
+
+            // 200
+            apiKeyHelper.textContent = data.message;
+            profileName.textContent = data.data.name;
+            profileEmail.textContent = data.data.email;
+            profileCredits.textContent = data.data.credits;
+            profileVerified.textContent = data.data.verified ? "✅" : "❌";
+            profileBox.hidden = false;
+
+        } catch (error) {
+            console.error(error);
+            apiKeyHelper.textContent = "Network error. Please try again.";
+        } finally {
+            btnValidate.setAttribute("aria-busy", "false");
+        }
     })
 </script>
 {{ end }}

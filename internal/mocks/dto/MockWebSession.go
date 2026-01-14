@@ -40,23 +40,23 @@ func (_m *MockWebSession) EXPECT() *MockWebSession_Expecter {
 }
 
 // GetFlash provides a mock function for the type MockWebSession
-func (_mock *MockWebSession) GetFlash(c echo.Context) ([]dto.WebFlashMessage, error) {
+func (_mock *MockWebSession) GetFlash(c echo.Context) (dto.WebFlashMessage, error) {
 	ret := _mock.Called(c)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetFlash")
 	}
 
-	var r0 []dto.WebFlashMessage
+	var r0 dto.WebFlashMessage
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(echo.Context) ([]dto.WebFlashMessage, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) (dto.WebFlashMessage, error)); ok {
 		return returnFunc(c)
 	}
-	if returnFunc, ok := ret.Get(0).(func(echo.Context) []dto.WebFlashMessage); ok {
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) dto.WebFlashMessage); ok {
 		r0 = returnFunc(c)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]dto.WebFlashMessage)
+			r0 = ret.Get(0).(dto.WebFlashMessage)
 		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(echo.Context) error); ok {
@@ -85,12 +85,12 @@ func (_c *MockWebSession_GetFlash_Call) Run(run func(c echo.Context)) *MockWebSe
 	return _c
 }
 
-func (_c *MockWebSession_GetFlash_Call) Return(webFlashMessages []dto.WebFlashMessage, err error) *MockWebSession_GetFlash_Call {
-	_c.Call.Return(webFlashMessages, err)
+func (_c *MockWebSession_GetFlash_Call) Return(webFlashMessage dto.WebFlashMessage, err error) *MockWebSession_GetFlash_Call {
+	_c.Call.Return(webFlashMessage, err)
 	return _c
 }
 
-func (_c *MockWebSession_GetFlash_Call) RunAndReturn(run func(c echo.Context) ([]dto.WebFlashMessage, error)) *MockWebSession_GetFlash_Call {
+func (_c *MockWebSession_GetFlash_Call) RunAndReturn(run func(c echo.Context) (dto.WebFlashMessage, error)) *MockWebSession_GetFlash_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -264,16 +264,16 @@ func (_c *MockWebSession_GetValidationError_Call) RunAndReturn(run func(c echo.C
 }
 
 // SetFlash provides a mock function for the type MockWebSession
-func (_mock *MockWebSession) SetFlash(c echo.Context, flashMessage dto.WebFlashMessage) error {
-	ret := _mock.Called(c, flashMessage)
+func (_mock *MockWebSession) SetFlash(c echo.Context, key string, msg string) error {
+	ret := _mock.Called(c, key, msg)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SetFlash")
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(echo.Context, dto.WebFlashMessage) error); ok {
-		r0 = returnFunc(c, flashMessage)
+	if returnFunc, ok := ret.Get(0).(func(echo.Context, string, string) error); ok {
+		r0 = returnFunc(c, key, msg)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -287,14 +287,15 @@ type MockWebSession_SetFlash_Call struct {
 
 // SetFlash is a helper method to define mock.On call
 //   - c
-//   - flashMessage
-func (_e *MockWebSession_Expecter) SetFlash(c interface{}, flashMessage interface{}) *MockWebSession_SetFlash_Call {
-	return &MockWebSession_SetFlash_Call{Call: _e.mock.On("SetFlash", c, flashMessage)}
+//   - key
+//   - msg
+func (_e *MockWebSession_Expecter) SetFlash(c interface{}, key interface{}, msg interface{}) *MockWebSession_SetFlash_Call {
+	return &MockWebSession_SetFlash_Call{Call: _e.mock.On("SetFlash", c, key, msg)}
 }
 
-func (_c *MockWebSession_SetFlash_Call) Run(run func(c echo.Context, flashMessage dto.WebFlashMessage)) *MockWebSession_SetFlash_Call {
+func (_c *MockWebSession_SetFlash_Call) Run(run func(c echo.Context, key string, msg string)) *MockWebSession_SetFlash_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context), args[1].(dto.WebFlashMessage))
+		run(args[0].(echo.Context), args[1].(string), args[2].(string))
 	})
 	return _c
 }
@@ -304,13 +305,13 @@ func (_c *MockWebSession_SetFlash_Call) Return(err error) *MockWebSession_SetFla
 	return _c
 }
 
-func (_c *MockWebSession_SetFlash_Call) RunAndReturn(run func(c echo.Context, flashMessage dto.WebFlashMessage) error) *MockWebSession_SetFlash_Call {
+func (_c *MockWebSession_SetFlash_Call) RunAndReturn(run func(c echo.Context, key string, msg string) error) *MockWebSession_SetFlash_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // SetOldInput provides a mock function for the type MockWebSession
-func (_mock *MockWebSession) SetOldInput(c echo.Context, oldInput dto.WebOldInput) error {
+func (_mock *MockWebSession) SetOldInput(c echo.Context, oldInput dto.Mappable) error {
 	ret := _mock.Called(c, oldInput)
 
 	if len(ret) == 0 {
@@ -318,7 +319,7 @@ func (_mock *MockWebSession) SetOldInput(c echo.Context, oldInput dto.WebOldInpu
 	}
 
 	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(echo.Context, dto.WebOldInput) error); ok {
+	if returnFunc, ok := ret.Get(0).(func(echo.Context, dto.Mappable) error); ok {
 		r0 = returnFunc(c, oldInput)
 	} else {
 		r0 = ret.Error(0)
@@ -338,9 +339,9 @@ func (_e *MockWebSession_Expecter) SetOldInput(c interface{}, oldInput interface
 	return &MockWebSession_SetOldInput_Call{Call: _e.mock.On("SetOldInput", c, oldInput)}
 }
 
-func (_c *MockWebSession_SetOldInput_Call) Run(run func(c echo.Context, oldInput dto.WebOldInput)) *MockWebSession_SetOldInput_Call {
+func (_c *MockWebSession_SetOldInput_Call) Run(run func(c echo.Context, oldInput dto.Mappable)) *MockWebSession_SetOldInput_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context), args[1].(dto.WebOldInput))
+		run(args[0].(echo.Context), args[1].(dto.Mappable))
 	})
 	return _c
 }
@@ -350,7 +351,7 @@ func (_c *MockWebSession_SetOldInput_Call) Return(err error) *MockWebSession_Set
 	return _c
 }
 
-func (_c *MockWebSession_SetOldInput_Call) RunAndReturn(run func(c echo.Context, oldInput dto.WebOldInput) error) *MockWebSession_SetOldInput_Call {
+func (_c *MockWebSession_SetOldInput_Call) RunAndReturn(run func(c echo.Context, oldInput dto.Mappable) error) *MockWebSession_SetOldInput_Call {
 	_c.Call.Return(run)
 	return _c
 }
