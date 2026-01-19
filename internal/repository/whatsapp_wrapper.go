@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/constants/errs"
 	"sync"
@@ -82,6 +83,16 @@ func (w *waClient) Disconnect() {
 	}
 }
 
+func (w *waClient) GetPhoneNumber(ctx context.Context) (string, error) {
+	jid := w.client.GetLoggedInDeviceJID()
+
+	if jid == nil {
+		return "", errors.New("Not logged in yet")
+	}
+
+	return jid.User, nil
+}
+
 // starts a goroutine that publishes QR codes to the subscriber.
 func (w *waClient) publishQR(pub <-chan whatsmeow.QRChannelItem) {
 	if w.qrSub == nil {
@@ -139,6 +150,7 @@ type iWhatsmeowClientWrapper interface {
 
 	// to check wether the client already logged in
 	GetLoggedInDeviceJID() *types.JID
+	GetUserInfo(context.Context, []types.JID) (map[types.JID]types.UserInfo, error)
 }
 
 var _ iWhatsmeowClientWrapper = &whatsmeowClientWrapper{}
@@ -165,4 +177,8 @@ func (w *whatsmeowClientWrapper) GetQRChannel(ctx context.Context) (<-chan whats
 
 func (w *whatsmeowClientWrapper) GetLoggedInDeviceJID() *types.JID {
 	return w.client.Store.ID
+}
+
+func (w *whatsmeowClientWrapper) GetUserInfo(ctx context.Context, jids []types.JID) (map[types.JID]types.UserInfo, error) {
+	return w.client.GetUserInfo(ctx, jids)
 }

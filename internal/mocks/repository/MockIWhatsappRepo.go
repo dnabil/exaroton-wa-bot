@@ -71,6 +71,60 @@ func (_c *MockIWhatsappRepo_Disconnect_Call) RunAndReturn(run func()) *MockIWhat
 	return _c
 }
 
+// GetPhoneNumber provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) GetPhoneNumber(ctx context.Context) (string, error) {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetPhoneNumber")
+	}
+
+	var r0 string
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) (string, error)); ok {
+		return returnFunc(ctx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context) string); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = returnFunc(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIWhatsappRepo_GetPhoneNumber_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPhoneNumber'
+type MockIWhatsappRepo_GetPhoneNumber_Call struct {
+	*mock.Call
+}
+
+// GetPhoneNumber is a helper method to define mock.On call
+//   - ctx
+func (_e *MockIWhatsappRepo_Expecter) GetPhoneNumber(ctx interface{}) *MockIWhatsappRepo_GetPhoneNumber_Call {
+	return &MockIWhatsappRepo_GetPhoneNumber_Call{Call: _e.mock.On("GetPhoneNumber", ctx)}
+}
+
+func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_GetPhoneNumber_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) Return(s string, err error) *MockIWhatsappRepo_GetPhoneNumber_Call {
+	_c.Call.Return(s, err)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) RunAndReturn(run func(ctx context.Context) (string, error)) *MockIWhatsappRepo_GetPhoneNumber_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // IsLoggedIn provides a mock function for the type MockIWhatsappRepo
 func (_mock *MockIWhatsappRepo) IsLoggedIn() bool {
 	ret := _mock.Called()

@@ -40,6 +40,60 @@ func (_m *MockIAuthService) EXPECT() *MockIAuthService_Expecter {
 	return &MockIAuthService_Expecter{mock: &_m.Mock}
 }
 
+// GetWhatsappPhoneNumber provides a mock function for the type MockIAuthService
+func (_mock *MockIAuthService) GetWhatsappPhoneNumber(ctx context.Context) (string, error) {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWhatsappPhoneNumber")
+	}
+
+	var r0 string
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) (string, error)); ok {
+		return returnFunc(ctx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context) string); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = returnFunc(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIAuthService_GetWhatsappPhoneNumber_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWhatsappPhoneNumber'
+type MockIAuthService_GetWhatsappPhoneNumber_Call struct {
+	*mock.Call
+}
+
+// GetWhatsappPhoneNumber is a helper method to define mock.On call
+//   - ctx
+func (_e *MockIAuthService_Expecter) GetWhatsappPhoneNumber(ctx interface{}) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	return &MockIAuthService_GetWhatsappPhoneNumber_Call{Call: _e.mock.On("GetWhatsappPhoneNumber", ctx)}
+}
+
+func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) Run(run func(ctx context.Context)) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) Return(s string, err error) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	_c.Call.Return(s, err)
+	return _c
+}
+
+func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) RunAndReturn(run func(ctx context.Context) (string, error)) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Login provides a mock function for the type MockIAuthService
 func (_mock *MockIAuthService) Login(ctx context.Context, req *dto.UserLoginReq) (*dto.UserClaims, time.Duration, error) {
 	ret := _mock.Called(ctx, req)

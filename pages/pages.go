@@ -12,6 +12,7 @@ const (
 	WhatsappLogin = "whatsapp_login.jet"
 
 	SettingsExaroton = "settings_exaroton.jet"
+	SettingsWhatsapp = "settings_whatsapp.jet"
 )
 
 // ==============================================================================

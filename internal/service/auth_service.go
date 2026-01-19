@@ -17,6 +17,7 @@ type IAuthService interface {
 	Login(ctx context.Context, req *dto.UserLoginReq) (*dto.UserClaims, time.Duration, error)
 	WhatsappLogin(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
 	WhatsappIsLoggedIn(ctx context.Context) bool
+	GetWhatsappPhoneNumber(ctx context.Context) (string, error)
 }
 
 type AuthService struct {
@@ -69,4 +70,8 @@ func (s *AuthService) WhatsappLogin(ctx context.Context) (<-chan whatsmeow.QRCha
 
 func (s *AuthService) WhatsappIsLoggedIn(ctx context.Context) bool {
 	return s.waRepo.IsLoggedIn()
+}
+
+func (s *AuthService) GetWhatsappPhoneNumber(ctx context.Context) (string, error) {
+	return s.waRepo.GetPhoneNumber(ctx)
 }

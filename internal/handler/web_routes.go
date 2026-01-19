@@ -72,5 +72,11 @@ func (web *Web) LoadRoutes() {
 		{
 			settingsExarotonPageRoute = serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
 		}
+
+		// whatsapp settings
+		whatsappGroup := settingsGroup.Group("/whatsapp")
+		{
+			whatsappGroup.GET("", web.SettingsWhatsappPage())
+		}
 	}
 }

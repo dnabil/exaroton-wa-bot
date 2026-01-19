@@ -36,3 +36,7 @@ type WhatsappLoginPageData struct {
 	WSPath   string
 	HomePath string
 }
+
+type SettingsWhatsappPageData struct {
+	PhoneNumber string
+}

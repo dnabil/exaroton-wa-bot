@@ -1,0 +1,27 @@
+{{ extends "./layouts/layout_base.jet" }}
+
+{{ block layout_base_title() }}
+Whatsapp | Settings
+{{ end }}
+
+{{ block layout_base_body() }}
+<main>
+    <article style="display:flex; align-items:center; gap:1rem;">
+        <!-- <img src="/public/images/welcome.gif" alt="Profile" width="48" height="48" style="border-radius:0.75rem;" /> -->
+
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+            <small>Phone Number:</small>
+            <strong>{{ .PhoneNumber }}</strong>
+        </div>
+
+        <!-- Right side -->
+        <div style="margin-left:auto; text-align:right;">
+            <small>Not you?</small><br />
+            <button class="secondary">Logout</button>
+        </div>
+    </article>
+
+    <h2>Allowed Groups</h2>
+    <h2>All Groups</h2>
+</main>
+{{ end }}

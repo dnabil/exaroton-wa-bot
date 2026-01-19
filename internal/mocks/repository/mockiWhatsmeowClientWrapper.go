@@ -218,6 +218,63 @@ func (_c *mockiWhatsmeowClientWrapper_GetQRChannel_Call) RunAndReturn(run func(c
 	return _c
 }
 
+// GetUserInfo provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) GetUserInfo(context1 context.Context, jIDs []types.JID) (map[types.JID]types.UserInfo, error) {
+	ret := _mock.Called(context1, jIDs)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetUserInfo")
+	}
+
+	var r0 map[types.JID]types.UserInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, []types.JID) (map[types.JID]types.UserInfo, error)); ok {
+		return returnFunc(context1, jIDs)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, []types.JID) map[types.JID]types.UserInfo); ok {
+		r0 = returnFunc(context1, jIDs)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(map[types.JID]types.UserInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, []types.JID) error); ok {
+		r1 = returnFunc(context1, jIDs)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// mockiWhatsmeowClientWrapper_GetUserInfo_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetUserInfo'
+type mockiWhatsmeowClientWrapper_GetUserInfo_Call struct {
+	*mock.Call
+}
+
+// GetUserInfo is a helper method to define mock.On call
+//   - context1
+//   - jIDs
+func (_e *mockiWhatsmeowClientWrapper_Expecter) GetUserInfo(context1 interface{}, jIDs interface{}) *mockiWhatsmeowClientWrapper_GetUserInfo_Call {
+	return &mockiWhatsmeowClientWrapper_GetUserInfo_Call{Call: _e.mock.On("GetUserInfo", context1, jIDs)}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetUserInfo_Call) Run(run func(context1 context.Context, jIDs []types.JID)) *mockiWhatsmeowClientWrapper_GetUserInfo_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].([]types.JID))
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetUserInfo_Call) Return(jIDToUserInfo map[types.JID]types.UserInfo, err error) *mockiWhatsmeowClientWrapper_GetUserInfo_Call {
+	_c.Call.Return(jIDToUserInfo, err)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetUserInfo_Call) RunAndReturn(run func(context1 context.Context, jIDs []types.JID) (map[types.JID]types.UserInfo, error)) *mockiWhatsmeowClientWrapper_GetUserInfo_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // IsLoggedIn provides a mock function for the type mockiWhatsmeowClientWrapper
 func (_mock *mockiWhatsmeowClientWrapper) IsLoggedIn() bool {
 	ret := _mock.Called()

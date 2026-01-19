@@ -12,6 +12,7 @@ type IWhatsappRepo interface {
 	Disconnect()
 	Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
 	IsLoggedIn() bool
+	GetPhoneNumber(ctx context.Context) (string, error)
 }
 
 type whatsappRepo struct {
@@ -40,4 +41,8 @@ func (r *whatsappRepo) Login(ctx context.Context) (<-chan whatsmeow.QRChannelIte
 
 func (r *whatsappRepo) IsLoggedIn() bool {
 	return r.waClient.IsLoggedIn()
+}
+
+func (r *whatsappRepo) GetPhoneNumber(ctx context.Context) (string, error) {
+	return r.waClient.GetPhoneNumber(ctx)
 }

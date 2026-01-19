@@ -16,8 +16,13 @@
     <aside>
         <ul style="margin-top: 4rem; ">
             <li>
-                <a href="/" {{ if currentPage=="index.jet" }}class="contrast" {{ end }}>
+                <a href="/" {{ if currentPage=="index.jet" }} class="contrast" {{ end }}>
                     Homepage
+                </a>
+            </li>
+            <li>
+                <a href="/settings/whatsapp" {{ if currentPage=="settings_whatsapp.jet" }} class="contrast" {{ end }}>
+                    Whatsapp Settings
                 </a>
             </li>
             <li>
