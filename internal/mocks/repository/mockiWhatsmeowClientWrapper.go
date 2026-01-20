@@ -116,6 +116,62 @@ func (_c *mockiWhatsmeowClientWrapper_Disconnect_Call) RunAndReturn(run func()) 
 	return _c
 }
 
+// GetJoinedGroups provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error) {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetJoinedGroups")
+	}
+
+	var r0 []*types.GroupInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]*types.GroupInfo, error)); ok {
+		return returnFunc(ctx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context) []*types.GroupInfo); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*types.GroupInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = returnFunc(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// mockiWhatsmeowClientWrapper_GetJoinedGroups_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetJoinedGroups'
+type mockiWhatsmeowClientWrapper_GetJoinedGroups_Call struct {
+	*mock.Call
+}
+
+// GetJoinedGroups is a helper method to define mock.On call
+//   - ctx
+func (_e *mockiWhatsmeowClientWrapper_Expecter) GetJoinedGroups(ctx interface{}) *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call {
+	return &mockiWhatsmeowClientWrapper_GetJoinedGroups_Call{Call: _e.mock.On("GetJoinedGroups", ctx)}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call) Run(run func(ctx context.Context)) *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call) Return(groupInfos []*types.GroupInfo, err error) *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call {
+	_c.Call.Return(groupInfos, err)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call) RunAndReturn(run func(ctx context.Context) ([]*types.GroupInfo, error)) *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetLoggedInDeviceJID provides a mock function for the type mockiWhatsmeowClientWrapper
 func (_mock *mockiWhatsmeowClientWrapper) GetLoggedInDeviceJID() *types.JID {
 	ret := _mock.Called()
@@ -315,6 +371,51 @@ func (_c *mockiWhatsmeowClientWrapper_IsLoggedIn_Call) Return(b bool) *mockiWhat
 }
 
 func (_c *mockiWhatsmeowClientWrapper_IsLoggedIn_Call) RunAndReturn(run func() bool) *mockiWhatsmeowClientWrapper_IsLoggedIn_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Logout provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) Logout(ctx context.Context) error {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Logout")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// mockiWhatsmeowClientWrapper_Logout_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Logout'
+type mockiWhatsmeowClientWrapper_Logout_Call struct {
+	*mock.Call
+}
+
+// Logout is a helper method to define mock.On call
+//   - ctx
+func (_e *mockiWhatsmeowClientWrapper_Expecter) Logout(ctx interface{}) *mockiWhatsmeowClientWrapper_Logout_Call {
+	return &mockiWhatsmeowClientWrapper_Logout_Call{Call: _e.mock.On("Logout", ctx)}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_Logout_Call) Run(run func(ctx context.Context)) *mockiWhatsmeowClientWrapper_Logout_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_Logout_Call) Return(err error) *mockiWhatsmeowClientWrapper_Logout_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_Logout_Call) RunAndReturn(run func(ctx context.Context) error) *mockiWhatsmeowClientWrapper_Logout_Call {
 	_c.Call.Return(run)
 	return _c
 }

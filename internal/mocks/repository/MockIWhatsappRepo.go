@@ -6,9 +6,12 @@ package repository
 
 import (
 	"context"
+	"exaroton-wa-bot/internal/database/entity"
 
 	mock "github.com/stretchr/testify/mock"
 	"go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/types"
+	"gorm.io/gorm"
 )
 
 // NewMockIWhatsappRepo creates a new instance of MockIWhatsappRepo. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
@@ -71,6 +74,62 @@ func (_c *MockIWhatsappRepo_Disconnect_Call) RunAndReturn(run func()) *MockIWhat
 	return _c
 }
 
+// GetGroups provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) GetGroups(ctx context.Context) ([]*types.GroupInfo, error) {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetGroups")
+	}
+
+	var r0 []*types.GroupInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]*types.GroupInfo, error)); ok {
+		return returnFunc(ctx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context) []*types.GroupInfo); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*types.GroupInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = returnFunc(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIWhatsappRepo_GetGroups_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGroups'
+type MockIWhatsappRepo_GetGroups_Call struct {
+	*mock.Call
+}
+
+// GetGroups is a helper method to define mock.On call
+//   - ctx
+func (_e *MockIWhatsappRepo_Expecter) GetGroups(ctx interface{}) *MockIWhatsappRepo_GetGroups_Call {
+	return &MockIWhatsappRepo_GetGroups_Call{Call: _e.mock.On("GetGroups", ctx)}
+}
+
+func (_c *MockIWhatsappRepo_GetGroups_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_GetGroups_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetGroups_Call) Return(groupInfos []*types.GroupInfo, err error) *MockIWhatsappRepo_GetGroups_Call {
+	_c.Call.Return(groupInfos, err)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetGroups_Call) RunAndReturn(run func(ctx context.Context) ([]*types.GroupInfo, error)) *MockIWhatsappRepo_GetGroups_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetPhoneNumber provides a mock function for the type MockIWhatsappRepo
 func (_mock *MockIWhatsappRepo) GetPhoneNumber(ctx context.Context) (string, error) {
 	ret := _mock.Called(ctx)
@@ -121,6 +180,63 @@ func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) Return(s string, err error) *Mo
 }
 
 func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) RunAndReturn(run func(ctx context.Context) (string, error)) *MockIWhatsappRepo_GetPhoneNumber_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetWhitelistedJIDs provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) GetWhitelistedJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error) {
+	ret := _mock.Called(ctx, tx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWhitelistedJIDs")
+	}
+
+	var r0 []*entity.WhatsappWhitelistedGroup
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)); ok {
+		return returnFunc(ctx, tx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *gorm.DB) []*entity.WhatsappWhitelistedGroup); ok {
+		r0 = returnFunc(ctx, tx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.WhatsappWhitelistedGroup)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *gorm.DB) error); ok {
+		r1 = returnFunc(ctx, tx)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIWhatsappRepo_GetWhitelistedJIDs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWhitelistedJIDs'
+type MockIWhatsappRepo_GetWhitelistedJIDs_Call struct {
+	*mock.Call
+}
+
+// GetWhitelistedJIDs is a helper method to define mock.On call
+//   - ctx
+//   - tx
+func (_e *MockIWhatsappRepo_Expecter) GetWhitelistedJIDs(ctx interface{}, tx interface{}) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
+	return &MockIWhatsappRepo_GetWhitelistedJIDs_Call{Call: _e.mock.On("GetWhitelistedJIDs", ctx, tx)}
+}
+
+func (_c *MockIWhatsappRepo_GetWhitelistedJIDs_Call) Run(run func(ctx context.Context, tx *gorm.DB)) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*gorm.DB))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetWhitelistedJIDs_Call) Return(whatsappWhitelistedGroups []*entity.WhatsappWhitelistedGroup, err error) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
+	_c.Call.Return(whatsappWhitelistedGroups, err)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetWhitelistedJIDs_Call) RunAndReturn(run func(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -221,6 +337,51 @@ func (_c *MockIWhatsappRepo_Login_Call) Return(qRChannelItemCh <-chan whatsmeow.
 }
 
 func (_c *MockIWhatsappRepo_Login_Call) RunAndReturn(run func(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)) *MockIWhatsappRepo_Login_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Logout provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) Logout(ctx context.Context) error {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Logout")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) error); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIWhatsappRepo_Logout_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Logout'
+type MockIWhatsappRepo_Logout_Call struct {
+	*mock.Call
+}
+
+// Logout is a helper method to define mock.On call
+//   - ctx
+func (_e *MockIWhatsappRepo_Expecter) Logout(ctx interface{}) *MockIWhatsappRepo_Logout_Call {
+	return &MockIWhatsappRepo_Logout_Call{Call: _e.mock.On("Logout", ctx)}
+}
+
+func (_c *MockIWhatsappRepo_Logout_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_Logout_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_Logout_Call) Return(err error) *MockIWhatsappRepo_Logout_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_Logout_Call) RunAndReturn(run func(ctx context.Context) error) *MockIWhatsappRepo_Logout_Call {
 	_c.Call.Return(run)
 	return _c
 }

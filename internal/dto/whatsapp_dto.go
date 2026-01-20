@@ -1,5 +1,11 @@
 package dto
 
+import (
+	"time"
+
+	"go.mau.fi/whatsmeow/types"
+)
+
 // whatsapp qr event
 const (
 	// is sending a new qr code
@@ -31,6 +37,33 @@ type WhatsappQRWSRes struct {
 	Message string `json:"message"`
 }
 
+type WhatsappGroupInfo struct {
+	JID          types.JID
+	Name         string
+	NameSetAt    time.Time
+	GroupCreated time.Time
+
+	ParticipantCount int
+
+	// Group Parent
+	IsParent                      bool
+	DefaultMembershipApprovalMode string // request_required
+}
+
+func NewWhatsappGroupInfo(g *types.GroupInfo) *WhatsappGroupInfo {
+	return &WhatsappGroupInfo{
+		JID:          g.JID,
+		Name:         g.Name,
+		NameSetAt:    g.NameSetAt,
+		GroupCreated: g.GroupCreated,
+
+		ParticipantCount: g.ParticipantCount,
+
+		IsParent:                      g.IsParent,
+		DefaultMembershipApprovalMode: g.DefaultMembershipApprovalMode,
+	}
+}
+
 // Whatsapp login page
 type WhatsappLoginPageData struct {
 	WSPath   string
@@ -39,4 +72,7 @@ type WhatsappLoginPageData struct {
 
 type SettingsWhatsappPageData struct {
 	PhoneNumber string
+
+	AllGroups         []*WhatsappGroupInfo
+	WhiltelistedGroup []*WhatsappGroupInfo
 }

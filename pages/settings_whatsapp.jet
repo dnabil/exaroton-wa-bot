@@ -17,11 +17,34 @@ Whatsapp | Settings
         <!-- Right side -->
         <div style="margin-left:auto; text-align:right;">
             <small>Not you?</small><br />
-            <button class="secondary">Logout</button>
+            <button id="logout" class="secondary">Logout</button>
         </div>
     </article>
 
     <h2>Allowed Groups</h2>
     <h2>All Groups</h2>
+    {{ range .AllGroups }}
+    <article>
+        <div style="display:flex; align-items:center; gap:1rem;">
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+                <strong>{{.Name}}</strong>
+                <small>( {{ .JID }} )</small>
+                <small>Members: {{ .ParticipantCount }}</small>
+            </div>
+
+            <div style="margin-left:auto; text-align:right;">
+                <button class="primary">✅Allow</button>
+            </div>
+        </div>
+
+    </article>
+    {{ end }}
 </main>
+
+<script>
+    document.getElementById("logout").onclick = async () => {
+        await fetch("/api/settings/whatsapp/logout", { method: "POST" })
+        window.location.href = "/"
+    }
+</script>
 {{ end }}

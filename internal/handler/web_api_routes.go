@@ -21,6 +21,12 @@ func (web *Web) LoadAPIRoutes() {
 			serverGroup.POST("/exaroton/save", web.APISettingsExarotonUpdate())
 			serverGroup.POST("/exaroton/validate", web.APISettingsExarotonValidateApiKey())
 		}
+
+		// whatsapp settings
+		whatsappGroup := settingsGroup.Group("/whatsapp")
+		{
+			whatsappGroup.POST("/logout", web.APIWhatsappLogout())
+		}
 	}
 
 }

@@ -10,14 +10,18 @@ import (
 	"time"
 
 	"go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/types"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type IAuthService interface {
 	Login(ctx context.Context, req *dto.UserLoginReq) (*dto.UserClaims, time.Duration, error)
 	WhatsappLogin(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
+	WhatsappLogout(ctx context.Context) error
 	WhatsappIsLoggedIn(ctx context.Context) bool
 	GetWhatsappPhoneNumber(ctx context.Context) (string, error)
+	GetWhatsappGroups(ctx context.Context) ([]*dto.WhatsappGroupInfo, error)
+	FilterWhatsappWhitelistedGroups(ctx context.Context, allGroups []*dto.WhatsappGroupInfo) ([]*dto.WhatsappGroupInfo, error)
 }
 
 type AuthService struct {
@@ -74,4 +78,54 @@ func (s *AuthService) WhatsappIsLoggedIn(ctx context.Context) bool {
 
 func (s *AuthService) GetWhatsappPhoneNumber(ctx context.Context) (string, error) {
 	return s.waRepo.GetPhoneNumber(ctx)
+}
+
+func (s *AuthService) GetWhatsappGroups(ctx context.Context) ([]*dto.WhatsappGroupInfo, error) {
+	groups, err := s.waRepo.GetGroups(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make([]*dto.WhatsappGroupInfo, len(groups))
+	for i, group := range groups {
+		res[i] = dto.NewWhatsappGroupInfo(group)
+	}
+
+	return res, nil
+}
+
+func (s *AuthService) FilterWhatsappWhitelistedGroups(ctx context.Context, allGroups []*dto.WhatsappGroupInfo) ([]*dto.WhatsappGroupInfo, error) {
+	tx := s.tx.Begin(ctx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
+
+	whitelistedJIDS, err := s.waRepo.GetWhitelistedJIDs(ctx, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	// create jidsMap based on whitelistedJIDs
+	jidsMap := make(map[types.JID]bool)
+	for _, jid := range whitelistedJIDS {
+		jidsMap[types.NewJID(jid.JID, jid.ServerJID)] = true
+	}
+
+	// filter groups based on jids
+	filteredGroups := make([]*dto.WhatsappGroupInfo, 0, len(allGroups))
+	for _, group := range allGroups {
+		if jidsMap[group.JID] {
+			filteredGroups = append(filteredGroups, group)
+		}
+	}
+
+	// TODO: sync the not existing jids (delete or update? not decided yet)
+
+	return filteredGroups, nil
+}
+
+func (s *AuthService) WhatsappLogout(ctx context.Context) error {
+	return s.waRepo.Logout(ctx)
 }

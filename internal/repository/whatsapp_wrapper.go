@@ -77,6 +77,10 @@ func (w *waClient) Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, e
 	return *w.getQRSub(), nil
 }
 
+func (w *waClient) Logout(ctx context.Context) error {
+	return w.client.Logout(ctx)
+}
+
 func (w *waClient) Disconnect() {
 	if w.client != nil {
 		w.client.Disconnect()
@@ -91,6 +95,10 @@ func (w *waClient) GetPhoneNumber(ctx context.Context) (string, error) {
 	}
 
 	return jid.User, nil
+}
+
+func (w *waClient) GetGroups(ctx context.Context) ([]*types.GroupInfo, error) {
+	return w.client.GetJoinedGroups(ctx)
 }
 
 // starts a goroutine that publishes QR codes to the subscriber.
@@ -147,10 +155,12 @@ type iWhatsmeowClientWrapper interface {
 	Connect() error
 	Disconnect()
 	GetQRChannel(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
+	Logout(ctx context.Context) error
 
 	// to check wether the client already logged in
 	GetLoggedInDeviceJID() *types.JID
 	GetUserInfo(context.Context, []types.JID) (map[types.JID]types.UserInfo, error)
+	GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error)
 }
 
 var _ iWhatsmeowClientWrapper = &whatsmeowClientWrapper{}
@@ -160,7 +170,7 @@ type whatsmeowClientWrapper struct {
 }
 
 func (w *whatsmeowClientWrapper) IsLoggedIn() bool {
-	return w.client.IsLoggedIn()
+	return w.client.IsLoggedIn() && w.GetLoggedInDeviceJID() != nil
 }
 
 func (w *whatsmeowClientWrapper) Connect() error {
@@ -175,10 +185,18 @@ func (w *whatsmeowClientWrapper) GetQRChannel(ctx context.Context) (<-chan whats
 	return w.client.GetQRChannel(ctx)
 }
 
+func (w *whatsmeowClientWrapper) Logout(ctx context.Context) error {
+	return w.client.Logout(ctx)
+}
+
 func (w *whatsmeowClientWrapper) GetLoggedInDeviceJID() *types.JID {
 	return w.client.Store.ID
 }
 
 func (w *whatsmeowClientWrapper) GetUserInfo(ctx context.Context, jids []types.JID) (map[types.JID]types.UserInfo, error) {
 	return w.client.GetUserInfo(ctx, jids)
+}
+
+func (w *whatsmeowClientWrapper) GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error) {
+	return w.client.GetJoinedGroups(ctx)
 }

@@ -15,10 +15,27 @@ func (w *Web) SettingsWhatsappPage() echo.HandlerFunc {
 			return err
 		}
 
-		// TODO: list group tapi berdasarkan whitelist
+		// list all group
+		allGroups, err := w.svc.AuthService.GetWhatsappGroups(c.Request().Context())
+		if err != nil {
+			return err
+		}
+
+		whitelistedGroups, err := w.svc.AuthService.FilterWhatsappWhitelistedGroups(c.Request().Context(), allGroups)
+		if err != nil {
+			return err
+		}
 
 		return c.Render(http.StatusOK, pages.SettingsWhatsapp, dto.SettingsWhatsappPageData{
-			PhoneNumber: number,
+			PhoneNumber:       number,
+			AllGroups:         allGroups,
+			WhiltelistedGroup: whitelistedGroups,
 		})
+	}
+}
+
+func (w *Web) APIWhatsappLogout() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return w.svc.AuthService.WhatsappLogout(c.Request().Context())
 	}
 }
