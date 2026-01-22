@@ -7,6 +7,7 @@ package repository
 import (
 	"context"
 	"exaroton-wa-bot/internal/database/entity"
+	"exaroton-wa-bot/internal/dto"
 
 	mock "github.com/stretchr/testify/mock"
 	"go.mau.fi/whatsmeow"
@@ -382,6 +383,53 @@ func (_c *MockIWhatsappRepo_Logout_Call) Return(err error) *MockIWhatsappRepo_Lo
 }
 
 func (_c *MockIWhatsappRepo_Logout_Call) RunAndReturn(run func(ctx context.Context) error) *MockIWhatsappRepo_Logout_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// WhitelistGroup provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error {
+	ret := _mock.Called(ctx, tx, req)
+
+	if len(ret) == 0 {
+		panic("no return value specified for WhitelistGroup")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *gorm.DB, *dto.WhitelistWhatsappGroupReq) error); ok {
+		r0 = returnFunc(ctx, tx, req)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIWhatsappRepo_WhitelistGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WhitelistGroup'
+type MockIWhatsappRepo_WhitelistGroup_Call struct {
+	*mock.Call
+}
+
+// WhitelistGroup is a helper method to define mock.On call
+//   - ctx
+//   - tx
+//   - req
+func (_e *MockIWhatsappRepo_Expecter) WhitelistGroup(ctx interface{}, tx interface{}, req interface{}) *MockIWhatsappRepo_WhitelistGroup_Call {
+	return &MockIWhatsappRepo_WhitelistGroup_Call{Call: _e.mock.On("WhitelistGroup", ctx, tx, req)}
+}
+
+func (_c *MockIWhatsappRepo_WhitelistGroup_Call) Run(run func(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq)) *MockIWhatsappRepo_WhitelistGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(*dto.WhitelistWhatsappGroupReq))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_WhitelistGroup_Call) Return(err error) *MockIWhatsappRepo_WhitelistGroup_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_WhitelistGroup_Call) RunAndReturn(run func(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error) *MockIWhatsappRepo_WhitelistGroup_Call {
 	_c.Call.Return(run)
 	return _c
 }

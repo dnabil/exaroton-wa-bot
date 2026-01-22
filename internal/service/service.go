@@ -10,6 +10,7 @@ import (
 type Service struct {
 	AuthService           IAuthService
 	ServerSettingsService IServerSettingsService
+	WhatsappService       IWhatsappService
 }
 
 func New(cfg *config.Cfg, db *gorm.DB, repo *repository.Repo) *Service {
@@ -19,6 +20,7 @@ func New(cfg *config.Cfg, db *gorm.DB, repo *repository.Repo) *Service {
 	return &Service{
 		AuthService:           NewAuthService(svcTmpl, repo.WhatsappRepo, repo.UserRepo),
 		ServerSettingsService: NewServerSettingsService(svcTmpl, repo.ServerSettingsRepo, repo.ExarotonRepo),
+		WhatsappService:       NewWhatsappService(svcTmpl, repo.WhatsappRepo),
 	}
 }
 

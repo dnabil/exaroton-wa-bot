@@ -3,6 +3,7 @@ package dto
 import (
 	"time"
 
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"go.mau.fi/whatsmeow/types"
 )
 
@@ -57,7 +58,7 @@ func NewWhatsappGroupInfo(g *types.GroupInfo) *WhatsappGroupInfo {
 		NameSetAt:    g.NameSetAt,
 		GroupCreated: g.GroupCreated,
 
-		ParticipantCount: g.ParticipantCount,
+		ParticipantCount: g.ParticipantCount, // TODO: fix this, it's not correct
 
 		IsParent:                      g.IsParent,
 		DefaultMembershipApprovalMode: g.DefaultMembershipApprovalMode,
@@ -75,4 +76,20 @@ type SettingsWhatsappPageData struct {
 
 	AllGroups         []*WhatsappGroupInfo
 	WhiltelistedGroup []*WhatsappGroupInfo
+}
+
+type WhitelistWhatsappGroupReq struct {
+	User   string `json:"user"`
+	Server string `json:"server"`
+}
+
+type GetWhatsappGroupReq struct {
+	Whitelist *bool `query:"whitelist"`
+}
+
+func (r *WhitelistWhatsappGroupReq) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.User, validation.Required),
+		validation.Field(&r.Server, validation.Required),
+	)
 }

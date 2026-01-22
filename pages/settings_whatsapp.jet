@@ -24,7 +24,7 @@ Whatsapp | Settings
     <h2>Allowed Groups</h2>
     <h2>All Groups</h2>
     {{ range .AllGroups }}
-    <article>
+    <article id="{{.JID}}">
         <div style="display:flex; align-items:center; gap:1rem;">
             <div style="display: flex; flex-direction: column; justify-content: center;">
                 <strong>{{.Name}}</strong>
@@ -33,7 +33,8 @@ Whatsapp | Settings
             </div>
 
             <div style="margin-left:auto; text-align:right;">
-                <button class="primary">✅Allow</button>
+                <button class="primary allow-btn" data-user="{{ .JID.User }}" data-server="{{ .JID.Server }}" data-jid="{{.JID}}">
+                    ✅Allow</button>
             </div>
         </div>
 
@@ -46,5 +47,46 @@ Whatsapp | Settings
         await fetch("/api/settings/whatsapp/logout", { method: "POST" })
         window.location.href = "/"
     }
+
+    document.addEventListener("click", async function (e) {
+        if (!e.target.classList.contains("allow-btn")) return;
+
+        const btn = e.target;
+        const user = btn.dataset.user;
+        const server = btn.dataset.server;
+        const jid = btn.dataset.jid;
+
+        try {
+            const res = await fetch("/api/settings/whatsapp/groups/whitelist", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user: user,
+                    server: server
+                })
+            });
+
+            if (!res.ok) throw new Error("Request failed");
+
+            btn.textContent = "✅ Allowed";
+            btn.disabled = true;
+
+            // TODO: UI change here...
+        } catch (err) {
+            console.error(err);
+            alert("Failed to whitelist group");
+        }
+    });
+
+    // TODO: do this next
+    // function addGroupToAllList(){
+    //     // 
+    // }
+
+    // function addGroupToAllowedList(){
+
+    // }
 </script>
 {{ end }}

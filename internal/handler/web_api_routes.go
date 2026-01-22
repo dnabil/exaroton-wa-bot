@@ -26,6 +26,8 @@ func (web *Web) LoadAPIRoutes() {
 		whatsappGroup := settingsGroup.Group("/whatsapp")
 		{
 			whatsappGroup.POST("/logout", web.APIWhatsappLogout())
+			whatsappGroup.GET("/groups", web.APIGetWhatsappGroups())
+			whatsappGroup.POST("/groups/whitelist", web.APIWhatsappGroupWhitelist())
 		}
 	}
 

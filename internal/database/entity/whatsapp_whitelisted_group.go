@@ -1,6 +1,6 @@
 package entity
 
 type WhatsappWhitelistedGroup struct {
-	JID       string // PK
-	ServerJID string // PK
+	JID       string `gorm:"column:jid"`
+	ServerJID string `gorm:"column:server_jid"`
 }

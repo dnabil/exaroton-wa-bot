@@ -4,6 +4,7 @@ import (
 	"context"
 	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/database/entity"
+	"exaroton-wa-bot/internal/dto"
 	"log/slog"
 
 	"go.mau.fi/whatsmeow"
@@ -19,6 +20,7 @@ type IWhatsappRepo interface {
 	GetPhoneNumber(ctx context.Context) (string, error)
 	GetGroups(ctx context.Context) ([]*types.GroupInfo, error)
 	GetWhitelistedJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)
+	WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error
 }
 
 type whatsappRepo struct {
@@ -68,4 +70,11 @@ func (r *whatsappRepo) GetWhitelistedJIDs(ctx context.Context, tx *gorm.DB) ([]*
 	}
 
 	return whitelistedGroups, nil
+}
+
+func (r *whatsappRepo) WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error {
+	return tx.Create(entity.WhatsappWhitelistedGroup{
+		JID:       req.User,
+		ServerJID: req.Server,
+	}).Error
 }
