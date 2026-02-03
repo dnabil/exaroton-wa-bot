@@ -2,8 +2,8 @@ package handler
 
 import (
 	"errors"
-	"exaroton-wa-bot/internal/constants"
 	"exaroton-wa-bot/internal/constants/errs"
+	"exaroton-wa-bot/internal/constants/messages"
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/pages"
 	"net/http"
@@ -88,7 +88,7 @@ func (w *Web) WhatsappQRLogin() echo.HandlerFunc {
 		if qrChan == nil {
 			return ws.WriteJSON(dto.WhatsappQRWSRes{
 				Event:   dto.WhatsappQREventSuccess,
-				Message: constants.MsgWALoginSuccess,
+				Message: messages.MsgWALoginSuccess,
 			})
 		}
 
@@ -118,7 +118,7 @@ func (w *Web) WhatsappQRLogin() echo.HandlerFunc {
 			case whatsmeow.QRChannelSuccess.Event:
 				err = ws.WriteJSON(dto.WhatsappQRWSRes{
 					Event:   dto.WhatsappQREventSuccess,
-					Message: constants.MsgWALoginSuccess,
+					Message: messages.MsgWALoginSuccess,
 				})
 
 			// pairing timeout

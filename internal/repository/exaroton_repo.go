@@ -82,7 +82,6 @@ func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]dto.Ex
 		})
 	}
 
-	// TODO: fix appropiate response
 	return servers, nil
 }
 

@@ -62,7 +62,7 @@ func NewWhatsappGroupInfo(g *types.GroupInfo) *WhatsappGroupInfo {
 		NameSetAt:    g.NameSetAt,
 		GroupCreated: g.GroupCreated,
 
-		ParticipantCount: g.ParticipantCount, // TODO: fix this, it's not correct
+		ParticipantCount: len(g.Participants),
 
 		IsParent:                      g.IsParent,
 		DefaultMembershipApprovalMode: g.DefaultMembershipApprovalMode,
