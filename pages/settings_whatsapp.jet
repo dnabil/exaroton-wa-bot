@@ -1,5 +1,7 @@
 {{ extends "./layouts/layout_base.jet" }}
 
+{{ import "./components/com_whatsapp_group_list.jet" }}
+
 {{ block layout_base_title() }}
 Whatsapp | Settings
 {{ end }}
@@ -7,8 +9,6 @@ Whatsapp | Settings
 {{ block layout_base_body() }}
 <main>
     <article style="display:flex; align-items:center; gap:1rem;">
-        <!-- <img src="/public/images/welcome.gif" alt="Profile" width="48" height="48" style="border-radius:0.75rem;" /> -->
-
         <div style="display: flex; flex-direction: column; justify-content: center;">
             <small>Phone Number:</small>
             <strong>{{ .PhoneNumber }}</strong>
@@ -21,26 +21,14 @@ Whatsapp | Settings
         </div>
     </article>
 
-    <h2>Allowed Groups</h2>
-    <h2>All Groups</h2>
-    {{ range .AllGroups }}
-    <article id="{{.JID}}">
-        <div style="display:flex; align-items:center; gap:1rem;">
-            <div style="display: flex; flex-direction: column; justify-content: center;">
-                <strong>{{.Name}}</strong>
-                <small>( {{ .JID }} )</small>
-                <small>Members: {{ .ParticipantCount }}</small>
-            </div>
+    <h2>Whitelisted Groups</h2>
+    <div id="whitelisted-groups-list" aria-busy="true"></div>
 
-            <div style="margin-left:auto; text-align:right;">
-                <button class="primary allow-btn" data-user="{{ .JID.User }}" data-server="{{ .JID.Server }}" data-jid="{{.JID}}">
-                    ✅Allow</button>
-            </div>
-        </div>
-
-    </article>
-    {{ end }}
+    <h2>Non-Whitelisted Groups</h2>
+    <div id="non-whitelisted-groups-list" aria-busy="true"></div>
 </main>
+
+{{ yield com_whatsapp_group_list_script() }}
 
 <script>
     document.getElementById("logout").onclick = async () => {
@@ -48,45 +36,65 @@ Whatsapp | Settings
         window.location.href = "/"
     }
 
-    document.addEventListener("click", async function (e) {
-        if (!e.target.classList.contains("allow-btn")) return;
-
-        const btn = e.target;
-        const user = btn.dataset.user;
-        const server = btn.dataset.server;
-        const jid = btn.dataset.jid;
-
+    // load whitelisted whatsapp groups
+    (async () => {
         try {
-            const res = await fetch("/api/settings/whatsapp/groups/whitelist", {
-                method: "POST",
+            const res = await fetch("/api/settings/whatsapp/groups?whitelist=true", {
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    user: user,
-                    server: server
-                })
+                }
             });
-
             if (!res.ok) throw new Error("Request failed");
+            const data = await res.json();
 
-            btn.textContent = "✅ Allowed";
-            btn.disabled = true;
+            
+            for (const group of data.data) {
+                addGroupToWhitelistedList({
+                    name: group.name,
+                    participant_count: group.participant_count,
+                    jid: group.jid,
+                    jid_user: group.jid_user,
+                    jid_server: group.jid_server
+                });
+            }
 
-            // TODO: UI change here...
         } catch (err) {
             console.error(err);
-            alert("Failed to whitelist group");
+            alert("Failed to load whitelisted groups");
+        } finally {
+            document.getElementById("whitelisted-groups-list").removeAttribute("aria-busy");
         }
-    });
+    })();
 
-    // TODO: do this next
-    // function addGroupToAllList(){
-    //     // 
-    // }
+    // load non-whitelisted whatsapp groups
+    (async () => {
+        try {
+            const res = await fetch("/api/settings/whatsapp/groups?whitelist=false", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (!res.ok) throw new Error("Request failed");
+            const data = await res.json();
 
-    // function addGroupToAllowedList(){
+            for (const group of data.data) {
+                addGroupToNonWhitelistedList({
+                    name: group.name,
+                    participant_count: group.participant_count,
+                    jid: group.jid,
+                    jid_user: group.jid_user,
+                    jid_server: group.jid_server
+                });
+            }
 
-    // }
+        } catch (err) {
+            console.error(err);
+            alert("Failed to load non-whitelisted groups");
+        } finally {
+            document.getElementById("non-whitelisted-groups-list").removeAttribute("aria-busy");
+        }
+    })();
 </script>
 {{ end }}

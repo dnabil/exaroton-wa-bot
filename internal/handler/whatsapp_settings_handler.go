@@ -16,21 +16,8 @@ func (w *Web) SettingsWhatsappPage() echo.HandlerFunc {
 			return err
 		}
 
-		// list all group
-		allGroups, err := w.svc.AuthService.GetWhatsappGroups(c.Request().Context())
-		if err != nil {
-			return err
-		}
-
-		whitelistedGroups, err := w.svc.AuthService.FilterWhatsappWhitelistedGroups(c.Request().Context(), allGroups)
-		if err != nil {
-			return err
-		}
-
 		return c.Render(http.StatusOK, pages.SettingsWhatsapp, dto.SettingsWhatsappPageData{
-			PhoneNumber:       number,
-			AllGroups:         allGroups,
-			WhiltelistedGroup: whitelistedGroups,
+			PhoneNumber: number,
 		})
 	}
 }

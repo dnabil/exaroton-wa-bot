@@ -39,21 +39,25 @@ type WhatsappQRWSRes struct {
 }
 
 type WhatsappGroupInfo struct {
-	JID          types.JID
-	Name         string
-	NameSetAt    time.Time
-	GroupCreated time.Time
+	JID          types.JID `json:"jid"`
+	JIDUser      string    `json:"jid_user"`
+	JIDServer    string    `json:"jid_server"`
+	Name         string    `json:"name"`
+	NameSetAt    time.Time `json:"name_set_at"`
+	GroupCreated time.Time `json:"group_created"`
 
-	ParticipantCount int
+	ParticipantCount int `json:"participant_count"`
 
 	// Group Parent
-	IsParent                      bool
-	DefaultMembershipApprovalMode string // request_required
+	IsParent                      bool   `json:"is_parent"`
+	DefaultMembershipApprovalMode string `json:"default_membership_approval_mode"` // request_required
 }
 
 func NewWhatsappGroupInfo(g *types.GroupInfo) *WhatsappGroupInfo {
 	return &WhatsappGroupInfo{
 		JID:          g.JID,
+		JIDUser:      g.JID.User,
+		JIDServer:    g.JID.Server,
 		Name:         g.Name,
 		NameSetAt:    g.NameSetAt,
 		GroupCreated: g.GroupCreated,
@@ -73,9 +77,6 @@ type WhatsappLoginPageData struct {
 
 type SettingsWhatsappPageData struct {
 	PhoneNumber string
-
-	AllGroups         []*WhatsappGroupInfo
-	WhiltelistedGroup []*WhatsappGroupInfo
 }
 
 type WhitelistWhatsappGroupReq struct {

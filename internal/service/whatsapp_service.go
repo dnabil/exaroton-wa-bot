@@ -58,11 +58,11 @@ func (s *WhatsappService) GetGroups(ctx context.Context, req *dto.GetWhatsappGro
 
 	// whitelist filter
 	tx := s.tx.Begin(ctx)
-	// defer func() {
-	// 	if rbErr := s.tx.Rollback(tx); rbErr != nil {
-	// 		slog.ErrorContext(ctx, rbErr.Error())
-	// 	}
-	// }()
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
 
 	jids, err := s.waRepo.GetWhitelistedJIDs(ctx, tx)
 	if err != nil {
