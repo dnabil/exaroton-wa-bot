@@ -79,16 +79,29 @@ type SettingsWhatsappPageData struct {
 	PhoneNumber string
 }
 
+type GetWhatsappGroupReq struct {
+	Whitelist *bool `query:"whitelist"`
+}
+
 type WhitelistWhatsappGroupReq struct {
 	User   string `json:"user"`
 	Server string `json:"server"`
 }
 
-type GetWhatsappGroupReq struct {
-	Whitelist *bool `query:"whitelist"`
+func (r *WhitelistWhatsappGroupReq) Validate() error {
+	return validation.ValidateStruct(r,
+		validation.Field(&r.User, validation.Required),
+		validation.Field(&r.Server, validation.Required),
+	)
 }
 
-func (r *WhitelistWhatsappGroupReq) Validate() error {
+// UnwhitelistWhatsappGroupReq
+type UnwhitelistWhatsappGroupReq struct {
+	User   string `json:"user"`
+	Server string `json:"server"`
+}
+
+func (r *UnwhitelistWhatsappGroupReq) Validate() error {
 	return validation.ValidateStruct(r,
 		validation.Field(&r.User, validation.Required),
 		validation.Field(&r.Server, validation.Required),

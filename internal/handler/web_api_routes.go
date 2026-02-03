@@ -28,6 +28,7 @@ func (web *Web) LoadAPIRoutes() {
 			whatsappGroup.POST("/logout", web.APIWhatsappLogout())
 			whatsappGroup.GET("/groups", web.APIGetWhatsappGroups())
 			whatsappGroup.POST("/groups/whitelist", web.APIWhatsappGroupWhitelist())
+			whatsappGroup.DELETE("/groups/whitelist", web.APIWhatsappGroupUnwhitelist())
 		}
 	}
 

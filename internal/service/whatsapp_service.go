@@ -11,6 +11,7 @@ import (
 
 type IWhatsappService interface {
 	WhitelistGroup(ctx context.Context, req *dto.WhitelistWhatsappGroupReq) error
+	UnwhitelistGroup(ctx context.Context, req *dto.UnwhitelistWhatsappGroupReq) error
 	GetGroups(ctx context.Context, req *dto.GetWhatsappGroupReq) ([]*dto.WhatsappGroupInfo, error)
 }
 
@@ -35,6 +36,21 @@ func (s *WhatsappService) WhitelistGroup(ctx context.Context, req *dto.Whitelist
 	}()
 
 	if err := s.waRepo.WhitelistGroup(ctx, tx, req); err != nil {
+		return err
+	}
+
+	return s.tx.Commit(tx)
+}
+
+func (s *WhatsappService) UnwhitelistGroup(ctx context.Context, req *dto.UnwhitelistWhatsappGroupReq) error {
+	tx := s.tx.Begin(ctx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
+
+	if err := s.waRepo.UnwhitelistGroup(ctx, tx, req); err != nil {
 		return err
 	}
 

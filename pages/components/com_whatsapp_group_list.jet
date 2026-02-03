@@ -80,6 +80,47 @@ group_jid_server = ""
     });
 
     // TODO: remove whitelist button
+    document.addEventListener("click", async function (e) {
+        if (!e.target.classList.contains("remove-btn")) return;
+
+        const btn = e.target;
+        const user = btn.dataset.user;
+        const server = btn.dataset.server;
+        const jid = btn.dataset.jid;
+
+        try {
+            const res = await fetch("/api/settings/whatsapp/groups/whitelist", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user: user,
+                    server: server
+                })
+            });
+
+            if (!res.ok) throw new Error("Request failed");
+
+            // remove
+            btn.disabled = true;
+            const oldElement = document.getElementById(jid);
+            oldElement.remove();
+
+            // add to non-whitelisted list
+            addGroupToNonWhitelistedList({
+                name: oldElement.querySelector(".whatsapp_list_group_name").textContent,
+                participant_count: oldElement.querySelector(".whatsapp_list_group_participant_count").textContent,
+                jid: jid,
+                jid_user: user,
+                jid_server: server
+            });
+        } catch (err) {
+            console.error(err);
+            alert("Failed to remove group from whitelist");
+        }
+    });
+
 
     // UI
     function addGroupToNonWhitelistedList({ name, participant_count, jid, jid_user, jid_server, container_id = "non-whitelisted-groups-list"}) {

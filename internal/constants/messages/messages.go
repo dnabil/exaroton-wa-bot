@@ -4,7 +4,8 @@ const (
 	MsgWALoginSuccess   = "Login Success, redirecting..."
 	MsgErrInvalidAPIKey = "Invalid API key"
 
-	ResourceCreated       = "Resource created"
-	ValidKey              = "Valid key"
-	GroupWhitelistSuccess = "Group whitelisted successfully"
+	ResourceCreated         = "Resource created"
+	ValidKey                = "Valid key"
+	GroupWhitelistSuccess   = "Group whitelisted successfully"
+	GroupUnwhitelistSuccess = "Group unwhitelisted successfully"
 )

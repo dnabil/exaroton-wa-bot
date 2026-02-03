@@ -387,6 +387,53 @@ func (_c *MockIWhatsappRepo_Logout_Call) RunAndReturn(run func(ctx context.Conte
 	return _c
 }
 
+// UnwhitelistGroup provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) UnwhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq) error {
+	ret := _mock.Called(ctx, tx, req)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UnwhitelistGroup")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *gorm.DB, *dto.UnwhitelistWhatsappGroupReq) error); ok {
+		r0 = returnFunc(ctx, tx, req)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIWhatsappRepo_UnwhitelistGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UnwhitelistGroup'
+type MockIWhatsappRepo_UnwhitelistGroup_Call struct {
+	*mock.Call
+}
+
+// UnwhitelistGroup is a helper method to define mock.On call
+//   - ctx
+//   - tx
+//   - req
+func (_e *MockIWhatsappRepo_Expecter) UnwhitelistGroup(ctx interface{}, tx interface{}, req interface{}) *MockIWhatsappRepo_UnwhitelistGroup_Call {
+	return &MockIWhatsappRepo_UnwhitelistGroup_Call{Call: _e.mock.On("UnwhitelistGroup", ctx, tx, req)}
+}
+
+func (_c *MockIWhatsappRepo_UnwhitelistGroup_Call) Run(run func(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq)) *MockIWhatsappRepo_UnwhitelistGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(*dto.UnwhitelistWhatsappGroupReq))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_UnwhitelistGroup_Call) Return(err error) *MockIWhatsappRepo_UnwhitelistGroup_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_UnwhitelistGroup_Call) RunAndReturn(run func(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq) error) *MockIWhatsappRepo_UnwhitelistGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // WhitelistGroup provides a mock function for the type MockIWhatsappRepo
 func (_mock *MockIWhatsappRepo) WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error {
 	ret := _mock.Called(ctx, tx, req)

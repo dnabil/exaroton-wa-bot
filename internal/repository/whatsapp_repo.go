@@ -21,6 +21,7 @@ type IWhatsappRepo interface {
 	GetGroups(ctx context.Context) ([]*types.GroupInfo, error)
 	GetWhitelistedJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)
 	WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error
+	UnwhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq) error
 }
 
 type whatsappRepo struct {
@@ -77,4 +78,11 @@ func (r *whatsappRepo) WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto
 		JID:       req.User,
 		ServerJID: req.Server,
 	}).Error
+}
+
+func (r *whatsappRepo) UnwhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq) error {
+	return tx.Where(entity.WhatsappWhitelistedGroup{
+		JID:       req.User,
+		ServerJID: req.Server,
+	}).Delete(&entity.WhatsappWhitelistedGroup{}).Error
 }

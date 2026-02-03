@@ -38,6 +38,109 @@ func (_m *MockIWhatsappService) EXPECT() *MockIWhatsappService_Expecter {
 	return &MockIWhatsappService_Expecter{mock: &_m.Mock}
 }
 
+// GetGroups provides a mock function for the type MockIWhatsappService
+func (_mock *MockIWhatsappService) GetGroups(ctx context.Context, req *dto.GetWhatsappGroupReq) ([]*dto.WhatsappGroupInfo, error) {
+	ret := _mock.Called(ctx, req)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetGroups")
+	}
+
+	var r0 []*dto.WhatsappGroupInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *dto.GetWhatsappGroupReq) ([]*dto.WhatsappGroupInfo, error)); ok {
+		return returnFunc(ctx, req)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *dto.GetWhatsappGroupReq) []*dto.WhatsappGroupInfo); ok {
+		r0 = returnFunc(ctx, req)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*dto.WhatsappGroupInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, *dto.GetWhatsappGroupReq) error); ok {
+		r1 = returnFunc(ctx, req)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIWhatsappService_GetGroups_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGroups'
+type MockIWhatsappService_GetGroups_Call struct {
+	*mock.Call
+}
+
+// GetGroups is a helper method to define mock.On call
+//   - ctx
+//   - req
+func (_e *MockIWhatsappService_Expecter) GetGroups(ctx interface{}, req interface{}) *MockIWhatsappService_GetGroups_Call {
+	return &MockIWhatsappService_GetGroups_Call{Call: _e.mock.On("GetGroups", ctx, req)}
+}
+
+func (_c *MockIWhatsappService_GetGroups_Call) Run(run func(ctx context.Context, req *dto.GetWhatsappGroupReq)) *MockIWhatsappService_GetGroups_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*dto.GetWhatsappGroupReq))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappService_GetGroups_Call) Return(whatsappGroupInfos []*dto.WhatsappGroupInfo, err error) *MockIWhatsappService_GetGroups_Call {
+	_c.Call.Return(whatsappGroupInfos, err)
+	return _c
+}
+
+func (_c *MockIWhatsappService_GetGroups_Call) RunAndReturn(run func(ctx context.Context, req *dto.GetWhatsappGroupReq) ([]*dto.WhatsappGroupInfo, error)) *MockIWhatsappService_GetGroups_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UnwhitelistGroup provides a mock function for the type MockIWhatsappService
+func (_mock *MockIWhatsappService) UnwhitelistGroup(ctx context.Context, req *dto.UnwhitelistWhatsappGroupReq) error {
+	ret := _mock.Called(ctx, req)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UnwhitelistGroup")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, *dto.UnwhitelistWhatsappGroupReq) error); ok {
+		r0 = returnFunc(ctx, req)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIWhatsappService_UnwhitelistGroup_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UnwhitelistGroup'
+type MockIWhatsappService_UnwhitelistGroup_Call struct {
+	*mock.Call
+}
+
+// UnwhitelistGroup is a helper method to define mock.On call
+//   - ctx
+//   - req
+func (_e *MockIWhatsappService_Expecter) UnwhitelistGroup(ctx interface{}, req interface{}) *MockIWhatsappService_UnwhitelistGroup_Call {
+	return &MockIWhatsappService_UnwhitelistGroup_Call{Call: _e.mock.On("UnwhitelistGroup", ctx, req)}
+}
+
+func (_c *MockIWhatsappService_UnwhitelistGroup_Call) Run(run func(ctx context.Context, req *dto.UnwhitelistWhatsappGroupReq)) *MockIWhatsappService_UnwhitelistGroup_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(*dto.UnwhitelistWhatsappGroupReq))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappService_UnwhitelistGroup_Call) Return(err error) *MockIWhatsappService_UnwhitelistGroup_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIWhatsappService_UnwhitelistGroup_Call) RunAndReturn(run func(ctx context.Context, req *dto.UnwhitelistWhatsappGroupReq) error) *MockIWhatsappService_UnwhitelistGroup_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // WhitelistGroup provides a mock function for the type MockIWhatsappService
 func (_mock *MockIWhatsappService) WhitelistGroup(ctx context.Context, req *dto.WhitelistWhatsappGroupReq) error {
 	ret := _mock.Called(ctx, req)

@@ -48,6 +48,26 @@ func (w *Web) APIWhatsappGroupWhitelist() echo.HandlerFunc {
 	}
 }
 
+func (w *Web) APIWhatsappGroupUnwhitelist() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		req := new(dto.UnwhitelistWhatsappGroupReq)
+
+		err := w.shouldBind(c, req)
+		if err != nil {
+			return err
+		}
+
+		if err = w.svc.WhatsappService.UnwhitelistGroup(c.Request().Context(), req); err != nil {
+			return err
+		}
+
+		return c.JSON(http.StatusOK, &dto.APIResponse{
+			Success: true,
+			Message: messages.GroupUnwhitelistSuccess,
+		})
+	}
+}
+
 func (w *Web) APIGetWhatsappGroups() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		req := new(dto.GetWhatsappGroupReq)
