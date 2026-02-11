@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"exaroton-wa-bot/internal/database/entity"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -28,6 +29,14 @@ const (
 	// is already pairing
 	WhatsappQREventIsPairing = "error-is-pairing"
 )
+
+type WhatsappJID struct {
+	User       string
+	RawAgent   uint8
+	Device     uint16
+	Integrator uint16
+	Server     string
+}
 
 // whatsapp qr websocket response
 type WhatsappQRWSRes struct {
@@ -106,4 +115,18 @@ func (r *UnwhitelistWhatsappGroupReq) Validate() error {
 		validation.Field(&r.User, validation.Required),
 		validation.Field(&r.Server, validation.Required),
 	)
+}
+
+// metadata for whatsapp whitelisted group
+// dto for db
+type WhatsappWhitelistedGroup struct {
+	UserJID   string `db:"jid"`        // user_jid
+	ServerJID string `db:"server_jid"` // server_jid
+}
+
+func NewWhatsappWhitelistedGroup(e *entity.WhatsappWhitelistedGroup) *WhatsappWhitelistedGroup {
+	return &WhatsappWhitelistedGroup{
+		UserJID:   e.JID,
+		ServerJID: e.ServerJID,
+	}
 }

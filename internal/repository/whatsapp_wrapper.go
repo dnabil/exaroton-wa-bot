@@ -87,14 +87,23 @@ func (w *waClient) Disconnect() {
 	}
 }
 
-func (w *waClient) GetPhoneNumber(ctx context.Context) (string, error) {
+func (w *waClient) GetPhoneNumber() string {
 	jid := w.client.GetLoggedInDeviceJID()
-
 	if jid == nil {
-		return "", errors.New("Not logged in yet")
+		return ""
 	}
 
-	return jid.User, nil
+	return jid.User
+}
+
+func (w *waClient) GetSelfLID() (*types.JID, error) {
+	lid := w.client.GetLoggedInDeviceLID()
+
+	if lid == nil {
+		return nil, errors.New("Not logged in yet")
+	}
+
+	return lid, nil
 }
 
 func (w *waClient) GetGroups(ctx context.Context) ([]*types.GroupInfo, error) {
@@ -159,8 +168,11 @@ type iWhatsmeowClientWrapper interface {
 
 	// to check wether the client already logged in
 	GetLoggedInDeviceJID() *types.JID
+	GetLoggedInDeviceLID() *types.JID
 	GetUserInfo(context.Context, []types.JID) (map[types.JID]types.UserInfo, error)
 	GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error)
+	RegisterEventHandler(f func(any)) uint32
+	UnregisterEventHandler(handlerID uint32) bool
 }
 
 var _ iWhatsmeowClientWrapper = &whatsmeowClientWrapper{}
@@ -193,10 +205,26 @@ func (w *whatsmeowClientWrapper) GetLoggedInDeviceJID() *types.JID {
 	return w.client.Store.ID
 }
 
+func (w *whatsmeowClientWrapper) GetLoggedInDeviceLID() *types.JID {
+	if w.client.Store.LID == types.EmptyJID {
+		return nil
+	}
+
+	return &w.client.Store.LID
+}
+
 func (w *whatsmeowClientWrapper) GetUserInfo(ctx context.Context, jids []types.JID) (map[types.JID]types.UserInfo, error) {
 	return w.client.GetUserInfo(ctx, jids)
 }
 
 func (w *whatsmeowClientWrapper) GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error) {
 	return w.client.GetJoinedGroups(ctx)
+}
+
+func (w *whatsmeowClientWrapper) RegisterEventHandler(f func(any)) uint32 {
+	return w.client.AddEventHandler(f)
+}
+
+func (w *whatsmeowClientWrapper) UnregisterEventHandler(handlerID uint32) bool {
+	return w.client.RemoveEventHandler(handlerID)
 }

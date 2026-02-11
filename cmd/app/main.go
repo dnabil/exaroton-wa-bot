@@ -4,6 +4,7 @@ import (
 	"context"
 	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/handler"
+	"exaroton-wa-bot/internal/handler/wahandler"
 	"exaroton-wa-bot/internal/repository"
 	"exaroton-wa-bot/internal/service"
 	"fmt"
@@ -14,6 +15,7 @@ import (
 	"strconv"
 	"syscall"
 
+	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 )
 
@@ -68,6 +70,12 @@ func run() {
 
 	service := service.New(cfg, db, repo)
 	handler := handler.NewWeb(cfg, service)
+	waHandler := wahandler.NewWAHandler(
+		cfg,
+		repo.WhatsappRepo,
+		service.AuthService,
+		service.ServerSettingsService,
+	)
 
 	port, err := strconv.Atoi(cfg.String(config.KeyPort))
 	if err != nil {
@@ -75,17 +83,23 @@ func run() {
 		os.Exit(1)
 	}
 
+	g, ctx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		slog.Info("server started")
+		waHandler.Run()
+		return handler.RunHTTP(port)
+	})
+
+	// graceful shutdown
+	shutdown := getGracefulShutdown(handler.Router.Server, db, waDb, repo.WhatsappRepo, waHandler)
+
 	// run server
 	srvErrs := make(chan error, 1)
 	go func() {
 		defer config.Recover(context.TODO(), args)
-
-		slog.Info("server started")
-		srvErrs <- handler.RunHTTP(port)
+		srvErrs <- g.Wait()
 	}()
-
-	// graceful shutdown
-	shutdown := getGracefulShutdown(handler.Router.Server, db, waDb, repo.WhatsappRepo)
 
 	select {
 	case err := <-srvErrs:
@@ -102,10 +116,15 @@ func getGracefulShutdown(
 	gormDB *gorm.DB,
 	waDb *config.WhatsappDB,
 	whatsappRepo repository.IWhatsappRepo,
+	waHandler *wahandler.WaHandler,
 ) func(reason interface{}) {
 	return func(reason interface{}) {
 		// put services that needs to be gracefully shutdown here...
 		slog.Info("Server shutting down:", "reason", reason)
+
+		if waHandler != nil {
+			waHandler.Stop()
+		}
 
 		// whatsapp client
 		if whatsappRepo != nil {

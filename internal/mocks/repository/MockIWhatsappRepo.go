@@ -132,29 +132,20 @@ func (_c *MockIWhatsappRepo_GetGroups_Call) RunAndReturn(run func(ctx context.Co
 }
 
 // GetPhoneNumber provides a mock function for the type MockIWhatsappRepo
-func (_mock *MockIWhatsappRepo) GetPhoneNumber(ctx context.Context) (string, error) {
-	ret := _mock.Called(ctx)
+func (_mock *MockIWhatsappRepo) GetPhoneNumber() string {
+	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetPhoneNumber")
 	}
 
 	var r0 string
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) (string, error)); ok {
-		return returnFunc(ctx)
-	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context) string); ok {
-		r0 = returnFunc(ctx)
+	if returnFunc, ok := ret.Get(0).(func() string); ok {
+		r0 = returnFunc()
 	} else {
 		r0 = ret.Get(0).(string)
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = returnFunc(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-	return r0, r1
+	return r0
 }
 
 // MockIWhatsappRepo_GetPhoneNumber_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetPhoneNumber'
@@ -163,34 +154,79 @@ type MockIWhatsappRepo_GetPhoneNumber_Call struct {
 }
 
 // GetPhoneNumber is a helper method to define mock.On call
-//   - ctx
-func (_e *MockIWhatsappRepo_Expecter) GetPhoneNumber(ctx interface{}) *MockIWhatsappRepo_GetPhoneNumber_Call {
-	return &MockIWhatsappRepo_GetPhoneNumber_Call{Call: _e.mock.On("GetPhoneNumber", ctx)}
+func (_e *MockIWhatsappRepo_Expecter) GetPhoneNumber() *MockIWhatsappRepo_GetPhoneNumber_Call {
+	return &MockIWhatsappRepo_GetPhoneNumber_Call{Call: _e.mock.On("GetPhoneNumber")}
 }
 
-func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_GetPhoneNumber_Call {
+func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) Run(run func()) *MockIWhatsappRepo_GetPhoneNumber_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		run()
 	})
 	return _c
 }
 
-func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) Return(s string, err error) *MockIWhatsappRepo_GetPhoneNumber_Call {
-	_c.Call.Return(s, err)
+func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) Return(s string) *MockIWhatsappRepo_GetPhoneNumber_Call {
+	_c.Call.Return(s)
 	return _c
 }
 
-func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) RunAndReturn(run func(ctx context.Context) (string, error)) *MockIWhatsappRepo_GetPhoneNumber_Call {
+func (_c *MockIWhatsappRepo_GetPhoneNumber_Call) RunAndReturn(run func() string) *MockIWhatsappRepo_GetPhoneNumber_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// GetWhitelistedJIDs provides a mock function for the type MockIWhatsappRepo
-func (_mock *MockIWhatsappRepo) GetWhitelistedJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error) {
+// GetSelfLID provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) GetSelfLID() *dto.WhatsappJID {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetSelfLID")
+	}
+
+	var r0 *dto.WhatsappJID
+	if returnFunc, ok := ret.Get(0).(func() *dto.WhatsappJID); ok {
+		r0 = returnFunc()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.WhatsappJID)
+		}
+	}
+	return r0
+}
+
+// MockIWhatsappRepo_GetSelfLID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetSelfLID'
+type MockIWhatsappRepo_GetSelfLID_Call struct {
+	*mock.Call
+}
+
+// GetSelfLID is a helper method to define mock.On call
+func (_e *MockIWhatsappRepo_Expecter) GetSelfLID() *MockIWhatsappRepo_GetSelfLID_Call {
+	return &MockIWhatsappRepo_GetSelfLID_Call{Call: _e.mock.On("GetSelfLID")}
+}
+
+func (_c *MockIWhatsappRepo_GetSelfLID_Call) Run(run func()) *MockIWhatsappRepo_GetSelfLID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetSelfLID_Call) Return(whatsappJID *dto.WhatsappJID) *MockIWhatsappRepo_GetSelfLID_Call {
+	_c.Call.Return(whatsappJID)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_GetSelfLID_Call) RunAndReturn(run func() *dto.WhatsappJID) *MockIWhatsappRepo_GetSelfLID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetWhitelistedGroupJIDs provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) GetWhitelistedGroupJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error) {
 	ret := _mock.Called(ctx, tx)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetWhitelistedJIDs")
+		panic("no return value specified for GetWhitelistedGroupJIDs")
 	}
 
 	var r0 []*entity.WhatsappWhitelistedGroup
@@ -213,31 +249,31 @@ func (_mock *MockIWhatsappRepo) GetWhitelistedJIDs(ctx context.Context, tx *gorm
 	return r0, r1
 }
 
-// MockIWhatsappRepo_GetWhitelistedJIDs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWhitelistedJIDs'
-type MockIWhatsappRepo_GetWhitelistedJIDs_Call struct {
+// MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWhitelistedGroupJIDs'
+type MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call struct {
 	*mock.Call
 }
 
-// GetWhitelistedJIDs is a helper method to define mock.On call
+// GetWhitelistedGroupJIDs is a helper method to define mock.On call
 //   - ctx
 //   - tx
-func (_e *MockIWhatsappRepo_Expecter) GetWhitelistedJIDs(ctx interface{}, tx interface{}) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
-	return &MockIWhatsappRepo_GetWhitelistedJIDs_Call{Call: _e.mock.On("GetWhitelistedJIDs", ctx, tx)}
+func (_e *MockIWhatsappRepo_Expecter) GetWhitelistedGroupJIDs(ctx interface{}, tx interface{}) *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call {
+	return &MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call{Call: _e.mock.On("GetWhitelistedGroupJIDs", ctx, tx)}
 }
 
-func (_c *MockIWhatsappRepo_GetWhitelistedJIDs_Call) Run(run func(ctx context.Context, tx *gorm.DB)) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
+func (_c *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call) Run(run func(ctx context.Context, tx *gorm.DB)) *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(*gorm.DB))
 	})
 	return _c
 }
 
-func (_c *MockIWhatsappRepo_GetWhitelistedJIDs_Call) Return(whatsappWhitelistedGroups []*entity.WhatsappWhitelistedGroup, err error) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
+func (_c *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call) Return(whatsappWhitelistedGroups []*entity.WhatsappWhitelistedGroup, err error) *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call {
 	_c.Call.Return(whatsappWhitelistedGroups, err)
 	return _c
 }
 
-func (_c *MockIWhatsappRepo_GetWhitelistedJIDs_Call) RunAndReturn(run func(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)) *MockIWhatsappRepo_GetWhitelistedJIDs_Call {
+func (_c *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call) RunAndReturn(run func(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)) *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -383,6 +419,96 @@ func (_c *MockIWhatsappRepo_Logout_Call) Return(err error) *MockIWhatsappRepo_Lo
 }
 
 func (_c *MockIWhatsappRepo_Logout_Call) RunAndReturn(run func(ctx context.Context) error) *MockIWhatsappRepo_Logout_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RegisterEventHandler provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) RegisterEventHandler(f func(any)) uint32 {
+	ret := _mock.Called(f)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RegisterEventHandler")
+	}
+
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func(func(any)) uint32); ok {
+		r0 = returnFunc(f)
+	} else {
+		r0 = ret.Get(0).(uint32)
+	}
+	return r0
+}
+
+// MockIWhatsappRepo_RegisterEventHandler_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RegisterEventHandler'
+type MockIWhatsappRepo_RegisterEventHandler_Call struct {
+	*mock.Call
+}
+
+// RegisterEventHandler is a helper method to define mock.On call
+//   - f
+func (_e *MockIWhatsappRepo_Expecter) RegisterEventHandler(f interface{}) *MockIWhatsappRepo_RegisterEventHandler_Call {
+	return &MockIWhatsappRepo_RegisterEventHandler_Call{Call: _e.mock.On("RegisterEventHandler", f)}
+}
+
+func (_c *MockIWhatsappRepo_RegisterEventHandler_Call) Run(run func(f func(any))) *MockIWhatsappRepo_RegisterEventHandler_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(func(any)))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_RegisterEventHandler_Call) Return(v uint32) *MockIWhatsappRepo_RegisterEventHandler_Call {
+	_c.Call.Return(v)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_RegisterEventHandler_Call) RunAndReturn(run func(f func(any)) uint32) *MockIWhatsappRepo_RegisterEventHandler_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UnregisterEventHandler provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) UnregisterEventHandler(handlerID uint32) bool {
+	ret := _mock.Called(handlerID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UnregisterEventHandler")
+	}
+
+	var r0 bool
+	if returnFunc, ok := ret.Get(0).(func(uint32) bool); ok {
+		r0 = returnFunc(handlerID)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	return r0
+}
+
+// MockIWhatsappRepo_UnregisterEventHandler_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UnregisterEventHandler'
+type MockIWhatsappRepo_UnregisterEventHandler_Call struct {
+	*mock.Call
+}
+
+// UnregisterEventHandler is a helper method to define mock.On call
+//   - handlerID
+func (_e *MockIWhatsappRepo_Expecter) UnregisterEventHandler(handlerID interface{}) *MockIWhatsappRepo_UnregisterEventHandler_Call {
+	return &MockIWhatsappRepo_UnregisterEventHandler_Call{Call: _e.mock.On("UnregisterEventHandler", handlerID)}
+}
+
+func (_c *MockIWhatsappRepo_UnregisterEventHandler_Call) Run(run func(handlerID uint32)) *MockIWhatsappRepo_UnregisterEventHandler_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uint32))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_UnregisterEventHandler_Call) Return(b bool) *MockIWhatsappRepo_UnregisterEventHandler_Call {
+	_c.Call.Return(b)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_UnregisterEventHandler_Call) RunAndReturn(run func(handlerID uint32) bool) *MockIWhatsappRepo_UnregisterEventHandler_Call {
 	_c.Call.Return(run)
 	return _c
 }

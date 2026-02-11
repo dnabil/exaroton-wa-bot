@@ -218,6 +218,52 @@ func (_c *mockiWhatsmeowClientWrapper_GetLoggedInDeviceJID_Call) RunAndReturn(ru
 	return _c
 }
 
+// GetLoggedInDeviceLID provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) GetLoggedInDeviceLID() *types.JID {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetLoggedInDeviceLID")
+	}
+
+	var r0 *types.JID
+	if returnFunc, ok := ret.Get(0).(func() *types.JID); ok {
+		r0 = returnFunc()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*types.JID)
+		}
+	}
+	return r0
+}
+
+// mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetLoggedInDeviceLID'
+type mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call struct {
+	*mock.Call
+}
+
+// GetLoggedInDeviceLID is a helper method to define mock.On call
+func (_e *mockiWhatsmeowClientWrapper_Expecter) GetLoggedInDeviceLID() *mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call {
+	return &mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call{Call: _e.mock.On("GetLoggedInDeviceLID")}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call) Run(run func()) *mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call) Return(jID *types.JID) *mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call {
+	_c.Call.Return(jID)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call) RunAndReturn(run func() *types.JID) *mockiWhatsmeowClientWrapper_GetLoggedInDeviceLID_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetQRChannel provides a mock function for the type mockiWhatsmeowClientWrapper
 func (_mock *mockiWhatsmeowClientWrapper) GetQRChannel(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error) {
 	ret := _mock.Called(ctx)
@@ -416,6 +462,96 @@ func (_c *mockiWhatsmeowClientWrapper_Logout_Call) Return(err error) *mockiWhats
 }
 
 func (_c *mockiWhatsmeowClientWrapper_Logout_Call) RunAndReturn(run func(ctx context.Context) error) *mockiWhatsmeowClientWrapper_Logout_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// RegisterEventHandler provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) RegisterEventHandler(f func(any)) uint32 {
+	ret := _mock.Called(f)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RegisterEventHandler")
+	}
+
+	var r0 uint32
+	if returnFunc, ok := ret.Get(0).(func(func(any)) uint32); ok {
+		r0 = returnFunc(f)
+	} else {
+		r0 = ret.Get(0).(uint32)
+	}
+	return r0
+}
+
+// mockiWhatsmeowClientWrapper_RegisterEventHandler_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'RegisterEventHandler'
+type mockiWhatsmeowClientWrapper_RegisterEventHandler_Call struct {
+	*mock.Call
+}
+
+// RegisterEventHandler is a helper method to define mock.On call
+//   - f
+func (_e *mockiWhatsmeowClientWrapper_Expecter) RegisterEventHandler(f interface{}) *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call {
+	return &mockiWhatsmeowClientWrapper_RegisterEventHandler_Call{Call: _e.mock.On("RegisterEventHandler", f)}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call) Run(run func(f func(any))) *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(func(any)))
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call) Return(v uint32) *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call {
+	_c.Call.Return(v)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call) RunAndReturn(run func(f func(any)) uint32) *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UnregisterEventHandler provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) UnregisterEventHandler(handlerID uint32) bool {
+	ret := _mock.Called(handlerID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UnregisterEventHandler")
+	}
+
+	var r0 bool
+	if returnFunc, ok := ret.Get(0).(func(uint32) bool); ok {
+		r0 = returnFunc(handlerID)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	return r0
+}
+
+// mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UnregisterEventHandler'
+type mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call struct {
+	*mock.Call
+}
+
+// UnregisterEventHandler is a helper method to define mock.On call
+//   - handlerID
+func (_e *mockiWhatsmeowClientWrapper_Expecter) UnregisterEventHandler(handlerID interface{}) *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call {
+	return &mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call{Call: _e.mock.On("UnregisterEventHandler", handlerID)}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call) Run(run func(handlerID uint32)) *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uint32))
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call) Return(b bool) *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call {
+	_c.Call.Return(b)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call) RunAndReturn(run func(handlerID uint32) bool) *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call {
 	_c.Call.Return(run)
 	return _c
 }

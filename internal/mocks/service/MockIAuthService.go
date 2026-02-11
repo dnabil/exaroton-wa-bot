@@ -154,22 +154,68 @@ func (_c *MockIAuthService_GetWhatsappGroups_Call) RunAndReturn(run func(ctx con
 }
 
 // GetWhatsappPhoneNumber provides a mock function for the type MockIAuthService
-func (_mock *MockIAuthService) GetWhatsappPhoneNumber(ctx context.Context) (string, error) {
-	ret := _mock.Called(ctx)
+func (_mock *MockIAuthService) GetWhatsappPhoneNumber() string {
+	ret := _mock.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetWhatsappPhoneNumber")
 	}
 
 	var r0 string
-	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context) (string, error)); ok {
-		return returnFunc(ctx)
-	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context) string); ok {
-		r0 = returnFunc(ctx)
+	if returnFunc, ok := ret.Get(0).(func() string); ok {
+		r0 = returnFunc()
 	} else {
 		r0 = ret.Get(0).(string)
+	}
+	return r0
+}
+
+// MockIAuthService_GetWhatsappPhoneNumber_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWhatsappPhoneNumber'
+type MockIAuthService_GetWhatsappPhoneNumber_Call struct {
+	*mock.Call
+}
+
+// GetWhatsappPhoneNumber is a helper method to define mock.On call
+func (_e *MockIAuthService_Expecter) GetWhatsappPhoneNumber() *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	return &MockIAuthService_GetWhatsappPhoneNumber_Call{Call: _e.mock.On("GetWhatsappPhoneNumber")}
+}
+
+func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) Run(run func()) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) Return(s string) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	_c.Call.Return(s)
+	return _c
+}
+
+func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) RunAndReturn(run func() string) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetWhatsappWhitelistedGroupJIDs provides a mock function for the type MockIAuthService
+func (_mock *MockIAuthService) GetWhatsappWhitelistedGroupJIDs(ctx context.Context) ([]*dto.WhatsappWhitelistedGroup, error) {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetWhatsappWhitelistedGroupJIDs")
+	}
+
+	var r0 []*dto.WhatsappWhitelistedGroup
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]*dto.WhatsappWhitelistedGroup, error)); ok {
+		return returnFunc(ctx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context) []*dto.WhatsappWhitelistedGroup); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*dto.WhatsappWhitelistedGroup)
+		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
 		r1 = returnFunc(ctx)
@@ -179,30 +225,30 @@ func (_mock *MockIAuthService) GetWhatsappPhoneNumber(ctx context.Context) (stri
 	return r0, r1
 }
 
-// MockIAuthService_GetWhatsappPhoneNumber_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWhatsappPhoneNumber'
-type MockIAuthService_GetWhatsappPhoneNumber_Call struct {
+// MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetWhatsappWhitelistedGroupJIDs'
+type MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call struct {
 	*mock.Call
 }
 
-// GetWhatsappPhoneNumber is a helper method to define mock.On call
+// GetWhatsappWhitelistedGroupJIDs is a helper method to define mock.On call
 //   - ctx
-func (_e *MockIAuthService_Expecter) GetWhatsappPhoneNumber(ctx interface{}) *MockIAuthService_GetWhatsappPhoneNumber_Call {
-	return &MockIAuthService_GetWhatsappPhoneNumber_Call{Call: _e.mock.On("GetWhatsappPhoneNumber", ctx)}
+func (_e *MockIAuthService_Expecter) GetWhatsappWhitelistedGroupJIDs(ctx interface{}) *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call {
+	return &MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call{Call: _e.mock.On("GetWhatsappWhitelistedGroupJIDs", ctx)}
 }
 
-func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) Run(run func(ctx context.Context)) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+func (_c *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call) Run(run func(ctx context.Context)) *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context))
 	})
 	return _c
 }
 
-func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) Return(s string, err error) *MockIAuthService_GetWhatsappPhoneNumber_Call {
-	_c.Call.Return(s, err)
+func (_c *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call) Return(whatsappWhitelistedGroups []*dto.WhatsappWhitelistedGroup, err error) *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call {
+	_c.Call.Return(whatsappWhitelistedGroups, err)
 	return _c
 }
 
-func (_c *MockIAuthService_GetWhatsappPhoneNumber_Call) RunAndReturn(run func(ctx context.Context) (string, error)) *MockIAuthService_GetWhatsappPhoneNumber_Call {
+func (_c *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call) RunAndReturn(run func(ctx context.Context) ([]*dto.WhatsappWhitelistedGroup, error)) *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call {
 	_c.Call.Return(run)
 	return _c
 }

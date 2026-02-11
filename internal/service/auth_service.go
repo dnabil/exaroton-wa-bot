@@ -19,9 +19,13 @@ type IAuthService interface {
 	WhatsappLogin(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
 	WhatsappLogout(ctx context.Context) error
 	WhatsappIsLoggedIn(ctx context.Context) bool
-	GetWhatsappPhoneNumber(ctx context.Context) (string, error)
+	GetWhatsappPhoneNumber() string
 	GetWhatsappGroups(ctx context.Context) ([]*dto.WhatsappGroupInfo, error)
+
+	// just filters based on whitelisted groups in db
 	FilterWhatsappWhitelistedGroups(ctx context.Context, allGroups []*dto.WhatsappGroupInfo) ([]*dto.WhatsappGroupInfo, error)
+
+	GetWhatsappWhitelistedGroupJIDs(ctx context.Context) ([]*dto.WhatsappWhitelistedGroup, error)
 }
 
 type AuthService struct {
@@ -76,8 +80,8 @@ func (s *AuthService) WhatsappIsLoggedIn(ctx context.Context) bool {
 	return s.waRepo.IsLoggedIn()
 }
 
-func (s *AuthService) GetWhatsappPhoneNumber(ctx context.Context) (string, error) {
-	return s.waRepo.GetPhoneNumber(ctx)
+func (s *AuthService) GetWhatsappPhoneNumber() string {
+	return s.waRepo.GetPhoneNumber()
 }
 
 func (s *AuthService) GetWhatsappGroups(ctx context.Context) ([]*dto.WhatsappGroupInfo, error) {
@@ -102,7 +106,7 @@ func (s *AuthService) FilterWhatsappWhitelistedGroups(ctx context.Context, allGr
 		}
 	}()
 
-	whitelistedJIDS, err := s.waRepo.GetWhitelistedJIDs(ctx, tx)
+	whitelistedJIDS, err := s.waRepo.GetWhitelistedGroupJIDs(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -128,4 +132,25 @@ func (s *AuthService) FilterWhatsappWhitelistedGroups(ctx context.Context, allGr
 
 func (s *AuthService) WhatsappLogout(ctx context.Context) error {
 	return s.waRepo.Logout(ctx)
+}
+
+func (s *AuthService) GetWhatsappWhitelistedGroupJIDs(ctx context.Context) ([]*dto.WhatsappWhitelistedGroup, error) {
+	tx := s.tx.Begin(ctx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
+
+	entities, err := s.waRepo.GetWhitelistedGroupJIDs(ctx, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make([]*dto.WhatsappWhitelistedGroup, len(entities))
+	for i, entity := range entities {
+		res[i] = dto.NewWhatsappWhitelistedGroup(entity)
+	}
+
+	return res, nil
 }

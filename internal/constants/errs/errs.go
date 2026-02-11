@@ -16,6 +16,9 @@ var (
 	ErrUserAlreadyLoggedIn = errors.New("User is already logged in")
 	ErrUserNotLoggedIn     = errors.New("User is not logged in")
 	ErrLoginFailed         = errors.New("Wrong credentials")
+
+	ErrWAGroupNotWhitelisted = errors.New("Whatsapp group is not whitelisted")
+	ErrInvalidCommandPrefix  = errors.New("Invalid command prefix")
 )
 
 // whatsapp errors
@@ -34,4 +37,5 @@ var (
 var (
 	ErrGSIsDown        = errors.New("Game server might be down")
 	ErrGSInvalidAPIKey = errors.New("Invalid API key")
+	ErrGSEmptyAPIKey   = errors.New("API key is empty")
 )

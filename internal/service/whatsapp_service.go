@@ -80,7 +80,7 @@ func (s *WhatsappService) GetGroups(ctx context.Context, req *dto.GetWhatsappGro
 		}
 	}()
 
-	jids, err := s.waRepo.GetWhitelistedJIDs(ctx, tx)
+	jids, err := s.waRepo.GetWhitelistedGroupJIDs(ctx, tx)
 	if err != nil {
 		return nil, err
 	}

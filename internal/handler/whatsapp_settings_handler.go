@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"exaroton-wa-bot/internal/constants/errs"
 	"exaroton-wa-bot/internal/constants/messages"
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/pages"
@@ -11,9 +12,9 @@ import (
 
 func (w *Web) SettingsWhatsappPage() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		number, err := w.svc.AuthService.GetWhatsappPhoneNumber(c.Request().Context())
-		if err != nil {
-			return err
+		number := w.svc.AuthService.GetWhatsappPhoneNumber()
+		if number == "" {
+			return errs.ErrWANotLoggedIn
 		}
 
 		return c.Render(http.StatusOK, pages.SettingsWhatsapp, dto.SettingsWhatsappPageData{

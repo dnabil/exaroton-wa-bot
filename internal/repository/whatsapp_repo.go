@@ -13,13 +13,16 @@ import (
 )
 
 type IWhatsappRepo interface {
+	RegisterEventHandler(f func(any)) uint32
+	UnregisterEventHandler(handlerID uint32) bool
 	Disconnect()
 	Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
 	Logout(ctx context.Context) error
 	IsLoggedIn() bool
-	GetPhoneNumber(ctx context.Context) (string, error)
+	GetPhoneNumber() string // self
+	GetSelfLID() *dto.WhatsappJID
 	GetGroups(ctx context.Context) ([]*types.GroupInfo, error)
-	GetWhitelistedJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)
+	GetWhitelistedGroupJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)
 	WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error
 	UnwhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq) error
 }
@@ -40,6 +43,14 @@ func newWhatsappRepo(waDB *config.WhatsappDB) (IWhatsappRepo, error) {
 	}, nil
 }
 
+func (r *whatsappRepo) RegisterEventHandler(f func(any)) uint32 {
+	return r.waClient.client.RegisterEventHandler(f)
+}
+
+func (r *whatsappRepo) UnregisterEventHandler(handlerID uint32) bool {
+	return r.waClient.client.UnregisterEventHandler(handlerID)
+}
+
 func (r *whatsappRepo) Disconnect() {
 	r.waClient.Disconnect()
 }
@@ -56,15 +67,30 @@ func (r *whatsappRepo) IsLoggedIn() bool {
 	return r.waClient.IsLoggedIn()
 }
 
-func (r *whatsappRepo) GetPhoneNumber(ctx context.Context) (string, error) {
-	return r.waClient.GetPhoneNumber(ctx)
+func (r *whatsappRepo) GetPhoneNumber() string {
+	return r.waClient.GetPhoneNumber()
+}
+
+func (r *whatsappRepo) GetSelfLID() *dto.WhatsappJID {
+	lid, err := r.waClient.GetSelfLID()
+	if err != nil {
+		return nil
+	}
+
+	return &dto.WhatsappJID{
+		User:       lid.User,
+		RawAgent:   lid.RawAgent,
+		Device:     lid.Device,
+		Integrator: lid.Integrator,
+		Server:     lid.Server,
+	}
 }
 
 func (r *whatsappRepo) GetGroups(ctx context.Context) ([]*types.GroupInfo, error) {
 	return r.waClient.GetGroups(ctx)
 }
 
-func (r *whatsappRepo) GetWhitelistedJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error) {
+func (r *whatsappRepo) GetWhitelistedGroupJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error) {
 	whitelistedGroups := make([]*entity.WhatsappWhitelistedGroup, 0)
 	if err := tx.Find(&whitelistedGroups).Error; err != nil {
 		return nil, err
