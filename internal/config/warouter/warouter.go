@@ -33,6 +33,7 @@ type (
 		UnregisterEventHandler(handlerID uint32) bool
 		GetPhoneNumber() string // self phone number
 		GetSelfLID() *dto.WhatsappJID
+		IsSyncComplete(ctx context.Context) bool
 	}
 
 	Router struct {
@@ -89,6 +90,11 @@ func (r *Router) Run() {
 // and call the handle function. If the handle function returns an error, it
 // will call the ErrorHandlerFunc if it is not nil.
 func (r *Router) entryPoint(evt any) {
+	// skip all event if sync is not complete
+	if !r.waSvc.IsSyncComplete(context.TODO()) {
+		return
+	}
+
 	switch v := evt.(type) {
 	case *events.Message:
 		// is it really needed? skip messages from self

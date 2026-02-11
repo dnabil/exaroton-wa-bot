@@ -39,11 +39,11 @@ func newWhatsappRepo(waClient *waClient) IWhatsappRepo {
 }
 
 func (r *whatsappRepo) RegisterEventHandler(f func(any)) uint32 {
-	return r.waClient.client.RegisterEventHandler(f)
+	return r.waClient.RegisterEventHandler(f)
 }
 
 func (r *whatsappRepo) UnregisterEventHandler(handlerID uint32) bool {
-	return r.waClient.client.UnregisterEventHandler(handlerID)
+	return r.waClient.UnregisterEventHandler(handlerID)
 }
 
 func (r *whatsappRepo) Disconnect() {
@@ -67,18 +67,7 @@ func (r *whatsappRepo) GetPhoneNumber() string {
 }
 
 func (r *whatsappRepo) GetSelfLID() *dto.WhatsappJID {
-	lid, err := r.waClient.GetSelfLID()
-	if err != nil {
-		return nil
-	}
-
-	return &dto.WhatsappJID{
-		User:       lid.User,
-		RawAgent:   lid.RawAgent,
-		Device:     lid.Device,
-		Integrator: lid.Integrator,
-		Server:     lid.Server,
-	}
+	return r.waClient.GetSelfLID()
 }
 
 func (r *whatsappRepo) GetGroups(ctx context.Context) ([]*types.GroupInfo, error) {

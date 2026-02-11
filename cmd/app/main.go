@@ -79,7 +79,7 @@ func run() {
 	handler := handler.NewWeb(cfg, service)
 	waHandler := wahandler.NewWAHandler(
 		cfg,
-		repo.WhatsappRepo,
+		waClient,
 		service.AuthService,
 		service.ServerSettingsService,
 	)

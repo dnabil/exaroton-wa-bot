@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/constants/errs"
+	"exaroton-wa-bot/internal/dto"
 	"sync"
 	"sync/atomic"
 
@@ -129,14 +129,19 @@ func (w *waClient) GetPhoneNumber() string {
 	return jid.User
 }
 
-func (w *waClient) GetSelfLID() (*types.JID, error) {
+func (w *waClient) GetSelfLID() *dto.WhatsappJID {
 	lid := w.client.GetLoggedInDeviceLID()
-
 	if lid == nil {
-		return nil, errors.New("Not logged in yet")
+		return nil
 	}
 
-	return lid, nil
+	return &dto.WhatsappJID{
+		User:       lid.User,
+		RawAgent:   lid.RawAgent,
+		Device:     lid.Device,
+		Integrator: lid.Integrator,
+		Server:     lid.Server,
+	}
 }
 
 func (w *waClient) GetGroups(ctx context.Context) ([]*types.GroupInfo, error) {
@@ -185,6 +190,14 @@ func (w *waClient) getQRSub() *chan whatsmeow.QRChannelItem {
 		return nil
 	}
 	return &w.qrSub
+}
+
+func (w *waClient) RegisterEventHandler(f func(any)) uint32 {
+	return w.client.RegisterEventHandler(f)
+}
+
+func (w *waClient) UnregisterEventHandler(code uint32) bool {
+	return w.client.UnregisterEventHandler(code)
 }
 
 // ================================
