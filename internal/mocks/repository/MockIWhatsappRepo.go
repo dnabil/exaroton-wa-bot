@@ -322,6 +322,51 @@ func (_c *MockIWhatsappRepo_IsLoggedIn_Call) RunAndReturn(run func() bool) *Mock
 	return _c
 }
 
+// IsSyncComplete provides a mock function for the type MockIWhatsappRepo
+func (_mock *MockIWhatsappRepo) IsSyncComplete(ctx context.Context) bool {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for IsSyncComplete")
+	}
+
+	var r0 bool
+	if returnFunc, ok := ret.Get(0).(func(context.Context) bool); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	return r0
+}
+
+// MockIWhatsappRepo_IsSyncComplete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IsSyncComplete'
+type MockIWhatsappRepo_IsSyncComplete_Call struct {
+	*mock.Call
+}
+
+// IsSyncComplete is a helper method to define mock.On call
+//   - ctx
+func (_e *MockIWhatsappRepo_Expecter) IsSyncComplete(ctx interface{}) *MockIWhatsappRepo_IsSyncComplete_Call {
+	return &MockIWhatsappRepo_IsSyncComplete_Call{Call: _e.mock.On("IsSyncComplete", ctx)}
+}
+
+func (_c *MockIWhatsappRepo_IsSyncComplete_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_IsSyncComplete_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_IsSyncComplete_Call) Return(b bool) *MockIWhatsappRepo_IsSyncComplete_Call {
+	_c.Call.Return(b)
+	return _c
+}
+
+func (_c *MockIWhatsappRepo_IsSyncComplete_Call) RunAndReturn(run func(ctx context.Context) bool) *MockIWhatsappRepo_IsSyncComplete_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Login provides a mock function for the type MockIWhatsappRepo
 func (_mock *MockIWhatsappRepo) Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error) {
 	ret := _mock.Called(ctx)

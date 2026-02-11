@@ -6,16 +6,21 @@ import (
 	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/constants/errs"
 	"sync"
+	"sync/atomic"
 
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/types"
+	"go.mau.fi/whatsmeow/types/events"
 )
 
+// represents a single whatsapp device/account.
 type waClient struct {
 	client iWhatsmeowClientWrapper
 
 	qrSub     chan whatsmeow.QRChannelItem
 	qrSubLock sync.RWMutex
+
+	isSyncComplete atomic.Bool
 }
 
 // NewWAClient creates a new WhatsApp client (without connecting to an account).
@@ -30,9 +35,30 @@ func NewWAClient(db *config.WhatsappDB) (*waClient, error) {
 	}
 
 	client := whatsmeow.NewClient(deviceStore, db.ClientLogger)
-	return &waClient{
+	waClient := &waClient{
 		client: &whatsmeowClientWrapper{client: client},
-	}, nil
+	}
+
+	waClient.client.RegisterEventHandler(getStateEventHandler(waClient))
+
+	return waClient, nil
+}
+
+func getStateEventHandler(w *waClient) func(evt interface{}) {
+	return func(evt interface{}) {
+		switch evt.(type) {
+		case *events.Connected:
+			w.isSyncComplete.Store(true)
+		case *events.OfflineSyncPreview:
+			w.isSyncComplete.Store(false)
+		case *events.OfflineSyncCompleted:
+			w.isSyncComplete.Store(true)
+		}
+	}
+}
+
+func (w *waClient) IsSyncComplete(ctx context.Context) bool {
+	return w.isSyncComplete.Load()
 }
 
 func (w *waClient) IsLoggedIn() bool {
@@ -47,14 +73,9 @@ func (w *waClient) Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, e
 		return nil, errs.ErrWAAlreadyLoggedIn
 	}
 
-	// try to connect with saved session
-	if w.client.GetLoggedInDeviceJID() != nil {
-		err := w.client.Connect()
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, nil
+	// login with existing session
+	if ok, err := w.LoginWithExistingSession(ctx); ok {
+		return nil, err
 	}
 
 	// check for existing qr session
@@ -75,6 +96,18 @@ func (w *waClient) Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, e
 	w.publishQR(newQRPub)
 
 	return *w.getQRSub(), nil
+}
+
+func (w *waClient) LoginWithExistingSession(ctx context.Context) (bool, error) {
+	if !w.IsLoggedIn() && w.client.GetLoggedInDeviceJID() != nil {
+		err := w.client.Connect()
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+
+	return false, nil
 }
 
 func (w *waClient) Logout(ctx context.Context) error {

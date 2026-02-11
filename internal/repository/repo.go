@@ -2,8 +2,6 @@ package repository
 
 import (
 	"context"
-	"exaroton-wa-bot/internal/config"
-	"log/slog"
 
 	"gorm.io/gorm"
 )
@@ -15,15 +13,9 @@ type Repo struct {
 	ExarotonRepo       IExarotonRepo
 }
 
-func New(db *gorm.DB, waDB *config.WhatsappDB) (*Repo, error) {
-	whatsappRepo, err := newWhatsappRepo(waDB)
-	if err != nil {
-		slog.Error("failed to create whatsapp repo", "error", err)
-		return nil, err
-	}
-
+func New(db *gorm.DB, waClient *waClient) (*Repo, error) {
 	return &Repo{
-		WhatsappRepo:       whatsappRepo,
+		WhatsappRepo:       newWhatsappRepo(waClient),
 		UserRepo:           newUserRepo(),
 		ServerSettingsRepo: newServerSettingsRepo(),
 		ExarotonRepo:       newExarotonRepo(),

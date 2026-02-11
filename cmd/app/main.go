@@ -62,7 +62,14 @@ func run() {
 		os.Exit(1)
 	}
 
-	repo, err := repository.New(db, waDb)
+	// whatsapp client
+	waClient, err := repository.NewWAClient(waDb)
+	if err != nil {
+		slog.Error("failed to create whatsapp bot client", "error", err)
+		os.Exit(1)
+	}
+
+	repo, err := repository.New(db, waClient)
 	if err != nil {
 		slog.Error("failed to create repo", config.KeyLogErr, err)
 		os.Exit(1)
@@ -84,6 +91,18 @@ func run() {
 	}
 
 	g, ctx := errgroup.WithContext(ctx)
+
+	autoWaLogin := cfg.Bool(config.KeyAutoWhatsappLogin)
+	if autoWaLogin {
+		slog.Info("auto login whatsapp during startup is enabled")
+		isWaLoggedIn, err := waClient.LoginWithExistingSession(ctx)
+		if err != nil {
+			slog.Error(fmt.Sprintf("error while logging in whatsapp during startup: %s", err.Error()))
+			os.Exit(1)
+		}
+
+		slog.Info(fmt.Sprintf("whatsapp login status: %t", isWaLoggedIn))
+	}
 
 	g.Go(func() error {
 		slog.Info("server started")

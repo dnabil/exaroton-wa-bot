@@ -2,10 +2,8 @@ package repository
 
 import (
 	"context"
-	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/database/entity"
 	"exaroton-wa-bot/internal/dto"
-	"log/slog"
 
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/types"
@@ -25,22 +23,19 @@ type IWhatsappRepo interface {
 	GetWhitelistedGroupJIDs(ctx context.Context, tx *gorm.DB) ([]*entity.WhatsappWhitelistedGroup, error)
 	WhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq) error
 	UnwhitelistGroup(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq) error
+
+	// IsSyncComplete returns true if the sync is complete and false otherwise.
+	IsSyncComplete(ctx context.Context) bool
 }
 
 type whatsappRepo struct {
 	waClient *waClient // represents a single whatsapp device/account.
 }
 
-func newWhatsappRepo(waDB *config.WhatsappDB) (IWhatsappRepo, error) {
-	waClient, err := NewWAClient(waDB)
-	if err != nil {
-		slog.Error("failed to create whatsapp client in repo", "error", err)
-		return nil, err
-	}
-
+func newWhatsappRepo(waClient *waClient) IWhatsappRepo {
 	return &whatsappRepo{
 		waClient: waClient,
-	}, nil
+	}
 }
 
 func (r *whatsappRepo) RegisterEventHandler(f func(any)) uint32 {
@@ -111,4 +106,8 @@ func (r *whatsappRepo) UnwhitelistGroup(ctx context.Context, tx *gorm.DB, req *d
 		JID:       req.User,
 		ServerJID: req.Server,
 	}).Delete(&entity.WhatsappWhitelistedGroup{}).Error
+}
+
+func (r *whatsappRepo) IsSyncComplete(ctx context.Context) bool {
+	return r.waClient.IsSyncComplete(ctx)
 }
