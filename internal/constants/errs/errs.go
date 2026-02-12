@@ -39,3 +39,8 @@ var (
 	ErrGSInvalidAPIKey = errors.New("Invalid API key")
 	ErrGSEmptyAPIKey   = errors.New("API key is empty")
 )
+
+// command error
+var (
+	ErrCommandNotFound = errors.New("Command not found")
+)

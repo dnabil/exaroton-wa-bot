@@ -42,7 +42,7 @@ func (m *Middleware) WhitelistedWAGroup() warouter.MiddlewareFunc {
 			}
 
 			for _, g := range whitelistedGroups {
-				if g.UserJID == c.ChatUserJID && g.ServerJID == c.CharServerJID {
+				if g.UserJID == c.Chat.User && g.ServerJID == c.Chat.Server {
 					whitelisted = true
 					break
 				}

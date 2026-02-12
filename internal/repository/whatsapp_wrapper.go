@@ -9,6 +9,7 @@ import (
 	"sync/atomic"
 
 	"go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
 )
@@ -200,6 +201,17 @@ func (w *waClient) UnregisterEventHandler(code uint32) bool {
 	return w.client.UnregisterEventHandler(code)
 }
 
+func (w *waClient) SendMessage(ctx context.Context, to dto.WhatsappJID, message *dto.WhatsappMessage) (*dto.WhatsappSendResponse, error) {
+	resp, err := w.client.SendMessage(ctx, to.To(), message.To())
+	if err != nil {
+		return nil, err
+	}
+
+	dtoRes := dto.NewWhatsappSendResponse(resp)
+
+	return &dtoRes, nil
+}
+
 // ================================
 //
 //	whatsmeow wrapper
@@ -219,6 +231,7 @@ type iWhatsmeowClientWrapper interface {
 	GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error)
 	RegisterEventHandler(f func(any)) uint32
 	UnregisterEventHandler(handlerID uint32) bool
+	SendMessage(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra) (resp whatsmeow.SendResponse, err error)
 }
 
 var _ iWhatsmeowClientWrapper = &whatsmeowClientWrapper{}
@@ -273,4 +286,8 @@ func (w *whatsmeowClientWrapper) RegisterEventHandler(f func(any)) uint32 {
 
 func (w *whatsmeowClientWrapper) UnregisterEventHandler(handlerID uint32) bool {
 	return w.client.RemoveEventHandler(handlerID)
+}
+
+func (w *whatsmeowClientWrapper) SendMessage(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra) (resp whatsmeow.SendResponse, err error) {
+	return w.client.SendMessage(ctx, to, message, extra...)
 }

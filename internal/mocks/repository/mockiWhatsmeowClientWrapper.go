@@ -9,6 +9,7 @@ import (
 
 	mock "github.com/stretchr/testify/mock"
 	"go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types"
 )
 
@@ -507,6 +508,71 @@ func (_c *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call) Return(v uint32
 }
 
 func (_c *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call) RunAndReturn(run func(f func(any)) uint32) *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SendMessage provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) SendMessage(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra) (whatsmeow.SendResponse, error) {
+	var tmpRet mock.Arguments
+	if len(extra) > 0 {
+		tmpRet = _mock.Called(ctx, to, message, extra)
+	} else {
+		tmpRet = _mock.Called(ctx, to, message)
+	}
+	ret := tmpRet
+
+	if len(ret) == 0 {
+		panic("no return value specified for SendMessage")
+	}
+
+	var r0 whatsmeow.SendResponse
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, types.JID, *waE2E.Message, ...whatsmeow.SendRequestExtra) (whatsmeow.SendResponse, error)); ok {
+		return returnFunc(ctx, to, message, extra...)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, types.JID, *waE2E.Message, ...whatsmeow.SendRequestExtra) whatsmeow.SendResponse); ok {
+		r0 = returnFunc(ctx, to, message, extra...)
+	} else {
+		r0 = ret.Get(0).(whatsmeow.SendResponse)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, types.JID, *waE2E.Message, ...whatsmeow.SendRequestExtra) error); ok {
+		r1 = returnFunc(ctx, to, message, extra...)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// mockiWhatsmeowClientWrapper_SendMessage_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SendMessage'
+type mockiWhatsmeowClientWrapper_SendMessage_Call struct {
+	*mock.Call
+}
+
+// SendMessage is a helper method to define mock.On call
+//   - ctx
+//   - to
+//   - message
+//   - extra
+func (_e *mockiWhatsmeowClientWrapper_Expecter) SendMessage(ctx interface{}, to interface{}, message interface{}, extra ...interface{}) *mockiWhatsmeowClientWrapper_SendMessage_Call {
+	return &mockiWhatsmeowClientWrapper_SendMessage_Call{Call: _e.mock.On("SendMessage",
+		append([]interface{}{ctx, to, message}, extra...)...)}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_SendMessage_Call) Run(run func(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra)) *mockiWhatsmeowClientWrapper_SendMessage_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		variadicArgs := args[3].([]whatsmeow.SendRequestExtra)
+		run(args[0].(context.Context), args[1].(types.JID), args[2].(*waE2E.Message), variadicArgs...)
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_SendMessage_Call) Return(resp whatsmeow.SendResponse, err error) *mockiWhatsmeowClientWrapper_SendMessage_Call {
+	_c.Call.Return(resp, err)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_SendMessage_Call) RunAndReturn(run func(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra) (whatsmeow.SendResponse, error)) *mockiWhatsmeowClientWrapper_SendMessage_Call {
 	_c.Call.Return(run)
 	return _c
 }

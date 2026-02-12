@@ -5,6 +5,8 @@ import (
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types"
 )
 
@@ -36,6 +38,60 @@ type WhatsappJID struct {
 	Device     uint16
 	Integrator uint16
 	Server     string
+}
+
+func NewWhatsappJID(jid types.JID) WhatsappJID {
+	return WhatsappJID{
+		User:       jid.User,
+		RawAgent:   jid.RawAgent,
+		Device:     jid.Device,
+		Integrator: jid.Integrator,
+		Server:     jid.Server,
+	}
+}
+
+func (w *WhatsappJID) To() types.JID {
+	return types.JID{
+		User:       w.User,
+		RawAgent:   w.RawAgent,
+		Device:     w.Device,
+		Integrator: w.Integrator,
+		Server:     w.Server,
+	}
+}
+
+type WhatsappMessage struct {
+	Conversation *string
+}
+
+func (w *WhatsappMessage) To() *waE2E.Message {
+	return &waE2E.Message{
+		Conversation: w.Conversation,
+	}
+}
+
+type WhatsappSendResponse struct {
+	// The message timestamp returned by the server
+	Timestamp time.Time
+
+	// MessageID is the internal ID of a WhatsApp message
+	ID string
+
+	// The server-specified ID of the sent message. Only present for newsletter messages
+	ServerID int
+
+	// The identity the message was sent with (LID or PN)
+	// This is currently not reliable in all cases
+	Sender WhatsappJID
+}
+
+func NewWhatsappSendResponse(resp whatsmeow.SendResponse) WhatsappSendResponse {
+	return WhatsappSendResponse{
+		Timestamp: resp.Timestamp,
+		ID:        resp.ID,
+		ServerID:  resp.ServerID,
+		Sender:    NewWhatsappJID(resp.Sender),
+	}
 }
 
 // whatsapp qr websocket response

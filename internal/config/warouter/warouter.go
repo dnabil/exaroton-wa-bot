@@ -5,49 +5,50 @@ import (
 	"errors"
 	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/dto"
-	"log/slog"
 	"strings"
 
 	"go.mau.fi/whatsmeow/types/events"
 )
 
-type (
-	Context struct {
-		context.Context
-		Message string
-		Args    []string // Message[1:]
+type Context struct {
+	context.Context
+	iContext
+	Message string
+	Args    []string // Message[1:]
 
-		PhoneNumber   string // self
-		Sender        string
-		ChatUserJID   string
-		CharServerJID string
-		ChatJID       string
-	}
+	PhoneNumber string // self
+	Sender      dto.WhatsappJID
+	Chat        dto.WhatsappJID
+}
 
-	HandlerFunc func(c *Context) error
+type iContext interface {
+	SendMessage(ctx context.Context, to dto.WhatsappJID, message *dto.WhatsappMessage) (*dto.WhatsappSendResponse, error)
+}
 
-	MiddlewareFunc func(HandlerFunc) HandlerFunc
+type HandlerFunc func(c *Context) error
 
-	WhatsappService interface {
-		RegisterEventHandler(f func(any)) uint32
-		UnregisterEventHandler(handlerID uint32) bool
-		GetPhoneNumber() string // self phone number
-		GetSelfLID() *dto.WhatsappJID
-		IsSyncComplete(ctx context.Context) bool
-	}
+type MiddlewareFunc func(HandlerFunc) HandlerFunc
 
-	Router struct {
-		waSvc       WhatsappService
-		cfg         *config.Cfg
-		handlers    map[string]HandlerFunc
-		middlewares []MiddlewareFunc // global middlewares
+type WhatsappService interface {
+	iContext
+	RegisterEventHandler(f func(any)) uint32
+	UnregisterEventHandler(handlerID uint32) bool
+	GetPhoneNumber() string // self phone number
+	GetSelfLID() *dto.WhatsappJID
+	IsSyncComplete(ctx context.Context) bool
+}
 
-		ErrorHandlerFunc func(c *Context, err error) // nil if not set
+type Router struct {
+	waSvc       WhatsappService
+	cfg         *config.Cfg
+	handlers    map[string]HandlerFunc
+	middlewares []MiddlewareFunc // global middlewares
 
-		// event handler codes
-		HandlerCodeCommandWA uint32
-	}
-)
+	ErrorHandlerFunc func(c *Context, err error) // nil if not set
+
+	// event handler codes
+	HandlerCodeCommandWA uint32
+}
 
 func NewRouter(cfg *config.Cfg, waService WhatsappService) *Router {
 	return &Router{
@@ -120,15 +121,13 @@ func (r *Router) entryPoint(evt any) {
 		}
 
 		ctx := &Context{
-			Context: context.Background(),
-			Message: msg,
-			Args:    args,
-			Sender:  v.Info.Sender.String(),
-
-			PhoneNumber:   r.waSvc.GetPhoneNumber(),
-			ChatJID:       v.Info.Chat.String(),
-			ChatUserJID:   v.Info.Chat.User,
-			CharServerJID: v.Info.Chat.Server,
+			Context:     context.Background(),
+			iContext:    r.waSvc,
+			Message:     msg,
+			Args:        args,
+			PhoneNumber: r.waSvc.GetPhoneNumber(),
+			Sender:      dto.NewWhatsappJID(v.Info.Sender),
+			Chat:        dto.NewWhatsappJID(v.Info.Chat),
 		}
 
 		err := r.handleMsgEvent(ctx, msg)
@@ -177,7 +176,6 @@ func (r *Router) handleMsgEvent(c *Context, message string) error {
 		return nil
 	}
 
-	c.Reply("Unknown command")
 	return nil
 }
 
@@ -205,10 +203,4 @@ func (r *Router) Stop() {
 // Middleware registration
 func (r *Router) Use(mw MiddlewareFunc) {
 	r.middlewares = append(r.middlewares, mw)
-}
-
-// Reply sends a message to the given sender.
-func (c *Context) Reply(msg string) {
-	slog.Info("Replying to", "to", c.Sender, "msg", msg)
-	// TODO: call your WhatsApp send function here, use waSvc
 }

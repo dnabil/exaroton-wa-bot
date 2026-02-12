@@ -7,6 +7,7 @@ import (
 	"exaroton-wa-bot/internal/handler/wahandler"
 	"exaroton-wa-bot/internal/repository"
 	"exaroton-wa-bot/internal/service"
+	"exaroton-wa-bot/internal/service/command"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -80,6 +81,7 @@ func run() {
 	waHandler := wahandler.NewWAHandler(
 		cfg,
 		waClient,
+		command.NewRegistry(service.WhatsappService),
 		service.AuthService,
 		service.ServerSettingsService,
 	)
