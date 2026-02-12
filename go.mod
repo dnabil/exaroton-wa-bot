@@ -19,6 +19,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	go.mau.fi/whatsmeow v0.0.0-20260116142645-06f473759141
 	golang.org/x/crypto v0.47.0
+	golang.org/x/sync v0.19.0
 	gorm.io/driver/sqlite v1.5.7
 	gorm.io/gorm v1.25.12
 	pkg.icikowski.pl/exaroton v1.2.0
@@ -58,7 +59,6 @@ require (
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/exp v0.0.0-20260112195511-716be5621a96 // indirect
 	golang.org/x/net v0.49.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.33.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
