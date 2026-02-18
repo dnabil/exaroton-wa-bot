@@ -150,6 +150,63 @@ func (_c *MockIServerSettingsService_GetExarotonServerInfo_Call) RunAndReturn(ru
 	return _c
 }
 
+// GetExarotonServerPlayerList provides a mock function for the type MockIServerSettingsService
+func (_mock *MockIServerSettingsService) GetExarotonServerPlayerList(ctx context.Context, serverIdx uint) (*dto.ExarotonServerPlayers, error) {
+	ret := _mock.Called(ctx, serverIdx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetExarotonServerPlayerList")
+	}
+
+	var r0 *dto.ExarotonServerPlayers
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint) (*dto.ExarotonServerPlayers, error)); ok {
+		return returnFunc(ctx, serverIdx)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint) *dto.ExarotonServerPlayers); ok {
+		r0 = returnFunc(ctx, serverIdx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.ExarotonServerPlayers)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, uint) error); ok {
+		r1 = returnFunc(ctx, serverIdx)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIServerSettingsService_GetExarotonServerPlayerList_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetExarotonServerPlayerList'
+type MockIServerSettingsService_GetExarotonServerPlayerList_Call struct {
+	*mock.Call
+}
+
+// GetExarotonServerPlayerList is a helper method to define mock.On call
+//   - ctx
+//   - serverIdx
+func (_e *MockIServerSettingsService_Expecter) GetExarotonServerPlayerList(ctx interface{}, serverIdx interface{}) *MockIServerSettingsService_GetExarotonServerPlayerList_Call {
+	return &MockIServerSettingsService_GetExarotonServerPlayerList_Call{Call: _e.mock.On("GetExarotonServerPlayerList", ctx, serverIdx)}
+}
+
+func (_c *MockIServerSettingsService_GetExarotonServerPlayerList_Call) Run(run func(ctx context.Context, serverIdx uint)) *MockIServerSettingsService_GetExarotonServerPlayerList_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uint))
+	})
+	return _c
+}
+
+func (_c *MockIServerSettingsService_GetExarotonServerPlayerList_Call) Return(exarotonServerPlayers *dto.ExarotonServerPlayers, err error) *MockIServerSettingsService_GetExarotonServerPlayerList_Call {
+	_c.Call.Return(exarotonServerPlayers, err)
+	return _c
+}
+
+func (_c *MockIServerSettingsService_GetExarotonServerPlayerList_Call) RunAndReturn(run func(ctx context.Context, serverIdx uint) (*dto.ExarotonServerPlayers, error)) *MockIServerSettingsService_GetExarotonServerPlayerList_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListExarotonServer provides a mock function for the type MockIServerSettingsService
 func (_mock *MockIServerSettingsService) ListExarotonServer(ctx context.Context) ([]*dto.ExarotonServerInfo, error) {
 	ret := _mock.Called(ctx)

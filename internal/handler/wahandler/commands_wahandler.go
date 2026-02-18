@@ -119,6 +119,20 @@ func (h *WaHandler) ServerInfo() warouter.HandlerFunc {
 
 func (h *WaHandler) ListPlayers() warouter.HandlerFunc {
 	return func(c *warouter.Context) error {
-		return nil
+		listPlayersCmd, ok := h.cmdRegis.Get(command.ListPlayersCmdName)
+		if !ok {
+			return errs.ErrCommandNotFound
+		}
+
+		res := listPlayersCmd.Execute(c, c.Args)
+		if res.Error != nil {
+			return res.Error
+		}
+
+		_, err := c.SendMessage(c, c.Chat, &dto.WhatsappMessage{
+			Conversation: &res.Text,
+		})
+
+		return err
 	}
 }

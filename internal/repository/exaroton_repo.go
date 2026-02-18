@@ -21,6 +21,7 @@ type IExarotonRepo interface {
 	StartServer(ctx context.Context, apiKey string, serverID string, opt dto.StartExarotonServerReq) (err error)
 	StopServer(ctx context.Context, apiKey string, serverID string) (err error)
 	GetServerInfo(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerInfo, error)
+	GetServerPlayerList(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerPlayers, error)
 }
 
 func newExarotonRepo() IExarotonRepo {
@@ -138,6 +139,21 @@ func (r *ExarotonRepo) GetServerInfo(ctx context.Context, apiKey string, serverI
 	}
 
 	return dto.NewExarotonServerInfo(result), nil
+}
+
+func (r *ExarotonRepo) GetServerPlayerList(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerPlayers, error) {
+	client, err := exaroton.NewClient(apiKey)
+	if err != nil {
+		return nil, err
+	}
+
+	serverAPI := client.Server(serverID)
+	result, raw, err := serverAPI.GetServer(ctx)
+	if err := handleExarotonError(err, helper.Deref(raw).Error); err != nil {
+		return nil, fmt.Errorf("exaroton repo GetServerPlayersInfo error: %w", err)
+	}
+
+	return dto.NewExarotonServerPlayers(&result.Players), nil
 }
 
 // =================================================================
