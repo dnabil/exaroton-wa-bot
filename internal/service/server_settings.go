@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"exaroton-wa-bot/internal/constants"
+	"exaroton-wa-bot/internal/constants/errs"
 	"exaroton-wa-bot/internal/database/entity"
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/internal/repository"
@@ -13,8 +14,11 @@ type IServerSettingsService interface {
 	GetExarotonAPIKey(ctx context.Context) (string, error)
 	UpdateExarotonAPIKey(ctx context.Context, apiKey string) error
 
+	// TODO: remove apiKey from the arg, orhcestrate in this layer
 	ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
+	// TODO: remove apiKey from the arg, orhcestrate in this layer
 	ListExarotonServer(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
+	StartExarotonServer(ctx context.Context, serverIdx uint) error
 }
 
 type ServerSettingsService struct {
@@ -76,4 +80,31 @@ func (s *ServerSettingsService) ValidateExarotonAPIKey(ctx context.Context, apiK
 
 func (s *ServerSettingsService) ListExarotonServer(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error) {
 	return s.exarotonRepo.ListServers(ctx, apiKey)
+}
+
+func (s *ServerSettingsService) StartExarotonServer(ctx context.Context, serverIdx uint) error {
+	tx := s.tx.Begin(ctx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
+
+	settings, err := s.serverSettingsRepo.Get(ctx, tx, constants.ExarotonAPIKey)
+	if err != nil {
+		return err
+	}
+
+	if settings == nil {
+		return errs.ErrGSEmptyAPIKey
+	}
+
+	apiKey := settings.Value
+
+	servers, err := s.exarotonRepo.ListServers(ctx, apiKey)
+	if err != nil {
+		return err
+	}
+
+	return s.exarotonRepo.StartServer(ctx, apiKey, servers[serverIdx].ID)
 }

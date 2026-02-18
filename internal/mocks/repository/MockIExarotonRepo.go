@@ -95,6 +95,53 @@ func (_c *MockIExarotonRepo_ListServers_Call) RunAndReturn(run func(ctx context.
 	return _c
 }
 
+// StartServer provides a mock function for the type MockIExarotonRepo
+func (_mock *MockIExarotonRepo) StartServer(ctx context.Context, apiKey string, serverID string) error {
+	ret := _mock.Called(ctx, apiKey, serverID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StartServer")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = returnFunc(ctx, apiKey, serverID)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIExarotonRepo_StartServer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StartServer'
+type MockIExarotonRepo_StartServer_Call struct {
+	*mock.Call
+}
+
+// StartServer is a helper method to define mock.On call
+//   - ctx
+//   - apiKey
+//   - serverID
+func (_e *MockIExarotonRepo_Expecter) StartServer(ctx interface{}, apiKey interface{}, serverID interface{}) *MockIExarotonRepo_StartServer_Call {
+	return &MockIExarotonRepo_StartServer_Call{Call: _e.mock.On("StartServer", ctx, apiKey, serverID)}
+}
+
+func (_c *MockIExarotonRepo_StartServer_Call) Run(run func(ctx context.Context, apiKey string, serverID string)) *MockIExarotonRepo_StartServer_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockIExarotonRepo_StartServer_Call) Return(err error) *MockIExarotonRepo_StartServer_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIExarotonRepo_StartServer_Call) RunAndReturn(run func(ctx context.Context, apiKey string, serverID string) error) *MockIExarotonRepo_StartServer_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ValidateApiKey provides a mock function for the type MockIExarotonRepo
 func (_mock *MockIExarotonRepo) ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error) {
 	ret := _mock.Called(ctx, apiKey)

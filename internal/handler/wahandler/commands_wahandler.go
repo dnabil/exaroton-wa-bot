@@ -9,9 +9,24 @@ import (
 
 func (h *WaHandler) StartServer() warouter.HandlerFunc {
 	return func(c *warouter.Context) error {
-		return nil
+		startCmd, ok := h.cmdRegis.Get(command.StartServerCmdName)
+		if !ok {
+			return errs.ErrCommandNotFound
+		}
+
+		res := startCmd.Execute(c, c.Args)
+		if res.Error != nil {
+			return res.Error
+		}
+
+		_, err := c.SendMessage(c, c.Chat, &dto.WhatsappMessage{
+			Conversation: &res.Text,
+		})
+
+		return err
 	}
 }
+
 func (h *WaHandler) StopServer() warouter.HandlerFunc {
 	return func(c *warouter.Context) error {
 		return nil

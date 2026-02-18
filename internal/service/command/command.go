@@ -31,6 +31,7 @@ func NewRegistry(WhatsappService service.IWhatsappService, serverSettingsSvc ser
 	// register commands here...
 	r.Register(NewHelpCommand(r))
 	r.Register(NewListServerCommand(serverSettingsSvc))
+	r.Register(NewStartServerCommand(serverSettingsSvc))
 
 	return r
 }
@@ -38,6 +39,11 @@ func NewRegistry(WhatsappService service.IWhatsappService, serverSettingsSvc ser
 // Register a new command to the registry.
 // The command is identified by its Name method.
 func (r *Registry) Register(cmd Command) {
+	_, ok := r.commands[cmd.Name()]
+	if ok {
+		panic("command name must be unique")
+	}
+
 	r.commands[cmd.Name()] = cmd
 }
 

@@ -149,6 +149,52 @@ func (_c *MockIServerSettingsService_ListExarotonServer_Call) RunAndReturn(run f
 	return _c
 }
 
+// StartExarotonServer provides a mock function for the type MockIServerSettingsService
+func (_mock *MockIServerSettingsService) StartExarotonServer(ctx context.Context, serverIdx uint) error {
+	ret := _mock.Called(ctx, serverIdx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StartExarotonServer")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint) error); ok {
+		r0 = returnFunc(ctx, serverIdx)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIServerSettingsService_StartExarotonServer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StartExarotonServer'
+type MockIServerSettingsService_StartExarotonServer_Call struct {
+	*mock.Call
+}
+
+// StartExarotonServer is a helper method to define mock.On call
+//   - ctx
+//   - serverIdx
+func (_e *MockIServerSettingsService_Expecter) StartExarotonServer(ctx interface{}, serverIdx interface{}) *MockIServerSettingsService_StartExarotonServer_Call {
+	return &MockIServerSettingsService_StartExarotonServer_Call{Call: _e.mock.On("StartExarotonServer", ctx, serverIdx)}
+}
+
+func (_c *MockIServerSettingsService_StartExarotonServer_Call) Run(run func(ctx context.Context, serverIdx uint)) *MockIServerSettingsService_StartExarotonServer_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uint))
+	})
+	return _c
+}
+
+func (_c *MockIServerSettingsService_StartExarotonServer_Call) Return(err error) *MockIServerSettingsService_StartExarotonServer_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIServerSettingsService_StartExarotonServer_Call) RunAndReturn(run func(ctx context.Context, serverIdx uint) error) *MockIServerSettingsService_StartExarotonServer_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateExarotonAPIKey provides a mock function for the type MockIServerSettingsService
 func (_mock *MockIServerSettingsService) UpdateExarotonAPIKey(ctx context.Context, apiKey string) error {
 	ret := _mock.Called(ctx, apiKey)

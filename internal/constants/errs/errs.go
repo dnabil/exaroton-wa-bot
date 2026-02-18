@@ -42,5 +42,7 @@ var (
 
 // command error
 var (
-	ErrCommandNotFound = errors.New("Command not found")
+	ErrCommandNotFound   = errors.New("Command not found")
+	ErrCommandMissingArg = errors.New("Missing argument")
+	ErrCommandInvalidArg = errors.New("Invalid argument")
 )

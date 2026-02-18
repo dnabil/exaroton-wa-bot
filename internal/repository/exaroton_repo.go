@@ -16,6 +16,7 @@ import (
 type IExarotonRepo interface {
 	ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
 	ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
+	StartServer(ctx context.Context, apiKey string, serverID string) (err error)
 }
 
 func newExarotonRepo() IExarotonRepo {
@@ -83,6 +84,21 @@ func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]*dto.E
 	}
 
 	return servers, nil
+}
+
+func (r *ExarotonRepo) StartServer(ctx context.Context, apiKey string, serverID string) (err error) {
+	client, err := exaroton.NewClient(apiKey)
+	if err != nil {
+		return err
+	}
+
+	serverAPI := client.Server(serverID)
+	raw, err := serverAPI.Start(ctx)
+	if err := handleExarotonError(err, raw.Error); err != nil {
+		return fmt.Errorf("exaroton repo StartServer error: %w", err)
+	}
+
+	return nil
 }
 
 // =================================================================
