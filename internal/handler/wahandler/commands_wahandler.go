@@ -40,7 +40,21 @@ func (h *WaHandler) HelpCommand() warouter.HandlerFunc {
 
 func (h *WaHandler) ListServers() warouter.HandlerFunc {
 	return func(c *warouter.Context) error {
-		return nil
+		listCmd, ok := h.cmdRegis.Get(command.ListServerCmdName)
+		if !ok {
+			return errs.ErrCommandNotFound
+		}
+
+		res := listCmd.Execute(c, c.Args)
+		if res.Error != nil {
+			return res.Error
+		}
+
+		_, err := c.SendMessage(c, c.Chat, &dto.WhatsappMessage{
+			Conversation: &res.Text,
+		})
+
+		return err
 	}
 }
 

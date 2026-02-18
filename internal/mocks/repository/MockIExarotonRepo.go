@@ -39,23 +39,23 @@ func (_m *MockIExarotonRepo) EXPECT() *MockIExarotonRepo_Expecter {
 }
 
 // ListServers provides a mock function for the type MockIExarotonRepo
-func (_mock *MockIExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]dto.ExarotonServerInfo, error) {
+func (_mock *MockIExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error) {
 	ret := _mock.Called(ctx, apiKey)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListServers")
 	}
 
-	var r0 []dto.ExarotonServerInfo
+	var r0 []*dto.ExarotonServerInfo
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) ([]dto.ExarotonServerInfo, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) ([]*dto.ExarotonServerInfo, error)); ok {
 		return returnFunc(ctx, apiKey)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) []dto.ExarotonServerInfo); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string) []*dto.ExarotonServerInfo); ok {
 		r0 = returnFunc(ctx, apiKey)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]dto.ExarotonServerInfo)
+			r0 = ret.Get(0).([]*dto.ExarotonServerInfo)
 		}
 	}
 	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
@@ -85,12 +85,12 @@ func (_c *MockIExarotonRepo_ListServers_Call) Run(run func(ctx context.Context, 
 	return _c
 }
 
-func (_c *MockIExarotonRepo_ListServers_Call) Return(exarotonServerInfos []dto.ExarotonServerInfo, err error) *MockIExarotonRepo_ListServers_Call {
+func (_c *MockIExarotonRepo_ListServers_Call) Return(exarotonServerInfos []*dto.ExarotonServerInfo, err error) *MockIExarotonRepo_ListServers_Call {
 	_c.Call.Return(exarotonServerInfos, err)
 	return _c
 }
 
-func (_c *MockIExarotonRepo_ListServers_Call) RunAndReturn(run func(ctx context.Context, apiKey string) ([]dto.ExarotonServerInfo, error)) *MockIExarotonRepo_ListServers_Call {
+func (_c *MockIExarotonRepo_ListServers_Call) RunAndReturn(run func(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)) *MockIExarotonRepo_ListServers_Call {
 	_c.Call.Return(run)
 	return _c
 }

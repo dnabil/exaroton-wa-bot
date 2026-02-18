@@ -23,13 +23,14 @@ type (
 	}
 )
 
-func NewRegistry(WhatsappService service.IWhatsappService) *Registry {
+func NewRegistry(WhatsappService service.IWhatsappService, serverSettingsSvc service.IServerSettingsService) *Registry {
 	r := &Registry{
 		commands: make(map[string]Command),
 	}
 
 	// register commands here...
 	r.Register(NewHelpCommand(r))
+	r.Register(NewListServerCommand(serverSettingsSvc))
 
 	return r
 }

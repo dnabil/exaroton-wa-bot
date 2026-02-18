@@ -5,4 +5,5 @@ import (
 )
 
 func errHandler(c *warouter.Context, err error) {
+	// TODO: error handling
 }

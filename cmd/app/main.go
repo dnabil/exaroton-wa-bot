@@ -81,7 +81,7 @@ func run() {
 	waHandler := wahandler.NewWAHandler(
 		cfg,
 		waClient,
-		command.NewRegistry(service.WhatsappService),
+		command.NewRegistry(service.WhatsappService, service.ServerSettingsService),
 		service.AuthService,
 		service.ServerSettingsService,
 	)

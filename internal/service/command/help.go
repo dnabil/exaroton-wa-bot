@@ -3,6 +3,8 @@ package command
 import (
 	"context"
 	"exaroton-wa-bot/internal/constants/errs"
+	"exaroton-wa-bot/internal/constants/messages"
+	"exaroton-wa-bot/internal/dto"
 	"fmt"
 	"sort"
 	"strconv"
@@ -11,6 +13,8 @@ import (
 var (
 	HelpCmdName = "help"
 )
+
+var _ Command = new(HelpCommand)
 
 type HelpCommand struct {
 	registry *Registry
@@ -53,35 +57,16 @@ func (c *HelpCommand) showPage(ctx context.Context, cmds []Command, page int) Co
 		return cmds[i].Name() < cmds[j].Name()
 	})
 
-	const pageSize = 7
+	pag := dto.NewPagination(page, 7, len(cmds))
 
-	totalPages := (len(cmds) + pageSize - 1) / pageSize
+	msg := fmt.Sprintf(messages.CmdShowingPage, c.Name(), pag.CurrentPage, pag.TotalPage) + "\n\n"
 
-	if page < 1 {
-		page = 1
-	}
-	if page > totalPages {
-		page = totalPages
-	}
-
-	start := (page - 1) * pageSize
-	end := start + pageSize
-	if end > len(cmds) {
-		end = len(cmds)
-	}
-
-	msg := fmt.Sprintf("Commands (%d/%d)\n\n", page, totalPages)
-
-	for _, cmd := range cmds[start:end] {
+	for _, cmd := range cmds[pag.Start():pag.End()] {
 		msg += fmt.Sprintf(
 			"/%-10s %s\n",
 			cmd.Name(),
 			cmd.Help(),
 		)
-	}
-
-	if page < totalPages {
-		msg += fmt.Sprintf("\n/help %d for next page", page+1)
 	}
 
 	return CommandResult{Text: msg}

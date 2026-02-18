@@ -14,6 +14,7 @@ type IServerSettingsService interface {
 	UpdateExarotonAPIKey(ctx context.Context, apiKey string) error
 
 	ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
+	ListExarotonServer(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
 }
 
 type ServerSettingsService struct {
@@ -71,4 +72,8 @@ func (s *ServerSettingsService) UpdateExarotonAPIKey(ctx context.Context, apiKey
 
 func (s *ServerSettingsService) ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error) {
 	return s.exarotonRepo.ValidateApiKey(ctx, apiKey)
+}
+
+func (s *ServerSettingsService) ListExarotonServer(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error) {
+	return s.exarotonRepo.ListServers(ctx, apiKey)
 }

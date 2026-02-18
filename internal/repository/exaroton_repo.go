@@ -15,7 +15,7 @@ import (
 
 type IExarotonRepo interface {
 	ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
-	ListServers(ctx context.Context, apiKey string) ([]dto.ExarotonServerInfo, error)
+	ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
 }
 
 func newExarotonRepo() IExarotonRepo {
@@ -47,7 +47,7 @@ func (r *ExarotonRepo) ValidateApiKey(ctx context.Context, apiKey string) (*dto.
 	}, nil
 }
 
-func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]dto.ExarotonServerInfo, error) {
+func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error) {
 	client, err := exaroton.NewClient(apiKey)
 	if err != nil {
 		return nil, err
@@ -58,9 +58,9 @@ func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]dto.Ex
 		return nil, fmt.Errorf("exaroton repo ListServers error: %w", err)
 	}
 
-	servers := make([]dto.ExarotonServerInfo, 0, len(serversResponse))
+	servers := make([]*dto.ExarotonServerInfo, 0, len(serversResponse))
 	for _, srv := range serversResponse {
-		servers = append(servers, dto.ExarotonServerInfo{
+		servers = append(servers, &dto.ExarotonServerInfo{
 			ID:      srv.ID,
 			Name:    srv.Name,
 			Address: srv.Address,
