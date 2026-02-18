@@ -13,5 +13,5 @@ func (h *WaHandler) LoadCommandRoutes() {
 	router.Register("/start", h.StartServer())   // [server-id] starts the server specified by its id
 	router.Register("/stop", h.StopServer())     // [server-id] stops the server specified by its id
 	router.Register("/info", h.ServerInfo())     // [server-id] shows the current server info
-	router.Register("/players", h.ListPlayers()) // [server-id] shows the players that are currently online on a server
+	router.Register("/players", h.ListPlayers()) // TODO: [server-id] shows the players that are currently online on a server
 }
