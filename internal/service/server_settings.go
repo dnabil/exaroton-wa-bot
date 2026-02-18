@@ -17,6 +17,7 @@ type IServerSettingsService interface {
 	ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
 	ListExarotonServer(ctx context.Context) ([]*dto.ExarotonServerInfo, error)
 	StartExarotonServer(ctx context.Context, serverIdx uint) error
+	StopExarotonServer(ctx context.Context, serverIdx uint) error
 	GetExarotonServerInfo(ctx context.Context, serverIdx uint) (*dto.ExarotonServerInfo, error)
 }
 
@@ -128,6 +129,37 @@ func (s *ServerSettingsService) StartExarotonServer(ctx context.Context, serverI
 	}
 
 	return s.exarotonRepo.StartServer(ctx, apiKey, servers[serverIdx].ID)
+}
+
+func (s *ServerSettingsService) StopExarotonServer(ctx context.Context, serverIdx uint) error {
+	tx := s.tx.Begin(ctx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
+
+	settings, err := s.serverSettingsRepo.Get(ctx, tx, constants.ExarotonAPIKey)
+	if err != nil {
+		return err
+	}
+
+	if settings == nil {
+		return errs.ErrGSEmptyAPIKey
+	}
+
+	apiKey := settings.Value
+
+	servers, err := s.exarotonRepo.ListServers(ctx, apiKey)
+	if err != nil {
+		return err
+	}
+
+	if serverIdx >= uint(len(servers)) {
+		return errs.ErrServerNotFound
+	}
+
+	return s.exarotonRepo.StopServer(ctx, apiKey, servers[serverIdx].ID)
 }
 
 func (s *ServerSettingsService) GetExarotonServerInfo(ctx context.Context, serverIdx uint) (*dto.ExarotonServerInfo, error) {

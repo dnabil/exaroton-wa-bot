@@ -200,6 +200,53 @@ func (_c *MockIExarotonRepo_StartServer_Call) RunAndReturn(run func(ctx context.
 	return _c
 }
 
+// StopServer provides a mock function for the type MockIExarotonRepo
+func (_mock *MockIExarotonRepo) StopServer(ctx context.Context, apiKey string, serverID string) error {
+	ret := _mock.Called(ctx, apiKey, serverID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StopServer")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = returnFunc(ctx, apiKey, serverID)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIExarotonRepo_StopServer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StopServer'
+type MockIExarotonRepo_StopServer_Call struct {
+	*mock.Call
+}
+
+// StopServer is a helper method to define mock.On call
+//   - ctx
+//   - apiKey
+//   - serverID
+func (_e *MockIExarotonRepo_Expecter) StopServer(ctx interface{}, apiKey interface{}, serverID interface{}) *MockIExarotonRepo_StopServer_Call {
+	return &MockIExarotonRepo_StopServer_Call{Call: _e.mock.On("StopServer", ctx, apiKey, serverID)}
+}
+
+func (_c *MockIExarotonRepo_StopServer_Call) Run(run func(ctx context.Context, apiKey string, serverID string)) *MockIExarotonRepo_StopServer_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockIExarotonRepo_StopServer_Call) Return(err error) *MockIExarotonRepo_StopServer_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIExarotonRepo_StopServer_Call) RunAndReturn(run func(ctx context.Context, apiKey string, serverID string) error) *MockIExarotonRepo_StopServer_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ValidateApiKey provides a mock function for the type MockIExarotonRepo
 func (_mock *MockIExarotonRepo) ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error) {
 	ret := _mock.Called(ctx, apiKey)

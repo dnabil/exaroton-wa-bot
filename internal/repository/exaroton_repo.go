@@ -5,6 +5,7 @@ import (
 	"errors"
 	"exaroton-wa-bot/internal/constants/errs"
 	"exaroton-wa-bot/internal/dto"
+	"exaroton-wa-bot/internal/helper"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -17,6 +18,7 @@ type IExarotonRepo interface {
 	ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
 	ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
 	StartServer(ctx context.Context, apiKey string, serverID string) (err error)
+	StopServer(ctx context.Context, apiKey string, serverID string) (err error)
 	GetServerInfo(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerInfo, error)
 }
 
@@ -33,7 +35,7 @@ func (r *ExarotonRepo) ValidateApiKey(ctx context.Context, apiKey string) (*dto.
 	}
 
 	acc, raw, err := client.GetAccount(ctx)
-	if err := handleExarotonError(err, raw.Error); err != nil {
+	if err := handleExarotonError(err, helper.Deref(raw).Error); err != nil {
 		if errors.Is(err, errs.ErrForbidden) {
 			return nil, errs.ErrGSInvalidAPIKey
 		}
@@ -56,7 +58,7 @@ func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]*dto.E
 	}
 
 	serversResponse, raw, err := client.GetServers(ctx)
-	if err := handleExarotonError(err, raw.Error); err != nil {
+	if err := handleExarotonError(err, helper.Deref(raw).Error); err != nil {
 		return nil, fmt.Errorf("exaroton repo ListServers error: %w", err)
 	}
 
@@ -95,8 +97,26 @@ func (r *ExarotonRepo) StartServer(ctx context.Context, apiKey string, serverID 
 
 	serverAPI := client.Server(serverID)
 	raw, err := serverAPI.Start(ctx)
-	if err := handleExarotonError(err, raw.Error); err != nil {
+	if err := handleExarotonError(err, helper.Deref(raw).Error); err != nil {
 		return fmt.Errorf("exaroton repo StartServer error: %w", err)
+	}
+
+	return nil
+}
+
+func (r *ExarotonRepo) StopServer(ctx context.Context, apiKey string, serverID string) (err error) {
+	client, err := exaroton.NewClient(apiKey)
+	if err != nil {
+		return err
+	}
+
+	serverAPI := client.Server(serverID)
+	raw, err := serverAPI.Stop(ctx)
+	if err := handleExarotonError(err, helper.Deref(raw).Error); err != nil {
+		if errors.Is(err, errs.ErrAlreadyReported) {
+			return errs.ErrServerIsAlreadyStopping
+		}
+		return fmt.Errorf("exaroton repo StopServer error: %w", err)
 	}
 
 	return nil
@@ -110,7 +130,7 @@ func (r *ExarotonRepo) GetServerInfo(ctx context.Context, apiKey string, serverI
 
 	serverAPI := client.Server(serverID)
 	result, raw, err := serverAPI.GetServer(ctx)
-	if err := handleExarotonError(err, raw.Error); err != nil {
+	if err := handleExarotonError(err, helper.Deref(raw).Error); err != nil {
 		return nil, fmt.Errorf("exaroton repo GetServerInfo error: %w", err)
 	}
 
@@ -143,6 +163,9 @@ func handleExarotonError(err error, msg *string) error {
 		err = errs.ErrUnauthorized
 	case http.StatusForbidden:
 		err = errs.ErrForbidden
+	// unique case, somehow 208 is considered as an error
+	case http.StatusAlreadyReported:
+		err = errs.ErrAlreadyReported
 	}
 
 	return fmt.Errorf("error: %w, http code: %d, error message: %s", err, httpCode, errMsg)

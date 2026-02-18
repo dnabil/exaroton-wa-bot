@@ -33,7 +33,7 @@ func (c *StartServerCommand) Help() string {
 }
 
 func (c *StartServerCommand) Usage() string {
-	return "/servers [id]"
+	return "/start [id]"
 }
 
 func (c *StartServerCommand) Execute(ctx context.Context, args []string) CommandResult {

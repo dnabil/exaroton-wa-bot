@@ -10,8 +10,9 @@ var (
 
 // general errors
 var (
-	ErrForbidden    = errors.New("Forbidden")
-	ErrUnauthorized = errors.New("Unauthorized")
+	ErrForbidden       = errors.New("You do not have permission to perform this action")
+	ErrUnauthorized    = errors.New("Unauthorized")
+	ErrAlreadyReported = errors.New("Already reported") // 208, unique case
 
 	ErrUserAlreadyLoggedIn = errors.New("User is already logged in")
 	ErrUserNotLoggedIn     = errors.New("User is not logged in")
@@ -35,10 +36,11 @@ var (
 
 // Game server specific errors
 var (
-	ErrGSIsDown        = errors.New("Game server might be down")
-	ErrGSInvalidAPIKey = errors.New("Invalid API key")
-	ErrGSEmptyAPIKey   = errors.New("API key is empty")
-	ErrServerNotFound  = errors.New("Server not found")
+	ErrGSIsDown                = errors.New("Game server might be down")
+	ErrGSInvalidAPIKey         = errors.New("Invalid API key")
+	ErrGSEmptyAPIKey           = errors.New("API key is empty")
+	ErrServerNotFound          = errors.New("Server not found")
+	ErrServerIsAlreadyStopping = errors.New("Server is already stopped/stopping")
 )
 
 // command error

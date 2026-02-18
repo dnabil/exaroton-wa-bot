@@ -251,6 +251,52 @@ func (_c *MockIServerSettingsService_StartExarotonServer_Call) RunAndReturn(run 
 	return _c
 }
 
+// StopExarotonServer provides a mock function for the type MockIServerSettingsService
+func (_mock *MockIServerSettingsService) StopExarotonServer(ctx context.Context, serverIdx uint) error {
+	ret := _mock.Called(ctx, serverIdx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for StopExarotonServer")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint) error); ok {
+		r0 = returnFunc(ctx, serverIdx)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockIServerSettingsService_StopExarotonServer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'StopExarotonServer'
+type MockIServerSettingsService_StopExarotonServer_Call struct {
+	*mock.Call
+}
+
+// StopExarotonServer is a helper method to define mock.On call
+//   - ctx
+//   - serverIdx
+func (_e *MockIServerSettingsService_Expecter) StopExarotonServer(ctx interface{}, serverIdx interface{}) *MockIServerSettingsService_StopExarotonServer_Call {
+	return &MockIServerSettingsService_StopExarotonServer_Call{Call: _e.mock.On("StopExarotonServer", ctx, serverIdx)}
+}
+
+func (_c *MockIServerSettingsService_StopExarotonServer_Call) Run(run func(ctx context.Context, serverIdx uint)) *MockIServerSettingsService_StopExarotonServer_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(uint))
+	})
+	return _c
+}
+
+func (_c *MockIServerSettingsService_StopExarotonServer_Call) Return(err error) *MockIServerSettingsService_StopExarotonServer_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockIServerSettingsService_StopExarotonServer_Call) RunAndReturn(run func(ctx context.Context, serverIdx uint) error) *MockIServerSettingsService_StopExarotonServer_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // UpdateExarotonAPIKey provides a mock function for the type MockIServerSettingsService
 func (_mock *MockIServerSettingsService) UpdateExarotonAPIKey(ctx context.Context, apiKey string) error {
 	ret := _mock.Called(ctx, apiKey)
