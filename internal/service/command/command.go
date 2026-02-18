@@ -32,6 +32,7 @@ func NewRegistry(WhatsappService service.IWhatsappService, serverSettingsSvc ser
 	r.Register(NewHelpCommand(r))
 	r.Register(NewListServerCommand(serverSettingsSvc))
 	r.Register(NewStartServerCommand(serverSettingsSvc))
+	r.Register(NewInfoCommand(serverSettingsSvc))
 
 	return r
 }

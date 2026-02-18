@@ -17,6 +17,7 @@ type IExarotonRepo interface {
 	ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
 	ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
 	StartServer(ctx context.Context, apiKey string, serverID string) (err error)
+	GetServerInfo(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerInfo, error)
 }
 
 func newExarotonRepo() IExarotonRepo {
@@ -75,7 +76,7 @@ func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]*dto.E
 				Count: srv.Players.Count,
 				List:  srv.Players.List,
 			},
-			Software: &dto.ServerSoftware{
+			Software: &dto.ExarotonServerSoftware{
 				ID:      srv.Software.ID,
 				Name:    srv.Software.Name,
 				Version: srv.Software.Version,
@@ -99,6 +100,21 @@ func (r *ExarotonRepo) StartServer(ctx context.Context, apiKey string, serverID 
 	}
 
 	return nil
+}
+
+func (r *ExarotonRepo) GetServerInfo(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerInfo, error) {
+	client, err := exaroton.NewClient(apiKey)
+	if err != nil {
+		return nil, err
+	}
+
+	serverAPI := client.Server(serverID)
+	result, raw, err := serverAPI.GetServer(ctx)
+	if err := handleExarotonError(err, raw.Error); err != nil {
+		return nil, fmt.Errorf("exaroton repo GetServerInfo error: %w", err)
+	}
+
+	return dto.NewExarotonServerInfo(result), nil
 }
 
 // =================================================================

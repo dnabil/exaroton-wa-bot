@@ -38,6 +38,64 @@ func (_m *MockIExarotonRepo) EXPECT() *MockIExarotonRepo_Expecter {
 	return &MockIExarotonRepo_Expecter{mock: &_m.Mock}
 }
 
+// GetServerInfo provides a mock function for the type MockIExarotonRepo
+func (_mock *MockIExarotonRepo) GetServerInfo(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerInfo, error) {
+	ret := _mock.Called(ctx, apiKey, serverID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetServerInfo")
+	}
+
+	var r0 *dto.ExarotonServerInfo
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, string) (*dto.ExarotonServerInfo, error)); ok {
+		return returnFunc(ctx, apiKey, serverID)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, string) *dto.ExarotonServerInfo); ok {
+		r0 = returnFunc(ctx, apiKey, serverID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.ExarotonServerInfo)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = returnFunc(ctx, apiKey, serverID)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockIExarotonRepo_GetServerInfo_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetServerInfo'
+type MockIExarotonRepo_GetServerInfo_Call struct {
+	*mock.Call
+}
+
+// GetServerInfo is a helper method to define mock.On call
+//   - ctx
+//   - apiKey
+//   - serverID
+func (_e *MockIExarotonRepo_Expecter) GetServerInfo(ctx interface{}, apiKey interface{}, serverID interface{}) *MockIExarotonRepo_GetServerInfo_Call {
+	return &MockIExarotonRepo_GetServerInfo_Call{Call: _e.mock.On("GetServerInfo", ctx, apiKey, serverID)}
+}
+
+func (_c *MockIExarotonRepo_GetServerInfo_Call) Run(run func(ctx context.Context, apiKey string, serverID string)) *MockIExarotonRepo_GetServerInfo_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockIExarotonRepo_GetServerInfo_Call) Return(exarotonServerInfo *dto.ExarotonServerInfo, err error) *MockIExarotonRepo_GetServerInfo_Call {
+	_c.Call.Return(exarotonServerInfo, err)
+	return _c
+}
+
+func (_c *MockIExarotonRepo_GetServerInfo_Call) RunAndReturn(run func(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerInfo, error)) *MockIExarotonRepo_GetServerInfo_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ListServers provides a mock function for the type MockIExarotonRepo
 func (_mock *MockIExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error) {
 	ret := _mock.Called(ctx, apiKey)

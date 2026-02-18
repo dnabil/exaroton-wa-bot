@@ -38,6 +38,7 @@ var (
 	ErrGSIsDown        = errors.New("Game server might be down")
 	ErrGSInvalidAPIKey = errors.New("Invalid API key")
 	ErrGSEmptyAPIKey   = errors.New("API key is empty")
+	ErrServerNotFound  = errors.New("Server not found")
 )
 
 // command error

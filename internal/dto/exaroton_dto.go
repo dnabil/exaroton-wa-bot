@@ -1,5 +1,7 @@
 package dto
 
+import "pkg.icikowski.pl/exaroton/model"
+
 type ExarotonAccountInfo struct {
 	// Name represents the account's name.
 	Name string `json:"name"`
@@ -42,10 +44,25 @@ type ExarotonServerInfo struct {
 	Players ExarotonServerPlayers `json:"players"`
 
 	// Software represents the software-related information.
-	Software *ServerSoftware `json:"software"`
+	Software *ExarotonServerSoftware `json:"software"`
 
 	// Shared represents whether the server is accessed via the Share Access feature.
 	Shared bool `json:"shared"`
+}
+
+func NewExarotonServerInfo(m *model.Server) *ExarotonServerInfo {
+	return &ExarotonServerInfo{
+		ID:       m.ID,
+		Name:     m.Name,
+		Address:  m.Address,
+		Motd:     m.Motd,
+		Status:   ServerStatus(m.Status),
+		Host:     m.Host,
+		Port:     m.Port,
+		Players:  *NewExarotonServerPlayers(&m.Players),
+		Software: NewExarotonServerSoftware(m.Software),
+		Shared:   m.Shared,
+	}
 }
 
 // ExarotonServerPlayers represents the information about players on a server.
@@ -57,6 +74,18 @@ type ExarotonServerPlayers struct {
 	// List represents the current player list.
 	// Only available if the server is online.
 	List []string `json:"list"`
+}
+
+func NewExarotonServerPlayers(m *model.ServerPlayers) *ExarotonServerPlayers {
+	if m == nil {
+		return nil
+	}
+
+	return &ExarotonServerPlayers{
+		Max:   m.Max,
+		Count: m.Count,
+		List:  m.List,
+	}
 }
 
 const (
@@ -127,12 +156,24 @@ func (s ServerStatus) String() string {
 	}
 }
 
-// ServerSoftware represents the information about installed server software.
-type ServerSoftware struct {
+// ExarotonServerSoftware represents the information about installed server software.
+type ExarotonServerSoftware struct {
 	// ID represents the unique software ID.
 	ID string `json:"id"`
 	// Name represents the software name.
 	Name string `json:"name"`
 	// Version represents the software version.
 	Version string `json:"version"`
+}
+
+func NewExarotonServerSoftware(m *model.ServerSoftware) *ExarotonServerSoftware {
+	if m == nil {
+		return nil
+	}
+
+	return &ExarotonServerSoftware{
+		ID:      m.ID,
+		Name:    m.Name,
+		Version: m.Version,
+	}
 }
