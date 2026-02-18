@@ -7,6 +7,7 @@ package service
 import (
 	"context"
 	"exaroton-wa-bot/internal/dto"
+	"exaroton-wa-bot/internal/service"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -206,18 +207,26 @@ func (_c *MockIServerSettingsService_ListExarotonServer_Call) RunAndReturn(run f
 }
 
 // StartExarotonServer provides a mock function for the type MockIServerSettingsService
-func (_mock *MockIServerSettingsService) StartExarotonServer(ctx context.Context, serverIdx uint) error {
-	ret := _mock.Called(ctx, serverIdx)
+func (_mock *MockIServerSettingsService) StartExarotonServer(ctx context.Context, serverIdx uint, opts ...service.StartExarotonServerOption) *dto.StartExarotonServerRes {
+	var tmpRet mock.Arguments
+	if len(opts) > 0 {
+		tmpRet = _mock.Called(ctx, serverIdx, opts)
+	} else {
+		tmpRet = _mock.Called(ctx, serverIdx)
+	}
+	ret := tmpRet
 
 	if len(ret) == 0 {
 		panic("no return value specified for StartExarotonServer")
 	}
 
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uint) error); ok {
-		r0 = returnFunc(ctx, serverIdx)
+	var r0 *dto.StartExarotonServerRes
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uint, ...service.StartExarotonServerOption) *dto.StartExarotonServerRes); ok {
+		r0 = returnFunc(ctx, serverIdx, opts...)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*dto.StartExarotonServerRes)
+		}
 	}
 	return r0
 }
@@ -230,23 +239,26 @@ type MockIServerSettingsService_StartExarotonServer_Call struct {
 // StartExarotonServer is a helper method to define mock.On call
 //   - ctx
 //   - serverIdx
-func (_e *MockIServerSettingsService_Expecter) StartExarotonServer(ctx interface{}, serverIdx interface{}) *MockIServerSettingsService_StartExarotonServer_Call {
-	return &MockIServerSettingsService_StartExarotonServer_Call{Call: _e.mock.On("StartExarotonServer", ctx, serverIdx)}
+//   - opts
+func (_e *MockIServerSettingsService_Expecter) StartExarotonServer(ctx interface{}, serverIdx interface{}, opts ...interface{}) *MockIServerSettingsService_StartExarotonServer_Call {
+	return &MockIServerSettingsService_StartExarotonServer_Call{Call: _e.mock.On("StartExarotonServer",
+		append([]interface{}{ctx, serverIdx}, opts...)...)}
 }
 
-func (_c *MockIServerSettingsService_StartExarotonServer_Call) Run(run func(ctx context.Context, serverIdx uint)) *MockIServerSettingsService_StartExarotonServer_Call {
+func (_c *MockIServerSettingsService_StartExarotonServer_Call) Run(run func(ctx context.Context, serverIdx uint, opts ...service.StartExarotonServerOption)) *MockIServerSettingsService_StartExarotonServer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint))
+		variadicArgs := args[2].([]service.StartExarotonServerOption)
+		run(args[0].(context.Context), args[1].(uint), variadicArgs...)
 	})
 	return _c
 }
 
-func (_c *MockIServerSettingsService_StartExarotonServer_Call) Return(err error) *MockIServerSettingsService_StartExarotonServer_Call {
-	_c.Call.Return(err)
+func (_c *MockIServerSettingsService_StartExarotonServer_Call) Return(startExarotonServerRes *dto.StartExarotonServerRes) *MockIServerSettingsService_StartExarotonServer_Call {
+	_c.Call.Return(startExarotonServerRes)
 	return _c
 }
 
-func (_c *MockIServerSettingsService_StartExarotonServer_Call) RunAndReturn(run func(ctx context.Context, serverIdx uint) error) *MockIServerSettingsService_StartExarotonServer_Call {
+func (_c *MockIServerSettingsService_StartExarotonServer_Call) RunAndReturn(run func(ctx context.Context, serverIdx uint, opts ...service.StartExarotonServerOption) *dto.StartExarotonServerRes) *MockIServerSettingsService_StartExarotonServer_Call {
 	_c.Call.Return(run)
 	return _c
 }

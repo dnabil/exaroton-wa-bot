@@ -3,7 +3,9 @@ package wahandler
 import (
 	"exaroton-wa-bot/internal/config/warouter"
 	"exaroton-wa-bot/internal/constants/errs"
+	"exaroton-wa-bot/internal/constants/messages"
 	"exaroton-wa-bot/internal/dto"
+	"exaroton-wa-bot/internal/helper"
 	"exaroton-wa-bot/internal/service/command"
 )
 
@@ -14,12 +16,20 @@ func (h *WaHandler) StartServer() warouter.HandlerFunc {
 			return errs.ErrCommandNotFound
 		}
 
+		_, err := c.SendMessage(c, c.Chat, &dto.WhatsappMessage{
+			Conversation: helper.Ptr(messages.ServerIsStarting),
+		})
+		if err != nil {
+			return err
+		}
+
+		// iz blocking, will poll then return last server status.
 		res := startCmd.Execute(c, c.Args)
 		if res.Error != nil {
 			return res.Error
 		}
 
-		_, err := c.SendMessage(c, c.Chat, &dto.WhatsappMessage{
+		_, err = c.SendMessage(c, c.Chat, &dto.WhatsappMessage{
 			Conversation: &res.Text,
 		})
 

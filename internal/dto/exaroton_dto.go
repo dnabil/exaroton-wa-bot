@@ -177,3 +177,12 @@ func NewExarotonServerSoftware(m *model.ServerSoftware) *ExarotonServerSoftware 
 		Version: m.Version,
 	}
 }
+
+type StartExarotonServerReq struct {
+	UseOwnCredit bool
+}
+
+type StartExarotonServerRes struct {
+	Status <-chan ServerStatus
+	Err    error
+}

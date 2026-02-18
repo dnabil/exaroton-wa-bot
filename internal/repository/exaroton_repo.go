@@ -12,12 +12,13 @@ import (
 	"strconv"
 
 	"pkg.icikowski.pl/exaroton"
+	"pkg.icikowski.pl/exaroton/model"
 )
 
 type IExarotonRepo interface {
 	ValidateApiKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
 	ListServers(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
-	StartServer(ctx context.Context, apiKey string, serverID string) (err error)
+	StartServer(ctx context.Context, apiKey string, serverID string, opt dto.StartExarotonServerReq) (err error)
 	StopServer(ctx context.Context, apiKey string, serverID string) (err error)
 	GetServerInfo(ctx context.Context, apiKey string, serverID string) (*dto.ExarotonServerInfo, error)
 }
@@ -89,14 +90,16 @@ func (r *ExarotonRepo) ListServers(ctx context.Context, apiKey string) ([]*dto.E
 	return servers, nil
 }
 
-func (r *ExarotonRepo) StartServer(ctx context.Context, apiKey string, serverID string) (err error) {
+func (r *ExarotonRepo) StartServer(ctx context.Context, apiKey string, serverID string, opt dto.StartExarotonServerReq) (err error) {
 	client, err := exaroton.NewClient(apiKey)
 	if err != nil {
 		return err
 	}
 
 	serverAPI := client.Server(serverID)
-	raw, err := serverAPI.Start(ctx)
+	raw, err := serverAPI.StartWithOptions(ctx, model.ServerStartParams{
+		UseOwnCredits: opt.UseOwnCredit,
+	})
 	if err := handleExarotonError(err, helper.Deref(raw).Error); err != nil {
 		return fmt.Errorf("exaroton repo StartServer error: %w", err)
 	}

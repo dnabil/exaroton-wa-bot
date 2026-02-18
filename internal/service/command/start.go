@@ -4,8 +4,11 @@ import (
 	"context"
 	"exaroton-wa-bot/internal/constants/errs"
 	"exaroton-wa-bot/internal/constants/messages"
+	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/internal/service"
+	"fmt"
 	"strconv"
+	"time"
 )
 
 var (
@@ -51,13 +54,22 @@ func (c *StartServerCommand) Execute(ctx context.Context, args []string) Command
 		}
 	}
 
-	if err = c.serverSettingsSvc.StartExarotonServer(ctx, uint(serverIdx)); err != nil {
+	startStatus := c.serverSettingsSvc.StartExarotonServer(ctx, uint(serverIdx), service.WithPolling(
+		50*time.Second,
+		10*time.Second,
+	))
+	if startStatus.Err != nil {
 		return CommandResult{
 			Error: err,
 		}
 	}
 
+	lastStatus := dto.ServerStatusStarting
+	for v := range startStatus.Status {
+		lastStatus = v
+	}
+
 	return CommandResult{
-		Text: messages.ServerIsStarting,
+		Text: fmt.Sprintf(messages.ServerStartFinish, serverIdx, lastStatus.String()),
 	}
 }
