@@ -38,12 +38,7 @@ func (c *ListServerCommand) Usage() string {
 }
 
 func (c *ListServerCommand) Execute(ctx context.Context, args []string) CommandResult {
-	apiKey, err := c.serverSettingsSvc.GetExarotonAPIKey(ctx)
-	if err != nil {
-		return CommandResult{Error: err}
-	}
-
-	servers, err := c.serverSettingsSvc.ListExarotonServer(ctx, apiKey)
+	servers, err := c.serverSettingsSvc.ListExarotonServer(ctx)
 	if err != nil {
 		return CommandResult{Error: err}
 	}

@@ -17,6 +17,6 @@ func errHandler(c *warouter.Context, err error) {
 	}
 
 	if (resp != dto.WhatsappMessage{}) {
-		c.SendMessage(c, c.Chat, &resp)
+		_, _ = c.SendMessage(c, c.Chat, &resp)
 	}
 }

@@ -14,10 +14,8 @@ type IServerSettingsService interface {
 	GetExarotonAPIKey(ctx context.Context) (string, error)
 	UpdateExarotonAPIKey(ctx context.Context, apiKey string) error
 
-	// TODO: remove apiKey from the arg, orhcestrate in this layer
 	ValidateExarotonAPIKey(ctx context.Context, apiKey string) (*dto.ExarotonAccountInfo, error)
-	// TODO: remove apiKey from the arg, orhcestrate in this layer
-	ListExarotonServer(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)
+	ListExarotonServer(ctx context.Context) ([]*dto.ExarotonServerInfo, error)
 	StartExarotonServer(ctx context.Context, serverIdx uint) error
 	GetExarotonServerInfo(ctx context.Context, serverIdx uint) (*dto.ExarotonServerInfo, error)
 }
@@ -79,7 +77,25 @@ func (s *ServerSettingsService) ValidateExarotonAPIKey(ctx context.Context, apiK
 	return s.exarotonRepo.ValidateApiKey(ctx, apiKey)
 }
 
-func (s *ServerSettingsService) ListExarotonServer(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error) {
+func (s *ServerSettingsService) ListExarotonServer(ctx context.Context) ([]*dto.ExarotonServerInfo, error) {
+	tx := s.tx.Begin(ctx)
+	defer func() {
+		if rbErr := s.tx.Rollback(tx); rbErr != nil {
+			slog.ErrorContext(ctx, rbErr.Error())
+		}
+	}()
+
+	settings, err := s.serverSettingsRepo.Get(ctx, tx, constants.ExarotonAPIKey)
+	if err != nil {
+		return nil, err
+	}
+
+	if settings == nil {
+		return nil, errs.ErrGSEmptyAPIKey
+	}
+
+	apiKey := settings.Value
+
 	return s.exarotonRepo.ListServers(ctx, apiKey)
 }
 

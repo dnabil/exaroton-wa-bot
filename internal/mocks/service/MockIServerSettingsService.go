@@ -150,8 +150,8 @@ func (_c *MockIServerSettingsService_GetExarotonServerInfo_Call) RunAndReturn(ru
 }
 
 // ListExarotonServer provides a mock function for the type MockIServerSettingsService
-func (_mock *MockIServerSettingsService) ListExarotonServer(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error) {
-	ret := _mock.Called(ctx, apiKey)
+func (_mock *MockIServerSettingsService) ListExarotonServer(ctx context.Context) ([]*dto.ExarotonServerInfo, error) {
+	ret := _mock.Called(ctx)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ListExarotonServer")
@@ -159,18 +159,18 @@ func (_mock *MockIServerSettingsService) ListExarotonServer(ctx context.Context,
 
 	var r0 []*dto.ExarotonServerInfo
 	var r1 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) ([]*dto.ExarotonServerInfo, error)); ok {
-		return returnFunc(ctx, apiKey)
+	if returnFunc, ok := ret.Get(0).(func(context.Context) ([]*dto.ExarotonServerInfo, error)); ok {
+		return returnFunc(ctx)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, string) []*dto.ExarotonServerInfo); ok {
-		r0 = returnFunc(ctx, apiKey)
+	if returnFunc, ok := ret.Get(0).(func(context.Context) []*dto.ExarotonServerInfo); ok {
+		r0 = returnFunc(ctx)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*dto.ExarotonServerInfo)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, string) error); ok {
-		r1 = returnFunc(ctx, apiKey)
+	if returnFunc, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = returnFunc(ctx)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -184,14 +184,13 @@ type MockIServerSettingsService_ListExarotonServer_Call struct {
 
 // ListExarotonServer is a helper method to define mock.On call
 //   - ctx
-//   - apiKey
-func (_e *MockIServerSettingsService_Expecter) ListExarotonServer(ctx interface{}, apiKey interface{}) *MockIServerSettingsService_ListExarotonServer_Call {
-	return &MockIServerSettingsService_ListExarotonServer_Call{Call: _e.mock.On("ListExarotonServer", ctx, apiKey)}
+func (_e *MockIServerSettingsService_Expecter) ListExarotonServer(ctx interface{}) *MockIServerSettingsService_ListExarotonServer_Call {
+	return &MockIServerSettingsService_ListExarotonServer_Call{Call: _e.mock.On("ListExarotonServer", ctx)}
 }
 
-func (_c *MockIServerSettingsService_ListExarotonServer_Call) Run(run func(ctx context.Context, apiKey string)) *MockIServerSettingsService_ListExarotonServer_Call {
+func (_c *MockIServerSettingsService_ListExarotonServer_Call) Run(run func(ctx context.Context)) *MockIServerSettingsService_ListExarotonServer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		run(args[0].(context.Context))
 	})
 	return _c
 }
@@ -201,7 +200,7 @@ func (_c *MockIServerSettingsService_ListExarotonServer_Call) Return(exarotonSer
 	return _c
 }
 
-func (_c *MockIServerSettingsService_ListExarotonServer_Call) RunAndReturn(run func(ctx context.Context, apiKey string) ([]*dto.ExarotonServerInfo, error)) *MockIServerSettingsService_ListExarotonServer_Call {
+func (_c *MockIServerSettingsService_ListExarotonServer_Call) RunAndReturn(run func(ctx context.Context) ([]*dto.ExarotonServerInfo, error)) *MockIServerSettingsService_ListExarotonServer_Call {
 	_c.Call.Return(run)
 	return _c
 }
