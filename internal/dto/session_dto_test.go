@@ -1,7 +1,9 @@
 package dto
 
 import (
+	"encoding/gob"
 	"encoding/json"
+	"errors"
 	"exaroton-wa-bot/internal/constants"
 	"exaroton-wa-bot/internal/constants/errs"
 	"net/http"
@@ -13,6 +15,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func setupTestContext() (echo.Context, *httptest.ResponseRecorder) {
@@ -33,7 +36,7 @@ func setupTestContext() (echo.Context, *httptest.ResponseRecorder) {
 	})(func(c echo.Context) error {
 		return nil
 	})
-	h(c)
+	_ = h(c)
 
 	return c, rec
 }
@@ -55,7 +58,7 @@ func TestWebSession_GetUser(t *testing.T) {
 				}
 				userJson, _ := json.Marshal(user)
 				sess.Values[constants.AuthCookieKey] = userJson
-				sess.Save(c.Request(), c.Response().Writer)
+				require.NoError(t, sess.Save(c.Request(), c.Response().Writer))
 			},
 			expectedError: nil,
 			expectedUser: &UserClaims{
@@ -133,6 +136,216 @@ func TestWebSession_SetUser(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+		})
+	}
+}
+
+func TestWeSession_GetSetFlash(t *testing.T) {
+	gob.Register(WebFlashMessage{})
+
+	tests := []struct {
+		name         string
+		setFlashMsgs WebFlashMessage
+	}{
+		{
+			name: "success",
+			setFlashMsgs: WebFlashMessage{
+				"success": "Test message",
+			},
+		},
+		{
+			name: "success_multiple",
+			setFlashMsgs: WebFlashMessage{
+				"info":    "First message",
+				"warning": "Second message",
+			},
+		},
+		{
+			name:         "success_empty",
+			setFlashMsgs: WebFlashMessage{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, _ := setupTestContext()
+
+			ws := NewWebSession()
+
+			for key, msg := range tt.setFlashMsgs {
+				err := ws.SetFlash(c, key, msg)
+				require.NoError(t, err)
+			}
+
+			res, err := ws.GetFlash(c)
+			require.NoError(t, err)
+
+			// assert
+			assert.Len(t, res, len(tt.setFlashMsgs))
+			for i, msg := range tt.setFlashMsgs {
+				assert.Equal(t, msg, res[i])
+			}
+
+			// check if the flash messages are deleted after getting them
+			res, err = ws.GetFlash(c)
+			require.NoError(t, err)
+			assert.Len(t, res, 0)
+		})
+	}
+}
+
+func TestWeSession_GetSetValidationError(t *testing.T) {
+	gob.Register(WebValidationErrors{})
+
+	tests := []struct {
+		name       string
+		setValErrs []map[string]error
+	}{
+		{
+			name: "success",
+			setValErrs: []map[string]error{
+				{
+					"email":    errors.New("invalid email address"),
+					"password": errors.New("Password must be at least 8 characters"),
+				},
+			},
+		},
+		{
+			name: "success_override",
+			setValErrs: []map[string]error{
+				{
+					"email":    errors.New("invalid email address"),
+					"password": errors.New("Password must be at least 8 characters"),
+				},
+			},
+		},
+		{
+			name: "success_override",
+			setValErrs: []map[string]error{
+				{
+					"email":    errors.New("Invalid email address"),
+					"password": errors.New("Password must be at least 8 characters"),
+				},
+				{
+					"email":    errors.New("OVERRIDEN VALUE"),
+					"password": errors.New("OVERRIDEN VALUE"),
+				},
+			},
+		},
+		{
+			name:       "success_empty",
+			setValErrs: []map[string]error{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, _ := setupTestContext()
+
+			ws := NewWebSession()
+
+			for _, valErr := range tt.setValErrs {
+				err := ws.SetValidationError(c, valErr)
+				require.NoError(t, err)
+			}
+
+			res, err := ws.GetValidationError(c)
+			require.NoError(t, err)
+
+			// get combined errors from testcase
+			combinedErrs := make(WebValidationErrors)
+			for _, valErr := range tt.setValErrs {
+				for k, v := range valErr {
+					combinedErrs[k] = v.Error()
+				}
+			}
+
+			assert.Equal(t, combinedErrs, res)
+
+			// check if the flash messages are deleted after getting them
+			res, err = ws.GetValidationError(c)
+			require.NoError(t, err)
+			assert.Len(t, res, 0)
+		})
+	}
+}
+
+type oldInpputStructTest struct {
+	Email    string
+	Password string
+}
+
+func (o oldInpputStructTest) ToMap() map[string]string {
+	return map[string]string{
+		"email":    o.Email,
+		"password": o.Password,
+	}
+}
+
+func TestWeSession_GetSetOldInput(t *testing.T) {
+	gob.Register(WebOldInput{})
+
+	tests := []struct {
+		name        string
+		setOldInput []oldInpputStructTest
+	}{
+		{
+			name: "success",
+			setOldInput: []oldInpputStructTest{
+				{
+					Email:    "asd@",
+					Password: "Password",
+				},
+			},
+		},
+		{
+			name: "success_override",
+			setOldInput: []oldInpputStructTest{
+				{
+					Email:    "asd@",
+					Password: "Password",
+				},
+				{
+					Email:    "OVERRIDEN VALUE",
+					Password: "OVERRIDEN VALUE",
+				},
+			},
+		},
+		{
+			name:        "success_empty",
+			setOldInput: []oldInpputStructTest{},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, _ := setupTestContext()
+
+			ws := NewWebSession()
+
+			for _, oldInput := range tt.setOldInput {
+				err := ws.SetOldInput(c, oldInput)
+				require.NoError(t, err)
+			}
+
+			res, err := ws.GetOldInput(c)
+			require.NoError(t, err)
+
+			// get combined oldinput from testcase
+			combinedErrs := make(WebOldInput)
+			for _, valErr := range tt.setOldInput {
+				valErrMap := valErr.ToMap()
+				for k, v := range valErrMap {
+					combinedErrs[k] = v
+				}
+			}
+
+			assert.Equal(t, combinedErrs, res)
+
+			// check if the flash messages are deleted after getting them
+			res, err = ws.GetOldInput(c)
+			require.NoError(t, err)
+			assert.Len(t, res, 0)
 		})
 	}
 }

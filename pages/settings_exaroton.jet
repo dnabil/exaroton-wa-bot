@@ -1,0 +1,151 @@
+{{ extends "./layouts/layout_base.jet" }}
+
+{{ block layout_base_title() }}
+Exaroton | Settings
+{{ end }}
+
+{{ block layout_base_body() }}
+
+
+<main>
+    <h1>Exaroton Settings</h1>
+    <h2> API Key</h2>
+
+    <input id="api_key" type="text" name="api_key" placeholder="API Key" aria-label="API Key" value="{{ .APIKey }}"
+        aria-describedby="api_key-helper" required />
+    <small id="api_key-helper"></small>
+
+    <button id="btn-save">Save</button>
+    <button id="btn-validate" class="contrast">Validate</button>
+
+    <br />
+    <br />
+    <br />
+
+    <div id="profile-info" hidden>
+        <h3>Profile</h3>
+        <dl>
+            <p><strong>Name:</strong> <span id="profile-name"></span></p>
+            <p><strong>Email:</strong> <span id="profile-email"></span></p>
+            <p><strong>Credits:</strong> <span id="profile-credits"></span></p>
+            <p><strong>Verified:</strong> <span id="profile-verified"></span></p>
+        </dl>
+    </div>
+</main>
+
+<script src="/public/scripts/validation.js"></script>
+<script>
+    const btnSave = document.getElementById("btn-save")
+    const btnValidate = document.getElementById("btn-validate")
+
+    const apiKey = document.getElementById("api_key")
+    const apiKeyHelper = document.getElementById("api_key-helper")
+
+    const profileBox = document.getElementById("profile-info");
+    const profileName = document.getElementById("profile-name");
+    const profileEmail = document.getElementById("profile-email");
+    const profileCredits = document.getElementById("profile-credits");
+    const profileVerified = document.getElementById("profile-verified");
+
+    let inputFields = [
+        apiKey, apiKeyHelper
+    ]
+
+    setupValidationListeners(inputFields)
+
+    // SAVE BUTTON
+    document.getElementById("btn-save").addEventListener("click", async () => {
+        if (!validateInput(inputFields)) return;
+
+        btnSave.setAttribute("aria-busy", "true")
+        apiKeyHelper.textContent = "";
+
+        try {
+            const response = await fetch("/api/settings/server/exaroton/save", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    api_key: apiKey.value,
+                }),
+            });
+
+            const result = await response.json();
+
+            // 400
+            if (response.status === 400 || response.status === 401) {
+                apiKey.setAttribute("aria-invalid", "true");
+                if (result?.data?.api_key) {
+                    apiKeyHelper.textContent = result.data.api_key;
+                } else {
+                    apiKeyHelper.textContent = result.message;
+                }
+                return;
+            }
+
+            // other errors
+            if (!response.ok) {
+                apiKeyHelper.textContent = result.message || "Something went wrong";
+                return;
+            }
+
+            // 200 success
+            apiKeyHelper.textContent = result.message;
+
+        } catch (error) {
+            console.error(error);
+            apiKeyHelper.textContent = "Network error. Please try again.";
+        } finally {
+            btnSave.setAttribute("aria-busy", "false");
+        }
+    })
+
+    // VALIDATE BUTTON
+    document.getElementById("btn-validate").addEventListener("click", async () => {
+        if (!validateInput(inputFields)) return;
+
+        btnValidate.setAttribute("aria-busy", "true")
+        apiKeyHelper.textContent = "";
+        profileBox.hidden = true;
+
+        try {
+            const response = await fetch("/api/settings/server/exaroton/validate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ api_key: apiKey.value }),
+            });
+
+            const data = await response.json();
+
+            // 400 || 401
+            if (response.status === 400 || response.status === 401) {
+                apiKey.setAttribute("aria-invalid", "true");
+                apiKeyHelper.textContent = data?.data?.api_key || data.message;
+                return;
+            }
+
+            // other
+            if (!response.ok) {
+                apiKeyHelper.textContent =
+                    data.message || "Something went wrong";
+                return;
+            }
+
+            // 200
+            apiKeyHelper.textContent = data.message;
+            profileName.textContent = data.data.name;
+            profileEmail.textContent = data.data.email;
+            profileCredits.textContent = data.data.credits;
+            profileVerified.textContent = data.data.verified ? "✅" : "❌";
+            profileBox.hidden = false;
+
+        } catch (error) {
+            console.error(error);
+            apiKeyHelper.textContent = "Network error. Please try again.";
+        } finally {
+            btnValidate.setAttribute("aria-busy", "false");
+        }
+    })
+</script>
+{{ end }}

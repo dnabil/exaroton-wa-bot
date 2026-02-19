@@ -13,33 +13,43 @@ import (
 	"github.com/knadh/koanf/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 	"go.mau.fi/whatsmeow"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
-func setupTestAuthService(t *testing.T) (IAuthService, *mockRepo.MockIUserRepo, *mockRepo.MockIWhatsappRepo, *config.Cfg) {
+func setupTestAuthService(t *testing.T) (
+	IAuthService,
+	*mockRepo.MockSqlTx,
+	*mockRepo.MockIUserRepo,
+	*mockRepo.MockIWhatsappRepo,
+	*config.Cfg,
+) {
 	mockUserRepo := mockRepo.NewMockIUserRepo(t)
 	mockWaRepo := mockRepo.NewMockIWhatsappRepo(t)
+	mockSqlTx := mockRepo.NewMockSqlTx(t)
 
 	cfg := &config.Cfg{
 		Koanf: koanf.New("."),
 	}
-	cfg.Set(config.KeyAuthDuration, "24h")
+	require.NoError(t, cfg.Set(config.KeyAuthDuration, "24h"))
 
 	svcTmpl := &svcTmpl{
 		cfg: cfg,
+		tx:  mockSqlTx,
 	}
 
 	authSvc := NewAuthService(svcTmpl, mockWaRepo, mockUserRepo)
 
-	return authSvc, mockUserRepo, mockWaRepo, cfg
+	return authSvc, mockSqlTx, mockUserRepo, mockWaRepo, cfg
 }
 
 func TestAuthService_Login(t *testing.T) {
 	tests := []struct {
 		name          string
 		req           *dto.UserLoginReq
-		mockSetup     func(*mockRepo.MockIUserRepo)
+		mockSetup     func(*mockRepo.MockSqlTx, *mockRepo.MockIUserRepo)
 		expectedUser  *dto.UserClaims
 		expectedError error
 	}{
@@ -49,10 +59,14 @@ func TestAuthService_Login(t *testing.T) {
 				Username: "testuser",
 				Password: "password123",
 			},
-			mockSetup: func(mockUserRepo *mockRepo.MockIUserRepo) {
+			mockSetup: func(mockSqlTx *mockRepo.MockSqlTx, mockUserRepo *mockRepo.MockIUserRepo) {
 				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+				// transaction
+				mockSqlTx.EXPECT().Begin(mock.Anything).Return(new(gorm.DB))
+				mockSqlTx.EXPECT().Rollback(mock.Anything).Return(nil)
+
 				mockUserRepo.EXPECT().
-					GetUserByUsername(mock.Anything, "testuser").
+					GetUserByUsername(mock.Anything, mock.Anything, "testuser").
 					Return(&entity.User{
 						ID:       1,
 						Username: "testuser",
@@ -71,9 +85,13 @@ func TestAuthService_Login(t *testing.T) {
 				Username: "nonexistent",
 				Password: "password123",
 			},
-			mockSetup: func(mockUserRepo *mockRepo.MockIUserRepo) {
+			mockSetup: func(mockSqlTx *mockRepo.MockSqlTx, mockUserRepo *mockRepo.MockIUserRepo) {
+				// transaction
+				mockSqlTx.EXPECT().Begin(mock.Anything).Return(new(gorm.DB))
+				mockSqlTx.EXPECT().Rollback(mock.Anything).Return(nil)
+
 				mockUserRepo.EXPECT().
-					GetUserByUsername(mock.Anything, "nonexistent").
+					GetUserByUsername(mock.Anything, mock.Anything, "nonexistent").
 					Return(nil, nil)
 			},
 			expectedUser:  nil,
@@ -85,10 +103,14 @@ func TestAuthService_Login(t *testing.T) {
 				Username: "testuser",
 				Password: "wrongpassword",
 			},
-			mockSetup: func(mockUserRepo *mockRepo.MockIUserRepo) {
+			mockSetup: func(mockSqlTx *mockRepo.MockSqlTx, mockUserRepo *mockRepo.MockIUserRepo) {
+				// transaction
+				mockSqlTx.EXPECT().Begin(mock.Anything).Return(new(gorm.DB))
+				mockSqlTx.EXPECT().Rollback(mock.Anything).Return(nil)
+
 				hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
 				mockUserRepo.EXPECT().
-					GetUserByUsername(mock.Anything, "testuser").
+					GetUserByUsername(mock.Anything, mock.Anything, "testuser").
 					Return(&entity.User{
 						ID:       1,
 						Username: "testuser",
@@ -104,9 +126,13 @@ func TestAuthService_Login(t *testing.T) {
 				Username: "testuser",
 				Password: "password123",
 			},
-			mockSetup: func(mockUserRepo *mockRepo.MockIUserRepo) {
+			mockSetup: func(mockSqlTx *mockRepo.MockSqlTx, mockUserRepo *mockRepo.MockIUserRepo) {
+				// transaction
+				mockSqlTx.EXPECT().Begin(mock.Anything).Return(new(gorm.DB))
+				mockSqlTx.EXPECT().Rollback(mock.Anything).Return(nil)
+
 				mockUserRepo.EXPECT().
-					GetUserByUsername(mock.Anything, "testuser").
+					GetUserByUsername(mock.Anything, mock.Anything, "testuser").
 					Return(nil, assert.AnError)
 			},
 			expectedUser:  nil,
@@ -116,10 +142,10 @@ func TestAuthService_Login(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			authSvc, mockUserRepo, _, _ := setupTestAuthService(t)
+			authSvc, mockSqlTx, mockUserRepo, _, _ := setupTestAuthService(t)
 
 			if tt.mockSetup != nil {
-				tt.mockSetup(mockUserRepo)
+				tt.mockSetup(mockSqlTx, mockUserRepo)
 			}
 
 			user, expDuration, err := authSvc.Login(context.Background(), tt.req)
@@ -140,6 +166,7 @@ func TestAuthService_Login_DefaultDuration(t *testing.T) {
 	// Create mocks
 	mockUserRepo := mockRepo.NewMockIUserRepo(t)
 	mockWaRepo := mockRepo.NewMockIWhatsappRepo(t)
+	mockSqlTx := mockRepo.NewMockSqlTx(t)
 
 	// Create config without auth duration
 	cfg := &config.Cfg{
@@ -149,15 +176,21 @@ func TestAuthService_Login_DefaultDuration(t *testing.T) {
 	// Create service template
 	svcTmpl := &svcTmpl{
 		cfg: cfg,
+		tx:  mockSqlTx,
 	}
 
 	// Create auth service
 	authSvc := NewAuthService(svcTmpl, mockWaRepo, mockUserRepo)
 
 	// Setup mock for successful login
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), 1)
+
+	// transaction mock
+	mockSqlTx.EXPECT().Begin(mock.Anything).Return(new(gorm.DB))
+	mockSqlTx.EXPECT().Rollback(mock.Anything).Return(nil)
+
 	mockUserRepo.EXPECT().
-		GetUserByUsername(mock.Anything, "testuser").
+		GetUserByUsername(mock.Anything, mock.Anything, "testuser").
 		Return(&entity.User{
 			ID:       1,
 			Username: "testuser",
@@ -207,7 +240,7 @@ func TestAuthService_WhatsappLogin(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			authSvc, _, mockWaRepo, _ := setupTestAuthService(t)
+			authSvc, _, _, mockWaRepo, _ := setupTestAuthService(t)
 
 			if tt.mockSetup != nil {
 				tt.mockSetup(mockWaRepo)
@@ -254,7 +287,7 @@ func TestAuthService_WhatsappIsLoggedIn(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			authSvc, _, mockWaRepo, _ := setupTestAuthService(t)
+			authSvc, _, _, mockWaRepo, _ := setupTestAuthService(t)
 
 			if tt.mockSetup != nil {
 				tt.mockSetup(mockWaRepo)

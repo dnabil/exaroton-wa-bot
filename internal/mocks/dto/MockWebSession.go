@@ -39,6 +39,118 @@ func (_m *MockWebSession) EXPECT() *MockWebSession_Expecter {
 	return &MockWebSession_Expecter{mock: &_m.Mock}
 }
 
+// GetFlash provides a mock function for the type MockWebSession
+func (_mock *MockWebSession) GetFlash(c echo.Context) (dto.WebFlashMessage, error) {
+	ret := _mock.Called(c)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetFlash")
+	}
+
+	var r0 dto.WebFlashMessage
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) (dto.WebFlashMessage, error)); ok {
+		return returnFunc(c)
+	}
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) dto.WebFlashMessage); ok {
+		r0 = returnFunc(c)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(dto.WebFlashMessage)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(echo.Context) error); ok {
+		r1 = returnFunc(c)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWebSession_GetFlash_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetFlash'
+type MockWebSession_GetFlash_Call struct {
+	*mock.Call
+}
+
+// GetFlash is a helper method to define mock.On call
+//   - c
+func (_e *MockWebSession_Expecter) GetFlash(c interface{}) *MockWebSession_GetFlash_Call {
+	return &MockWebSession_GetFlash_Call{Call: _e.mock.On("GetFlash", c)}
+}
+
+func (_c *MockWebSession_GetFlash_Call) Run(run func(c echo.Context)) *MockWebSession_GetFlash_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(echo.Context))
+	})
+	return _c
+}
+
+func (_c *MockWebSession_GetFlash_Call) Return(webFlashMessage dto.WebFlashMessage, err error) *MockWebSession_GetFlash_Call {
+	_c.Call.Return(webFlashMessage, err)
+	return _c
+}
+
+func (_c *MockWebSession_GetFlash_Call) RunAndReturn(run func(c echo.Context) (dto.WebFlashMessage, error)) *MockWebSession_GetFlash_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// GetOldInput provides a mock function for the type MockWebSession
+func (_mock *MockWebSession) GetOldInput(c echo.Context) (dto.WebOldInput, error) {
+	ret := _mock.Called(c)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetOldInput")
+	}
+
+	var r0 dto.WebOldInput
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) (dto.WebOldInput, error)); ok {
+		return returnFunc(c)
+	}
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) dto.WebOldInput); ok {
+		r0 = returnFunc(c)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(dto.WebOldInput)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(echo.Context) error); ok {
+		r1 = returnFunc(c)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWebSession_GetOldInput_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetOldInput'
+type MockWebSession_GetOldInput_Call struct {
+	*mock.Call
+}
+
+// GetOldInput is a helper method to define mock.On call
+//   - c
+func (_e *MockWebSession_Expecter) GetOldInput(c interface{}) *MockWebSession_GetOldInput_Call {
+	return &MockWebSession_GetOldInput_Call{Call: _e.mock.On("GetOldInput", c)}
+}
+
+func (_c *MockWebSession_GetOldInput_Call) Run(run func(c echo.Context)) *MockWebSession_GetOldInput_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(echo.Context))
+	})
+	return _c
+}
+
+func (_c *MockWebSession_GetOldInput_Call) Return(webOldInput dto.WebOldInput, err error) *MockWebSession_GetOldInput_Call {
+	_c.Call.Return(webOldInput, err)
+	return _c
+}
+
+func (_c *MockWebSession_GetOldInput_Call) RunAndReturn(run func(c echo.Context) (dto.WebOldInput, error)) *MockWebSession_GetOldInput_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetUser provides a mock function for the type MockWebSession
 func (_mock *MockWebSession) GetUser(c echo.Context) (*dto.UserClaims, error) {
 	ret := _mock.Called(c)
@@ -95,6 +207,155 @@ func (_c *MockWebSession_GetUser_Call) RunAndReturn(run func(c echo.Context) (*d
 	return _c
 }
 
+// GetValidationError provides a mock function for the type MockWebSession
+func (_mock *MockWebSession) GetValidationError(c echo.Context) (dto.WebValidationErrors, error) {
+	ret := _mock.Called(c)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetValidationError")
+	}
+
+	var r0 dto.WebValidationErrors
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) (dto.WebValidationErrors, error)); ok {
+		return returnFunc(c)
+	}
+	if returnFunc, ok := ret.Get(0).(func(echo.Context) dto.WebValidationErrors); ok {
+		r0 = returnFunc(c)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(dto.WebValidationErrors)
+		}
+	}
+	if returnFunc, ok := ret.Get(1).(func(echo.Context) error); ok {
+		r1 = returnFunc(c)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// MockWebSession_GetValidationError_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetValidationError'
+type MockWebSession_GetValidationError_Call struct {
+	*mock.Call
+}
+
+// GetValidationError is a helper method to define mock.On call
+//   - c
+func (_e *MockWebSession_Expecter) GetValidationError(c interface{}) *MockWebSession_GetValidationError_Call {
+	return &MockWebSession_GetValidationError_Call{Call: _e.mock.On("GetValidationError", c)}
+}
+
+func (_c *MockWebSession_GetValidationError_Call) Run(run func(c echo.Context)) *MockWebSession_GetValidationError_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(echo.Context))
+	})
+	return _c
+}
+
+func (_c *MockWebSession_GetValidationError_Call) Return(webValidationErrors dto.WebValidationErrors, err error) *MockWebSession_GetValidationError_Call {
+	_c.Call.Return(webValidationErrors, err)
+	return _c
+}
+
+func (_c *MockWebSession_GetValidationError_Call) RunAndReturn(run func(c echo.Context) (dto.WebValidationErrors, error)) *MockWebSession_GetValidationError_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetFlash provides a mock function for the type MockWebSession
+func (_mock *MockWebSession) SetFlash(c echo.Context, key string, msg string) error {
+	ret := _mock.Called(c, key, msg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetFlash")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(echo.Context, string, string) error); ok {
+		r0 = returnFunc(c, key, msg)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWebSession_SetFlash_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetFlash'
+type MockWebSession_SetFlash_Call struct {
+	*mock.Call
+}
+
+// SetFlash is a helper method to define mock.On call
+//   - c
+//   - key
+//   - msg
+func (_e *MockWebSession_Expecter) SetFlash(c interface{}, key interface{}, msg interface{}) *MockWebSession_SetFlash_Call {
+	return &MockWebSession_SetFlash_Call{Call: _e.mock.On("SetFlash", c, key, msg)}
+}
+
+func (_c *MockWebSession_SetFlash_Call) Run(run func(c echo.Context, key string, msg string)) *MockWebSession_SetFlash_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(echo.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockWebSession_SetFlash_Call) Return(err error) *MockWebSession_SetFlash_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWebSession_SetFlash_Call) RunAndReturn(run func(c echo.Context, key string, msg string) error) *MockWebSession_SetFlash_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetOldInput provides a mock function for the type MockWebSession
+func (_mock *MockWebSession) SetOldInput(c echo.Context, oldInput dto.Mappable) error {
+	ret := _mock.Called(c, oldInput)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetOldInput")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(echo.Context, dto.Mappable) error); ok {
+		r0 = returnFunc(c, oldInput)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWebSession_SetOldInput_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetOldInput'
+type MockWebSession_SetOldInput_Call struct {
+	*mock.Call
+}
+
+// SetOldInput is a helper method to define mock.On call
+//   - c
+//   - oldInput
+func (_e *MockWebSession_Expecter) SetOldInput(c interface{}, oldInput interface{}) *MockWebSession_SetOldInput_Call {
+	return &MockWebSession_SetOldInput_Call{Call: _e.mock.On("SetOldInput", c, oldInput)}
+}
+
+func (_c *MockWebSession_SetOldInput_Call) Run(run func(c echo.Context, oldInput dto.Mappable)) *MockWebSession_SetOldInput_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(echo.Context), args[1].(dto.Mappable))
+	})
+	return _c
+}
+
+func (_c *MockWebSession_SetOldInput_Call) Return(err error) *MockWebSession_SetOldInput_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWebSession_SetOldInput_Call) RunAndReturn(run func(c echo.Context, oldInput dto.Mappable) error) *MockWebSession_SetOldInput_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // SetUser provides a mock function for the type MockWebSession
 func (_mock *MockWebSession) SetUser(c echo.Context, user *dto.UserClaims, expDuration time.Duration) error {
 	ret := _mock.Called(c, user, expDuration)
@@ -138,6 +399,52 @@ func (_c *MockWebSession_SetUser_Call) Return(err error) *MockWebSession_SetUser
 }
 
 func (_c *MockWebSession_SetUser_Call) RunAndReturn(run func(c echo.Context, user *dto.UserClaims, expDuration time.Duration) error) *MockWebSession_SetUser_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// SetValidationError provides a mock function for the type MockWebSession
+func (_mock *MockWebSession) SetValidationError(c echo.Context, valErr map[string]error) error {
+	ret := _mock.Called(c, valErr)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetValidationError")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(echo.Context, map[string]error) error); ok {
+		r0 = returnFunc(c, valErr)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// MockWebSession_SetValidationError_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SetValidationError'
+type MockWebSession_SetValidationError_Call struct {
+	*mock.Call
+}
+
+// SetValidationError is a helper method to define mock.On call
+//   - c
+//   - valErr
+func (_e *MockWebSession_Expecter) SetValidationError(c interface{}, valErr interface{}) *MockWebSession_SetValidationError_Call {
+	return &MockWebSession_SetValidationError_Call{Call: _e.mock.On("SetValidationError", c, valErr)}
+}
+
+func (_c *MockWebSession_SetValidationError_Call) Run(run func(c echo.Context, valErr map[string]error)) *MockWebSession_SetValidationError_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(echo.Context), args[1].(map[string]error))
+	})
+	return _c
+}
+
+func (_c *MockWebSession_SetValidationError_Call) Return(err error) *MockWebSession_SetValidationError_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *MockWebSession_SetValidationError_Call) RunAndReturn(run func(c echo.Context, valErr map[string]error) error) *MockWebSession_SetValidationError_Call {
 	_c.Call.Return(run)
 	return _c
 }

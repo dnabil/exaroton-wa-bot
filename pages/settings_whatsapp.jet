@@ -1,0 +1,100 @@
+{{ extends "./layouts/layout_base.jet" }}
+
+{{ import "./components/com_whatsapp_group_list.jet" }}
+
+{{ block layout_base_title() }}
+Whatsapp | Settings
+{{ end }}
+
+{{ block layout_base_body() }}
+<main>
+    <article style="display:flex; align-items:center; gap:1rem;">
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+            <small>Phone Number:</small>
+            <strong>{{ .PhoneNumber }}</strong>
+        </div>
+
+        <!-- Right side -->
+        <div style="margin-left:auto; text-align:right;">
+            <small>Not you?</small><br />
+            <button id="logout" class="secondary">Logout</button>
+        </div>
+    </article>
+
+    <h2>Whitelisted Groups</h2>
+    <div id="whitelisted-groups-list" aria-busy="true"></div>
+
+    <h2>Non-Whitelisted Groups</h2>
+    <div id="non-whitelisted-groups-list" aria-busy="true"></div>
+</main>
+
+{{ yield com_whatsapp_group_list_script() }}
+
+<script>
+    document.getElementById("logout").onclick = async () => {
+        await fetch("/api/settings/whatsapp/logout", { method: "POST" })
+        window.location.href = "/"
+    }
+
+    // load whitelisted whatsapp groups
+    (async () => {
+        try {
+            const res = await fetch("/api/settings/whatsapp/groups?whitelist=true", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (!res.ok) throw new Error("Request failed");
+            const data = await res.json();
+
+            
+            for (const group of data.data) {
+                addGroupToWhitelistedList({
+                    name: group.name,
+                    participant_count: group.participant_count,
+                    jid: group.jid,
+                    jid_user: group.jid_user,
+                    jid_server: group.jid_server
+                });
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Failed to load whitelisted groups");
+        } finally {
+            document.getElementById("whitelisted-groups-list").removeAttribute("aria-busy");
+        }
+    })();
+
+    // load non-whitelisted whatsapp groups
+    (async () => {
+        try {
+            const res = await fetch("/api/settings/whatsapp/groups?whitelist=false", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            if (!res.ok) throw new Error("Request failed");
+            const data = await res.json();
+
+            for (const group of data.data) {
+                addGroupToNonWhitelistedList({
+                    name: group.name,
+                    participant_count: group.participant_count,
+                    jid: group.jid,
+                    jid_user: group.jid_user,
+                    jid_server: group.jid_server
+                });
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Failed to load non-whitelisted groups");
+        } finally {
+            document.getElementById("non-whitelisted-groups-list").removeAttribute("aria-busy");
+        }
+    })();
+</script>
+{{ end }}

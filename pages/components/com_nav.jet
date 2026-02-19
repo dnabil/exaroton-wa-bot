@@ -1,0 +1,73 @@
+{{ block com_nav() }}
+
+<!-- Sidebar (collapsible) -->
+<div id="sidebar" style="
+        width: 20rem;
+        position: fixed; 
+        top: 0; 
+        left: -20rem;
+        height: 100%; 
+        background: #000; 
+        color: #fff; 
+        overflow-x: hidden; 
+        transition: 0.3s;
+    ">
+
+    <aside>
+        <ul style="margin-top: 4rem; ">
+            <li>
+                <a href="/" {{ if currentPage=="index.jet" }} class="contrast" {{ end }}>
+                    Homepage
+                </a>
+            </li>
+            <li>
+                <a href="/settings/whatsapp" {{ if currentPage=="settings_whatsapp.jet" }} class="contrast" {{ end }}>
+                    Whatsapp Settings
+                </a>
+            </li>
+            <li>
+                <details name="server_settings" open>
+                    <summary>
+                        Server Settings
+                    </summary>
+                    <ul>
+                        <li>
+                            <a href="/settings/server/exaroton" {{ if currentPage=="settings_exaroton.jet" }}
+                                class="contrast" {{ end }}>
+                                Exaroton
+                            </a>
+                        </li>
+                    </ul>
+                </details>
+            </li>
+        </ul>
+    </aside>
+</div>
+
+
+<nav style="padding: 0 1rem;">
+    <ul>
+        <!-- Hamburger Button -->
+        <div style="position: absolute; top: 20px; left: 20px; cursor: pointer;" onclick="
+            var sidebar = document.getElementById('sidebar');
+            var isOpen = sidebar.style.left === '0px';
+            sidebar.style.left = isOpen ? '-20rem' : '0px';
+        ">
+            <img src="/public/images/icons/menu-burger_white.svg" alt="Side menu" />
+        </div>
+    </ul>
+
+    <ul>
+        <li><strong onclick="window.location='/'">Exaroton Whatsapp Bot</strong></li>
+    </ul>
+
+    <ul>
+        <li>
+            <a href="https://github.com/dnabil/exaroton-wa-bot" target="_blank">
+                <img style="width: 30px; height: 30px;" src="/public/images/icons/github-mark_white.svg" alt="Github" />
+            </a>
+        </li>
+    </ul>
+</nav>
+
+{{ end }}

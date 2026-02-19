@@ -2,15 +2,18 @@ package handler
 
 import (
 	"exaroton-wa-bot/internal/config"
+	"exaroton-wa-bot/internal/constants"
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/internal/middleware"
 	"exaroton-wa-bot/internal/service"
+	"exaroton-wa-bot/pages"
 	"fmt"
-	"html/template"
 	"io"
 	"net/http"
 	"path/filepath"
+	"reflect"
 
+	"github.com/CloudyKit/jet/v6"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 )
@@ -62,6 +65,7 @@ func NewWeb(cfg *config.Cfg, svc *service.Service) *Web {
 	}
 
 	web.LoadRoutes()
+	web.LoadAPIRoutes()
 
 	return web
 }
@@ -79,30 +83,9 @@ func (h *Web) RunHTTP(port int) error {
 // HTML Renderer
 
 type Renderer struct {
-	template  *template.Template
+	template  *jet.Set
 	location  string
 	hotReload bool
-}
-
-func (t *Renderer) LoadTemplates() {
-	t.template = template.New("")
-
-	tmp, err := t.template.ParseGlob(filepath.Join(t.location, "*.tmpl"))
-	if err != nil {
-		panic(err)
-	}
-
-	if tmp != nil {
-		t.template = tmp
-	}
-}
-
-func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	if t.hotReload {
-		t.LoadTemplates()
-	}
-
-	return t.template.ExecuteTemplate(w, name, data)
 }
 
 func NewRenderer(location string, hotReload bool) echo.Renderer {
@@ -111,9 +94,50 @@ func NewRenderer(location string, hotReload bool) echo.Renderer {
 		hotReload: hotReload,
 	}
 
-	renderer.LoadTemplates()
+	renderer.init()
 
 	return renderer
+}
+
+func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+	jetTempl, err := t.template.GetTemplate(name)
+	if err != nil {
+		return err
+	}
+
+	if data == nil {
+		data = make(map[string]interface{})
+	}
+
+	// validation error
+	valErr, valErrI := make(dto.WebValidationErrors), c.Get(constants.FlashValErrCtxKey)
+	if ve, ok := valErrI.(dto.WebValidationErrors); ok {
+		valErr = ve
+	}
+
+	return jetTempl.Execute(w, jet.VarMap{
+		"currentPage":      reflect.ValueOf(name),
+		"validationErrors": reflect.ValueOf(valErr),
+	}, data)
+}
+
+func (t *Renderer) init() {
+	opts := []jet.Option{}
+
+	if t.hotReload {
+		opts = append(opts, jet.InDevelopmentMode())
+	}
+
+	tmpl := jet.NewSet(
+		jet.NewOSFileSystemLoader(t.location),
+		opts...,
+	)
+
+	for key, fn := range pages.TmplFunc {
+		tmpl = tmpl.AddGlobalFunc(key, fn)
+	}
+
+	t.template = tmpl
 }
 
 // ==============================================================================

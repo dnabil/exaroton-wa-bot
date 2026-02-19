@@ -1,0 +1,13 @@
+body {
+    background-color: var(--pico-background-color);
+}
+
+main {
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+img {
+    border-radius: var(--pico-border-radius);
+    box-shadow: var(--pico-box-shadow);
+}

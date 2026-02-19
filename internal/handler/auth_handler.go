@@ -2,8 +2,8 @@ package handler
 
 import (
 	"errors"
-	"exaroton-wa-bot/internal/constants"
 	"exaroton-wa-bot/internal/constants/errs"
+	"exaroton-wa-bot/internal/constants/messages"
 	"exaroton-wa-bot/internal/dto"
 	"exaroton-wa-bot/pages"
 	"net/http"
@@ -14,10 +14,6 @@ import (
 )
 
 func (w *Web) UserLoginPage(data *dto.LoginPageData) echo.HandlerFunc {
-	if data == nil {
-		data = &dto.LoginPageData{}
-	}
-
 	return func(c echo.Context) error {
 		return c.Render(http.StatusOK, pages.Login, data)
 	}
@@ -28,9 +24,11 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		req := new(dto.UserLoginReq)
 		if err := w.shouldBind(c, req); err != nil {
 			if errors.As(err, &validation.Errors{}) {
-				return w.UserLoginPage(&dto.LoginPageData{
-					Validation: dto.UserLoginReqFromValidation(err.(*validation.Errors)),
-				})(c)
+				if errV := w.session.SetValidationError(c, err.(validation.Errors)); errV != nil {
+					return errV
+				}
+
+				return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
 			}
 
 			return err
@@ -39,9 +37,11 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 		userClaims, expDuration, err := w.svc.AuthService.Login(c.Request().Context(), req)
 		if err != nil {
 			if errors.Is(err, errs.ErrLoginFailed) {
-				return w.UserLoginPage(&dto.LoginPageData{
-					Validation: &dto.UserLoginReq{Password: err.Error()},
-				})(c)
+				if errV := w.session.SetValidationError(c, map[string]error{"password": err}); errV != nil {
+					return errV
+				}
+
+				return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
 			}
 
 			return err
@@ -73,10 +73,14 @@ func (w *Web) WhatsappQRLogin() echo.HandlerFunc {
 
 		qrChan, err := w.svc.AuthService.WhatsappLogin(c.Request().Context())
 		if err != nil {
-			ws.WriteJSON(dto.WhatsappQRWSRes{
+			err2 := ws.WriteJSON(dto.WhatsappQRWSRes{
 				Event: dto.WhatsappQREventError,
 				Error: err.Error(),
 			})
+			if err2 != nil {
+				return err2
+			}
+
 			return err
 		}
 
@@ -84,7 +88,7 @@ func (w *Web) WhatsappQRLogin() echo.HandlerFunc {
 		if qrChan == nil {
 			return ws.WriteJSON(dto.WhatsappQRWSRes{
 				Event:   dto.WhatsappQREventSuccess,
-				Message: constants.MsgWALoginSuccess,
+				Message: messages.MsgWALoginSuccess,
 			})
 		}
 
@@ -114,7 +118,7 @@ func (w *Web) WhatsappQRLogin() echo.HandlerFunc {
 			case whatsmeow.QRChannelSuccess.Event:
 				err = ws.WriteJSON(dto.WhatsappQRWSRes{
 					Event:   dto.WhatsappQREventSuccess,
-					Message: constants.MsgWALoginSuccess,
+					Message: messages.MsgWALoginSuccess,
 				})
 
 			// pairing timeout

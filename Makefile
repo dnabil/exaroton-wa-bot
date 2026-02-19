@@ -5,7 +5,7 @@ OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
 
-.PHONY: check-golangci lint
+.PHONY: check-golangci lint build run debug clean prod
 
 BASE := $(shell pwd)
 BUILD_TIME := $(shell date +%FT%T%z)
@@ -71,3 +71,27 @@ migrate-reset:
 # Check migration status
 migrate-status:
 	goose -dir $(MIGRATIONS_DIR) sqlite3 $(SQLITE_PATH) status
+
+
+# ====================================================================
+
+APP_NAME := exaroton-wa-bot
+BIN_DIR := bin
+MAIN := cmd/app/main.go
+CONFIG := config.yml
+
+build:
+	@echo "Building binary..."
+	go build -o $(BIN_DIR)/$(APP_NAME) $(MAIN)
+
+debug:
+	@echo "Building debug binary..."
+	go build -gcflags="all=-N -l" -o $(BIN_DIR)/debug_$(APP_NAME) $(MAIN)
+
+run: build
+	@echo "Running app..."
+	cd $(BIN_DIR) && ./$(APP_NAME) --env=production --cfg=../$(CONFIG)
+
+clean:
+	@echo "Cleaning binaries..."
+	rm -f $(BIN_DIR)/$(APP_NAME) $(BIN_DIR)/debug_$(APP_NAME)

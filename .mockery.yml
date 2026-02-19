@@ -17,8 +17,13 @@ packages:
   exaroton-wa-bot/internal/service:
     config:
       all: true
-      recursive: true
+      recursive: false
       dir: './internal/mocks/service'
+  exaroton-wa-bot/internal/service/command:
+    config:
+      all: true
+      recursive: false
+      dir: './internal/mocks/service/command'
   exaroton-wa-bot/internal/repository:
     config:
       all: true

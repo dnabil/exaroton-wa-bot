@@ -4,17 +4,24 @@ import (
 	"context"
 	"exaroton-wa-bot/internal/config"
 	"exaroton-wa-bot/internal/constants/errs"
+	"exaroton-wa-bot/internal/dto"
 	"sync"
+	"sync/atomic"
 
 	"go.mau.fi/whatsmeow"
+	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types"
+	"go.mau.fi/whatsmeow/types/events"
 )
 
+// represents a single whatsapp device/account.
 type waClient struct {
 	client iWhatsmeowClientWrapper
 
 	qrSub     chan whatsmeow.QRChannelItem
 	qrSubLock sync.RWMutex
+
+	isSyncComplete atomic.Bool
 }
 
 // NewWAClient creates a new WhatsApp client (without connecting to an account).
@@ -23,15 +30,36 @@ type waClient struct {
 //
 // defer Disconnect()
 func NewWAClient(db *config.WhatsappDB) (*waClient, error) {
-	deviceStore, err := db.Container.GetFirstDevice()
+	deviceStore, err := db.Container.GetFirstDevice(context.TODO())
 	if err != nil {
 		return nil, err
 	}
 
 	client := whatsmeow.NewClient(deviceStore, db.ClientLogger)
-	return &waClient{
+	waClient := &waClient{
 		client: &whatsmeowClientWrapper{client: client},
-	}, nil
+	}
+
+	waClient.client.RegisterEventHandler(getStateEventHandler(waClient))
+
+	return waClient, nil
+}
+
+func getStateEventHandler(w *waClient) func(evt interface{}) {
+	return func(evt interface{}) {
+		switch evt.(type) {
+		case *events.Connected:
+			w.isSyncComplete.Store(true)
+		case *events.OfflineSyncPreview:
+			w.isSyncComplete.Store(false)
+		case *events.OfflineSyncCompleted:
+			w.isSyncComplete.Store(true)
+		}
+	}
+}
+
+func (w *waClient) IsSyncComplete(ctx context.Context) bool {
+	return w.isSyncComplete.Load()
 }
 
 func (w *waClient) IsLoggedIn() bool {
@@ -46,14 +74,9 @@ func (w *waClient) Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, e
 		return nil, errs.ErrWAAlreadyLoggedIn
 	}
 
-	// try to connect with saved session
-	if w.client.GetLoggedInDeviceJID() != nil {
-		err := w.client.Connect()
-		if err != nil {
-			return nil, err
-		}
-
-		return nil, nil
+	// login with existing session
+	if ok, err := w.LoginWithExistingSession(ctx); ok {
+		return nil, err
 	}
 
 	// check for existing qr session
@@ -76,10 +99,54 @@ func (w *waClient) Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, e
 	return *w.getQRSub(), nil
 }
 
+func (w *waClient) LoginWithExistingSession(ctx context.Context) (bool, error) {
+	if !w.IsLoggedIn() && w.client.GetLoggedInDeviceJID() != nil {
+		err := w.client.Connect()
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func (w *waClient) Logout(ctx context.Context) error {
+	return w.client.Logout(ctx)
+}
+
 func (w *waClient) Disconnect() {
 	if w.client != nil {
 		w.client.Disconnect()
 	}
+}
+
+func (w *waClient) GetPhoneNumber() string {
+	jid := w.client.GetLoggedInDeviceJID()
+	if jid == nil {
+		return ""
+	}
+
+	return jid.User
+}
+
+func (w *waClient) GetSelfLID() *dto.WhatsappJID {
+	lid := w.client.GetLoggedInDeviceLID()
+	if lid == nil {
+		return nil
+	}
+
+	return &dto.WhatsappJID{
+		User:       lid.User,
+		RawAgent:   lid.RawAgent,
+		Device:     lid.Device,
+		Integrator: lid.Integrator,
+		Server:     lid.Server,
+	}
+}
+
+func (w *waClient) GetGroups(ctx context.Context) ([]*types.GroupInfo, error) {
+	return w.client.GetJoinedGroups(ctx)
 }
 
 // starts a goroutine that publishes QR codes to the subscriber.
@@ -126,6 +193,25 @@ func (w *waClient) getQRSub() *chan whatsmeow.QRChannelItem {
 	return &w.qrSub
 }
 
+func (w *waClient) RegisterEventHandler(f func(any)) uint32 {
+	return w.client.RegisterEventHandler(f)
+}
+
+func (w *waClient) UnregisterEventHandler(code uint32) bool {
+	return w.client.UnregisterEventHandler(code)
+}
+
+func (w *waClient) SendMessage(ctx context.Context, to dto.WhatsappJID, message *dto.WhatsappMessage) (*dto.WhatsappSendResponse, error) {
+	resp, err := w.client.SendMessage(ctx, to.To(), message.To())
+	if err != nil {
+		return nil, err
+	}
+
+	dtoRes := dto.NewWhatsappSendResponse(resp)
+
+	return &dtoRes, nil
+}
+
 // ================================
 //
 //	whatsmeow wrapper
@@ -136,9 +222,16 @@ type iWhatsmeowClientWrapper interface {
 	Connect() error
 	Disconnect()
 	GetQRChannel(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
+	Logout(ctx context.Context) error
 
 	// to check wether the client already logged in
 	GetLoggedInDeviceJID() *types.JID
+	GetLoggedInDeviceLID() *types.JID
+	GetUserInfo(context.Context, []types.JID) (map[types.JID]types.UserInfo, error)
+	GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error)
+	RegisterEventHandler(f func(any)) uint32
+	UnregisterEventHandler(handlerID uint32) bool
+	SendMessage(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra) (resp whatsmeow.SendResponse, err error)
 }
 
 var _ iWhatsmeowClientWrapper = &whatsmeowClientWrapper{}
@@ -148,7 +241,7 @@ type whatsmeowClientWrapper struct {
 }
 
 func (w *whatsmeowClientWrapper) IsLoggedIn() bool {
-	return w.client.IsLoggedIn()
+	return w.client.IsLoggedIn() && w.GetLoggedInDeviceJID() != nil
 }
 
 func (w *whatsmeowClientWrapper) Connect() error {
@@ -163,6 +256,38 @@ func (w *whatsmeowClientWrapper) GetQRChannel(ctx context.Context) (<-chan whats
 	return w.client.GetQRChannel(ctx)
 }
 
+func (w *whatsmeowClientWrapper) Logout(ctx context.Context) error {
+	return w.client.Logout(ctx)
+}
+
 func (w *whatsmeowClientWrapper) GetLoggedInDeviceJID() *types.JID {
 	return w.client.Store.ID
+}
+
+func (w *whatsmeowClientWrapper) GetLoggedInDeviceLID() *types.JID {
+	if w.client.Store.LID == types.EmptyJID {
+		return nil
+	}
+
+	return &w.client.Store.LID
+}
+
+func (w *whatsmeowClientWrapper) GetUserInfo(ctx context.Context, jids []types.JID) (map[types.JID]types.UserInfo, error) {
+	return w.client.GetUserInfo(ctx, jids)
+}
+
+func (w *whatsmeowClientWrapper) GetJoinedGroups(ctx context.Context) ([]*types.GroupInfo, error) {
+	return w.client.GetJoinedGroups(ctx)
+}
+
+func (w *whatsmeowClientWrapper) RegisterEventHandler(f func(any)) uint32 {
+	return w.client.AddEventHandler(f)
+}
+
+func (w *whatsmeowClientWrapper) UnregisterEventHandler(handlerID uint32) bool {
+	return w.client.RemoveEventHandler(handlerID)
+}
+
+func (w *whatsmeowClientWrapper) SendMessage(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra) (resp whatsmeow.SendResponse, err error) {
+	return w.client.SendMessage(ctx, to, message, extra...)
 }

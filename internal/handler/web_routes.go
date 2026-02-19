@@ -13,10 +13,12 @@ var (
 	homepageRoute *echo.Route
 
 	loginPageRoute *echo.Route
-	loginRoute     *echo.Route
+	loginRoute     *echo.Route //lint:ignore U1000 Ignore unused var temporarily
 
 	waLoginPageRoute *echo.Route
 	waLoginQRRoute   *echo.Route
+
+	settingsExarotonPageRoute *echo.Route //lint:ignore U1000 Ignore unused var temporarily
 )
 
 func (web *Web) LoadRoutes() {
@@ -36,6 +38,9 @@ func (web *Web) LoadRoutes() {
 	webGroup.Use(web.middleware.Session())
 	webGroup.Use(web.middleware.Logger())
 	webGroup.Use(web.middleware.Recover())
+	webGroup.Use(web.middleware.FlashMessage())
+	webGroup.Use(web.middleware.FlashOldInput())
+	webGroup.Use(web.middleware.FlashValidationError())
 
 	// other middlewares
 	authMdw := web.middleware.Auth()
@@ -53,10 +58,25 @@ func (web *Web) LoadRoutes() {
 		loginRoute = userGroup.POST("/login", web.UserLogin(), guestMdw)
 	}
 
-	// whatsapp routes
+	// whatsapp login routes
 	waGroup := webGroup.Group("/wa")
 	{
 		waLoginPageRoute = waGroup.GET("/login", web.WhatsappLoginPage(), authMdw, waGuestMdw)
 		waLoginQRRoute = waGroup.GET("/qr", web.WhatsappQRLogin(), authMdw, waGuestMdw)
+	}
+
+	// settings
+	settingsGroup := webGroup.Group("/settings", authMdw, waAuthMdw)
+	{
+		serverGroup := settingsGroup.Group("/server")
+		{
+			settingsExarotonPageRoute = serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
+		}
+
+		// whatsapp settings
+		whatsappGroup := settingsGroup.Group("/whatsapp")
+		{
+			whatsappGroup.GET("", web.SettingsWhatsappPage())
+		}
 	}
 }

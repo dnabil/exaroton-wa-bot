@@ -4,6 +4,7 @@ app:
   public_dir: ../public/
   session_secret: secretkey-123
   auth_duration: 24h
+  auto_whatsapp_login: true # whatsapp login during startup
 
   # DEBUG || INFO ||  WARN || ERROR
   log_level: DEBUG

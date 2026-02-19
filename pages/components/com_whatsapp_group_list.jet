@@ -1,0 +1,174 @@
+{{ block
+com_whatsapp_group_list(
+button="allow",
+group_name="(empty group name)",
+group_participant_count="0",
+group_jid = "",
+group_jid_user = "",
+group_jid_server = ""
+)
+}}
+{* button: allow || remove *}
+<article id="{{group_jid}}">
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+            <strong class="whatsapp_list_group_name">{{group_name}}</strong>
+            <small class="whatsapp_list_group_jid">( {{group_jid}} )</small>
+            <span>
+                <small>Members: </small>
+                <small class="whatsapp_list_group_participant_count">{{group_participant_count}}</small>
+            </span>
+        </div>
+
+        <div style="margin-left:auto; text-align:right;">
+            <button class="primary {{button}}-btn whatsapp_list_group_button" data-user="{{ group_jid_user }}"
+                data-server="{{ group_jid_server }}" data-jid="{{ group_jid }}">
+                    {{ if button == "allow" }}
+                    ✅ Allow
+                    {{ else }}
+                    ❌ Remove
+                    {{ end }}
+            </button>
+        </div>
+    </div>
+</article>
+{{ end }}
+
+{{ block com_whatsapp_group_list_script() }}
+
+<script>
+    // allow/whitelist button
+    document.addEventListener("click", async function (e) {
+        if (!e.target.classList.contains("allow-btn")) return;
+
+        const btn = e.target;
+        const user = btn.dataset.user;
+        const server = btn.dataset.server;
+        const jid = btn.dataset.jid;
+
+        try {
+            const res = await fetch("/api/settings/whatsapp/groups/whitelist", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user: user,
+                    server: server
+                })
+            });
+
+            if (!res.ok) throw new Error("Request failed");
+
+            // remove
+            btn.disabled = true;
+            const oldElement = document.getElementById(jid);
+            oldElement.remove();
+
+            // add to whitelisted list
+            addGroupToWhitelistedList({
+                name: oldElement.querySelector(".whatsapp_list_group_name").textContent,
+                participant_count: oldElement.querySelector(".whatsapp_list_group_participant_count").textContent,
+                jid: jid,
+                jid_user: user,
+                jid_server: server
+            });
+        } catch (err) {
+            console.error(err);
+            alert("Failed to whitelist group");
+        }
+    });
+
+    // remove from whitelist button
+    document.addEventListener("click", async function (e) {
+        if (!e.target.classList.contains("remove-btn")) return;
+
+        const btn = e.target;
+        const user = btn.dataset.user;
+        const server = btn.dataset.server;
+        const jid = btn.dataset.jid;
+
+        try {
+            const res = await fetch("/api/settings/whatsapp/groups/whitelist", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    user: user,
+                    server: server
+                })
+            });
+
+            if (!res.ok) throw new Error("Request failed");
+
+            // remove
+            btn.disabled = true;
+            const oldElement = document.getElementById(jid);
+            oldElement.remove();
+
+            // add to non-whitelisted list
+            addGroupToNonWhitelistedList({
+                name: oldElement.querySelector(".whatsapp_list_group_name").textContent,
+                participant_count: oldElement.querySelector(".whatsapp_list_group_participant_count").textContent,
+                jid: jid,
+                jid_user: user,
+                jid_server: server
+            });
+        } catch (err) {
+            console.error(err);
+            alert("Failed to remove group from whitelist");
+        }
+    });
+
+
+    // UI
+    function addGroupToNonWhitelistedList({ name, participant_count, jid, jid_user, jid_server, container_id = "non-whitelisted-groups-list"}) {
+        const container = document.getElementById(container_id);
+        if (!container) return;
+
+        whatsappGroupItem = `{{- yield com_whatsapp_group_list(button="allow") -}}`;
+
+        const template = document.createElement('template')
+        template.innerHTML = whatsappGroupItem.trim()
+
+        const node = template.content.firstElementChild
+        const nodeBtn = node.querySelector(".whatsapp_list_group_button");
+
+        node.id = jid;
+        node.querySelector(".whatsapp_list_group_name").textContent = name;
+        node.querySelector(".whatsapp_list_group_jid").textContent = `(${jid})`;
+        node.querySelector(".whatsapp_list_group_participant_count").textContent = `${participant_count}`;
+        nodeBtn.dataset.jid = jid;
+        nodeBtn.dataset.user = jid_user;
+        nodeBtn.dataset.server = jid_server;
+
+        container.appendChild(node);
+    }
+
+    // UI
+    function addGroupToWhitelistedList({ name, participant_count, jid, jid_user, jid_server, container_id = "whitelisted-groups-list"}) {
+        const container = document.getElementById(container_id);
+        if (!container) return;
+
+        whatsappGroupItem = `{{- yield com_whatsapp_group_list(button="remove") -}}`;
+
+        const template = document.createElement('template')
+        template.innerHTML = whatsappGroupItem.trim()
+
+        const node = template.content.firstElementChild
+        const nodeBtn = node.querySelector(".whatsapp_list_group_button");
+
+        node.id = jid;
+        node.querySelector(".whatsapp_list_group_name").textContent = name;
+        node.querySelector(".whatsapp_list_group_jid").textContent = `(${jid})`;
+        node.querySelector(".whatsapp_list_group_participant_count").textContent = `${participant_count}`;
+        nodeBtn.dataset.jid = jid;
+        nodeBtn.dataset.user = jid_user;
+        nodeBtn.dataset.server = jid_server;
+
+        container.appendChild(node);
+    }
+</script>
+
+{{ end }}

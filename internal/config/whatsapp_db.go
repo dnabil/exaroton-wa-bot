@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log/slog"
@@ -36,8 +37,15 @@ func InitWhatsappDB(cfg *Cfg) (*WhatsappDB, error) {
 
 	dbLogger, clientLogger := initWhatsappLogger(cfg)
 
+	waContainer := sqlstore.NewWithDB(db, cfg.String(keyWADBDialect), dbLogger)
+
+	// upgrade database schema if needed (won't do anything if not needed)
+	if err = waContainer.Upgrade(context.TODO()); err != nil {
+		return nil, fmt.Errorf("failed to upgrade whatsapp db: %w", err)
+	}
+
 	return &WhatsappDB{
-		Container:    sqlstore.NewWithDB(db, cfg.String(keyWADBDialect), dbLogger),
+		Container:    waContainer,
 		ClientLogger: clientLogger,
 	}, nil
 }

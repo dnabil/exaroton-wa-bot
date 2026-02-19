@@ -29,8 +29,9 @@ const (
 	KeyPagesDir  = "app.pages_dir"  // string
 	KeyPublicDir = "app.public_dir" // string
 
-	KeySessionSecret = "app.session_secret" // string
-	KeyAuthDuration  = "app.auth_duration"  // string (time.Duration)
+	KeySessionSecret     = "app.session_secret"      // string
+	KeyAuthDuration      = "app.auth_duration"       // string (time.Duration)
+	KeyAutoWhatsappLogin = "app.auto_whatsapp_login" // bool
 
 	keyLogLevel  = "app.log_level"   // string
 	keyIsJsonLog = "app.is_json_log" // bool
@@ -79,6 +80,8 @@ func InitConfig(args *Args) (*Cfg, error) {
 		Koanf: koanf.New("."),
 		Args:  args,
 	}
+
+	RegisterGobs()
 
 	if err := cfg.LoadYmlConfig(); err != nil {
 		return nil, err

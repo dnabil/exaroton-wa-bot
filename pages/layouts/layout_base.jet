@@ -1,0 +1,25 @@
+{{ import "../components/com_nav.jet"}}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/public/styles/main.css" />
+    <link rel="stylesheet" href="/public/styles/pico.min.css" />
+    <title>
+        {{ block layout_base_title()}}My App{{ end }}
+    </title>
+    {{ block layout_base_head() }}{{ end }}
+</head>
+
+<body>
+    <header>
+        {{ yield com_nav()}}
+    </header>
+
+    {{ yield layout_base_body() }}
+</body>
+
+</html>

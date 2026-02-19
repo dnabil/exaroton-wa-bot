@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/public/styles/pico.min.css" />
+</head>
+
+<body>
+    <main class="container" style="max-width: 400px; margin-top: 5rem;">
+        <h2>Login</h2>
+
+        <form id="login-form" method="POST" action="/user/login">
+            <label for="username">Username</label>
+            <input id="username" type="text" name="username" required minlength="3" aria-describedby="username-helper"
+                {{ if isset(validationErrors["username"])}} aria-invalid="true" {{ end }} />
+            <small id="username-helper">
+                {{ validationErrors["username"] }}
+            </small>
+
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" required minlength="5"
+                aria-describedby="password-helper" {{ if isset(validationErrors["password"]) }} aria-invalid="true" {{ end }} />
+            <small id="password-helper">
+                {{ validationErrors["password"] }}
+            </small>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <script src="/public/scripts/validation.js"></script>
+
+        <script>
+            const username = document.getElementById("username");
+            const usernameHelper = document.getElementById("username-helper");
+            const password = document.getElementById("password");
+            const passwordHelper = document.getElementById("password-helper");
+
+            let inputElements = [
+                username, usernameHelper,
+                password, passwordHelper
+            ];
+
+            setupValidationListeners(inputElements);
+        </script>
+    </main>
+
+</body>
+
+</html>

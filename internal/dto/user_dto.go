@@ -1,7 +1,6 @@
 package dto
 
 import (
-	"encoding/json"
 	"exaroton-wa-bot/internal/database/entity"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -19,23 +18,9 @@ func (r *UserLoginReq) Validate() error {
 	)
 }
 
-func UserLoginReqFromValidation(validation *validation.Errors) *UserLoginReq {
-	b, err := validation.MarshalJSON()
-	if err != nil {
-		return nil
-	}
-
-	var req UserLoginReq
-	if err = json.Unmarshal(b, &req); err != nil {
-		return nil
-	}
-
-	return &req
-}
-
 // Login page
 type LoginPageData struct {
-	Validation *UserLoginReq
+	Validation map[string]error
 }
 
 type UserClaims struct {
