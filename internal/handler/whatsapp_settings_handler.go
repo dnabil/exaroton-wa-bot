@@ -89,3 +89,12 @@ func (w *Web) APIGetWhatsappGroups() echo.HandlerFunc {
 		})
 	}
 }
+
+func (w *Web) APIWhatsappIsSync() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.JSON(http.StatusOK, &dto.APIResponse{
+			Success: true,
+			Data:    w.svc.AuthService.IsWhatsappSynced(c.Request().Context()),
+		})
+	}
+}

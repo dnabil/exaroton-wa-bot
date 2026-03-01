@@ -21,6 +21,7 @@ type IAuthService interface {
 	WhatsappIsLoggedIn(ctx context.Context) bool
 	GetWhatsappPhoneNumber() string
 	GetWhatsappGroups(ctx context.Context) ([]*dto.WhatsappGroupInfo, error)
+	IsWhatsappSynced(ctx context.Context) bool
 
 	// just filters based on whitelisted groups in db
 	FilterWhatsappWhitelistedGroups(ctx context.Context, allGroups []*dto.WhatsappGroupInfo) ([]*dto.WhatsappGroupInfo, error)
@@ -96,6 +97,10 @@ func (s *AuthService) GetWhatsappGroups(ctx context.Context) ([]*dto.WhatsappGro
 	}
 
 	return res, nil
+}
+
+func (s *AuthService) IsWhatsappSynced(ctx context.Context) bool {
+	return s.waRepo.IsSyncComplete(ctx)
 }
 
 func (s *AuthService) FilterWhatsappWhitelistedGroups(ctx context.Context, allGroups []*dto.WhatsappGroupInfo) ([]*dto.WhatsappGroupInfo, error) {
