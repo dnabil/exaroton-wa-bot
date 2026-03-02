@@ -73,14 +73,20 @@ type MockWebSession_GetFlash_Call struct {
 }
 
 // GetFlash is a helper method to define mock.On call
-//   - c
+//   - c echo.Context
 func (_e *MockWebSession_Expecter) GetFlash(c interface{}) *MockWebSession_GetFlash_Call {
 	return &MockWebSession_GetFlash_Call{Call: _e.mock.On("GetFlash", c)}
 }
 
 func (_c *MockWebSession_GetFlash_Call) Run(run func(c echo.Context)) *MockWebSession_GetFlash_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -129,14 +135,20 @@ type MockWebSession_GetOldInput_Call struct {
 }
 
 // GetOldInput is a helper method to define mock.On call
-//   - c
+//   - c echo.Context
 func (_e *MockWebSession_Expecter) GetOldInput(c interface{}) *MockWebSession_GetOldInput_Call {
 	return &MockWebSession_GetOldInput_Call{Call: _e.mock.On("GetOldInput", c)}
 }
 
 func (_c *MockWebSession_GetOldInput_Call) Run(run func(c echo.Context)) *MockWebSession_GetOldInput_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -185,14 +197,20 @@ type MockWebSession_GetUser_Call struct {
 }
 
 // GetUser is a helper method to define mock.On call
-//   - c
+//   - c echo.Context
 func (_e *MockWebSession_Expecter) GetUser(c interface{}) *MockWebSession_GetUser_Call {
 	return &MockWebSession_GetUser_Call{Call: _e.mock.On("GetUser", c)}
 }
 
 func (_c *MockWebSession_GetUser_Call) Run(run func(c echo.Context)) *MockWebSession_GetUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -241,14 +259,20 @@ type MockWebSession_GetValidationError_Call struct {
 }
 
 // GetValidationError is a helper method to define mock.On call
-//   - c
+//   - c echo.Context
 func (_e *MockWebSession_Expecter) GetValidationError(c interface{}) *MockWebSession_GetValidationError_Call {
 	return &MockWebSession_GetValidationError_Call{Call: _e.mock.On("GetValidationError", c)}
 }
 
 func (_c *MockWebSession_GetValidationError_Call) Run(run func(c echo.Context)) *MockWebSession_GetValidationError_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -286,16 +310,32 @@ type MockWebSession_SetFlash_Call struct {
 }
 
 // SetFlash is a helper method to define mock.On call
-//   - c
-//   - key
-//   - msg
+//   - c echo.Context
+//   - key string
+//   - msg string
 func (_e *MockWebSession_Expecter) SetFlash(c interface{}, key interface{}, msg interface{}) *MockWebSession_SetFlash_Call {
 	return &MockWebSession_SetFlash_Call{Call: _e.mock.On("SetFlash", c, key, msg)}
 }
 
 func (_c *MockWebSession_SetFlash_Call) Run(run func(c echo.Context, key string, msg string)) *MockWebSession_SetFlash_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context), args[1].(string), args[2].(string))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }
@@ -333,15 +373,26 @@ type MockWebSession_SetOldInput_Call struct {
 }
 
 // SetOldInput is a helper method to define mock.On call
-//   - c
-//   - oldInput
+//   - c echo.Context
+//   - oldInput dto.Mappable
 func (_e *MockWebSession_Expecter) SetOldInput(c interface{}, oldInput interface{}) *MockWebSession_SetOldInput_Call {
 	return &MockWebSession_SetOldInput_Call{Call: _e.mock.On("SetOldInput", c, oldInput)}
 }
 
 func (_c *MockWebSession_SetOldInput_Call) Run(run func(c echo.Context, oldInput dto.Mappable)) *MockWebSession_SetOldInput_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context), args[1].(dto.Mappable))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		var arg1 dto.Mappable
+		if args[1] != nil {
+			arg1 = args[1].(dto.Mappable)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -379,16 +430,32 @@ type MockWebSession_SetUser_Call struct {
 }
 
 // SetUser is a helper method to define mock.On call
-//   - c
-//   - user
-//   - expDuration
+//   - c echo.Context
+//   - user *dto.UserClaims
+//   - expDuration time.Duration
 func (_e *MockWebSession_Expecter) SetUser(c interface{}, user interface{}, expDuration interface{}) *MockWebSession_SetUser_Call {
 	return &MockWebSession_SetUser_Call{Call: _e.mock.On("SetUser", c, user, expDuration)}
 }
 
 func (_c *MockWebSession_SetUser_Call) Run(run func(c echo.Context, user *dto.UserClaims, expDuration time.Duration)) *MockWebSession_SetUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context), args[1].(*dto.UserClaims), args[2].(time.Duration))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		var arg1 *dto.UserClaims
+		if args[1] != nil {
+			arg1 = args[1].(*dto.UserClaims)
+		}
+		var arg2 time.Duration
+		if args[2] != nil {
+			arg2 = args[2].(time.Duration)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }
@@ -426,15 +493,26 @@ type MockWebSession_SetValidationError_Call struct {
 }
 
 // SetValidationError is a helper method to define mock.On call
-//   - c
-//   - valErr
+//   - c echo.Context
+//   - valErr map[string]error
 func (_e *MockWebSession_Expecter) SetValidationError(c interface{}, valErr interface{}) *MockWebSession_SetValidationError_Call {
 	return &MockWebSession_SetValidationError_Call{Call: _e.mock.On("SetValidationError", c, valErr)}
 }
 
 func (_c *MockWebSession_SetValidationError_Call) Run(run func(c echo.Context, valErr map[string]error)) *MockWebSession_SetValidationError_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(echo.Context), args[1].(map[string]error))
+		var arg0 echo.Context
+		if args[0] != nil {
+			arg0 = args[0].(echo.Context)
+		}
+		var arg1 map[string]error
+		if args[1] != nil {
+			arg1 = args[1].(map[string]error)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }

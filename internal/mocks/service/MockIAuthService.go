@@ -74,15 +74,26 @@ type MockIAuthService_FilterWhatsappWhitelistedGroups_Call struct {
 }
 
 // FilterWhatsappWhitelistedGroups is a helper method to define mock.On call
-//   - ctx
-//   - allGroups
+//   - ctx context.Context
+//   - allGroups []*dto.WhatsappGroupInfo
 func (_e *MockIAuthService_Expecter) FilterWhatsappWhitelistedGroups(ctx interface{}, allGroups interface{}) *MockIAuthService_FilterWhatsappWhitelistedGroups_Call {
 	return &MockIAuthService_FilterWhatsappWhitelistedGroups_Call{Call: _e.mock.On("FilterWhatsappWhitelistedGroups", ctx, allGroups)}
 }
 
 func (_c *MockIAuthService_FilterWhatsappWhitelistedGroups_Call) Run(run func(ctx context.Context, allGroups []*dto.WhatsappGroupInfo)) *MockIAuthService_FilterWhatsappWhitelistedGroups_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].([]*dto.WhatsappGroupInfo))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 []*dto.WhatsappGroupInfo
+		if args[1] != nil {
+			arg1 = args[1].([]*dto.WhatsappGroupInfo)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -131,14 +142,20 @@ type MockIAuthService_GetWhatsappGroups_Call struct {
 }
 
 // GetWhatsappGroups is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIAuthService_Expecter) GetWhatsappGroups(ctx interface{}) *MockIAuthService_GetWhatsappGroups_Call {
 	return &MockIAuthService_GetWhatsappGroups_Call{Call: _e.mock.On("GetWhatsappGroups", ctx)}
 }
 
 func (_c *MockIAuthService_GetWhatsappGroups_Call) Run(run func(ctx context.Context)) *MockIAuthService_GetWhatsappGroups_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -231,14 +248,20 @@ type MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call struct {
 }
 
 // GetWhatsappWhitelistedGroupJIDs is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIAuthService_Expecter) GetWhatsappWhitelistedGroupJIDs(ctx interface{}) *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call {
 	return &MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call{Call: _e.mock.On("GetWhatsappWhitelistedGroupJIDs", ctx)}
 }
 
 func (_c *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call) Run(run func(ctx context.Context)) *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -249,6 +272,57 @@ func (_c *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call) Return(whatsapp
 }
 
 func (_c *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call) RunAndReturn(run func(ctx context.Context) ([]*dto.WhatsappWhitelistedGroup, error)) *MockIAuthService_GetWhatsappWhitelistedGroupJIDs_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// IsWhatsappSynced provides a mock function for the type MockIAuthService
+func (_mock *MockIAuthService) IsWhatsappSynced(ctx context.Context) bool {
+	ret := _mock.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for IsWhatsappSynced")
+	}
+
+	var r0 bool
+	if returnFunc, ok := ret.Get(0).(func(context.Context) bool); ok {
+		r0 = returnFunc(ctx)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+	return r0
+}
+
+// MockIAuthService_IsWhatsappSynced_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IsWhatsappSynced'
+type MockIAuthService_IsWhatsappSynced_Call struct {
+	*mock.Call
+}
+
+// IsWhatsappSynced is a helper method to define mock.On call
+//   - ctx context.Context
+func (_e *MockIAuthService_Expecter) IsWhatsappSynced(ctx interface{}) *MockIAuthService_IsWhatsappSynced_Call {
+	return &MockIAuthService_IsWhatsappSynced_Call{Call: _e.mock.On("IsWhatsappSynced", ctx)}
+}
+
+func (_c *MockIAuthService_IsWhatsappSynced_Call) Run(run func(ctx context.Context)) *MockIAuthService_IsWhatsappSynced_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
+	})
+	return _c
+}
+
+func (_c *MockIAuthService_IsWhatsappSynced_Call) Return(b bool) *MockIAuthService_IsWhatsappSynced_Call {
+	_c.Call.Return(b)
+	return _c
+}
+
+func (_c *MockIAuthService_IsWhatsappSynced_Call) RunAndReturn(run func(ctx context.Context) bool) *MockIAuthService_IsWhatsappSynced_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -293,15 +367,26 @@ type MockIAuthService_Login_Call struct {
 }
 
 // Login is a helper method to define mock.On call
-//   - ctx
-//   - req
+//   - ctx context.Context
+//   - req *dto.UserLoginReq
 func (_e *MockIAuthService_Expecter) Login(ctx interface{}, req interface{}) *MockIAuthService_Login_Call {
 	return &MockIAuthService_Login_Call{Call: _e.mock.On("Login", ctx, req)}
 }
 
 func (_c *MockIAuthService_Login_Call) Run(run func(ctx context.Context, req *dto.UserLoginReq)) *MockIAuthService_Login_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*dto.UserLoginReq))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *dto.UserLoginReq
+		if args[1] != nil {
+			arg1 = args[1].(*dto.UserLoginReq)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -339,14 +424,20 @@ type MockIAuthService_WhatsappIsLoggedIn_Call struct {
 }
 
 // WhatsappIsLoggedIn is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIAuthService_Expecter) WhatsappIsLoggedIn(ctx interface{}) *MockIAuthService_WhatsappIsLoggedIn_Call {
 	return &MockIAuthService_WhatsappIsLoggedIn_Call{Call: _e.mock.On("WhatsappIsLoggedIn", ctx)}
 }
 
 func (_c *MockIAuthService_WhatsappIsLoggedIn_Call) Run(run func(ctx context.Context)) *MockIAuthService_WhatsappIsLoggedIn_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -395,14 +486,20 @@ type MockIAuthService_WhatsappLogin_Call struct {
 }
 
 // WhatsappLogin is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIAuthService_Expecter) WhatsappLogin(ctx interface{}) *MockIAuthService_WhatsappLogin_Call {
 	return &MockIAuthService_WhatsappLogin_Call{Call: _e.mock.On("WhatsappLogin", ctx)}
 }
 
 func (_c *MockIAuthService_WhatsappLogin_Call) Run(run func(ctx context.Context)) *MockIAuthService_WhatsappLogin_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -440,14 +537,20 @@ type MockIAuthService_WhatsappLogout_Call struct {
 }
 
 // WhatsappLogout is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIAuthService_Expecter) WhatsappLogout(ctx interface{}) *MockIAuthService_WhatsappLogout_Call {
 	return &MockIAuthService_WhatsappLogout_Call{Call: _e.mock.On("WhatsappLogout", ctx)}
 }
 
 func (_c *MockIAuthService_WhatsappLogout_Call) Run(run func(ctx context.Context)) *MockIAuthService_WhatsappLogout_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }

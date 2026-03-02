@@ -63,14 +63,20 @@ type MockSqlTx_Begin_Call struct {
 }
 
 // Begin is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockSqlTx_Expecter) Begin(ctx interface{}) *MockSqlTx_Begin_Call {
 	return &MockSqlTx_Begin_Call{Call: _e.mock.On("Begin", ctx)}
 }
 
 func (_c *MockSqlTx_Begin_Call) Run(run func(ctx context.Context)) *MockSqlTx_Begin_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -108,14 +114,20 @@ type MockSqlTx_Commit_Call struct {
 }
 
 // Commit is a helper method to define mock.On call
-//   - tx
+//   - tx *gorm.DB
 func (_e *MockSqlTx_Expecter) Commit(tx interface{}) *MockSqlTx_Commit_Call {
 	return &MockSqlTx_Commit_Call{Call: _e.mock.On("Commit", tx)}
 }
 
 func (_c *MockSqlTx_Commit_Call) Run(run func(tx *gorm.DB)) *MockSqlTx_Commit_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB))
+		var arg0 *gorm.DB
+		if args[0] != nil {
+			arg0 = args[0].(*gorm.DB)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -153,14 +165,20 @@ type MockSqlTx_Rollback_Call struct {
 }
 
 // Rollback is a helper method to define mock.On call
-//   - tx
+//   - tx *gorm.DB
 func (_e *MockSqlTx_Expecter) Rollback(tx interface{}) *MockSqlTx_Rollback_Call {
 	return &MockSqlTx_Rollback_Call{Call: _e.mock.On("Rollback", tx)}
 }
 
 func (_c *MockSqlTx_Rollback_Call) Run(run func(tx *gorm.DB)) *MockSqlTx_Rollback_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(*gorm.DB))
+		var arg0 *gorm.DB
+		if args[0] != nil {
+			arg0 = args[0].(*gorm.DB)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }

@@ -72,16 +72,32 @@ type MockIExarotonRepo_GetServerInfo_Call struct {
 }
 
 // GetServerInfo is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
-//   - serverID
+//   - ctx context.Context
+//   - apiKey string
+//   - serverID string
 func (_e *MockIExarotonRepo_Expecter) GetServerInfo(ctx interface{}, apiKey interface{}, serverID interface{}) *MockIExarotonRepo_GetServerInfo_Call {
 	return &MockIExarotonRepo_GetServerInfo_Call{Call: _e.mock.On("GetServerInfo", ctx, apiKey, serverID)}
 }
 
 func (_c *MockIExarotonRepo_GetServerInfo_Call) Run(run func(ctx context.Context, apiKey string, serverID string)) *MockIExarotonRepo_GetServerInfo_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }
@@ -130,16 +146,32 @@ type MockIExarotonRepo_GetServerPlayerList_Call struct {
 }
 
 // GetServerPlayerList is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
-//   - serverID
+//   - ctx context.Context
+//   - apiKey string
+//   - serverID string
 func (_e *MockIExarotonRepo_Expecter) GetServerPlayerList(ctx interface{}, apiKey interface{}, serverID interface{}) *MockIExarotonRepo_GetServerPlayerList_Call {
 	return &MockIExarotonRepo_GetServerPlayerList_Call{Call: _e.mock.On("GetServerPlayerList", ctx, apiKey, serverID)}
 }
 
 func (_c *MockIExarotonRepo_GetServerPlayerList_Call) Run(run func(ctx context.Context, apiKey string, serverID string)) *MockIExarotonRepo_GetServerPlayerList_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }
@@ -188,15 +220,26 @@ type MockIExarotonRepo_ListServers_Call struct {
 }
 
 // ListServers is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
+//   - ctx context.Context
+//   - apiKey string
 func (_e *MockIExarotonRepo_Expecter) ListServers(ctx interface{}, apiKey interface{}) *MockIExarotonRepo_ListServers_Call {
 	return &MockIExarotonRepo_ListServers_Call{Call: _e.mock.On("ListServers", ctx, apiKey)}
 }
 
 func (_c *MockIExarotonRepo_ListServers_Call) Run(run func(ctx context.Context, apiKey string)) *MockIExarotonRepo_ListServers_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -234,17 +277,38 @@ type MockIExarotonRepo_StartServer_Call struct {
 }
 
 // StartServer is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
-//   - serverID
-//   - opt
+//   - ctx context.Context
+//   - apiKey string
+//   - serverID string
+//   - opt dto.StartExarotonServerReq
 func (_e *MockIExarotonRepo_Expecter) StartServer(ctx interface{}, apiKey interface{}, serverID interface{}, opt interface{}) *MockIExarotonRepo_StartServer_Call {
 	return &MockIExarotonRepo_StartServer_Call{Call: _e.mock.On("StartServer", ctx, apiKey, serverID, opt)}
 }
 
 func (_c *MockIExarotonRepo_StartServer_Call) Run(run func(ctx context.Context, apiKey string, serverID string, opt dto.StartExarotonServerReq)) *MockIExarotonRepo_StartServer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(dto.StartExarotonServerReq))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		var arg3 dto.StartExarotonServerReq
+		if args[3] != nil {
+			arg3 = args[3].(dto.StartExarotonServerReq)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+			arg3,
+		)
 	})
 	return _c
 }
@@ -282,16 +346,32 @@ type MockIExarotonRepo_StopServer_Call struct {
 }
 
 // StopServer is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
-//   - serverID
+//   - ctx context.Context
+//   - apiKey string
+//   - serverID string
 func (_e *MockIExarotonRepo_Expecter) StopServer(ctx interface{}, apiKey interface{}, serverID interface{}) *MockIExarotonRepo_StopServer_Call {
 	return &MockIExarotonRepo_StopServer_Call{Call: _e.mock.On("StopServer", ctx, apiKey, serverID)}
 }
 
 func (_c *MockIExarotonRepo_StopServer_Call) Run(run func(ctx context.Context, apiKey string, serverID string)) *MockIExarotonRepo_StopServer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }
@@ -340,15 +420,26 @@ type MockIExarotonRepo_ValidateApiKey_Call struct {
 }
 
 // ValidateApiKey is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
+//   - ctx context.Context
+//   - apiKey string
 func (_e *MockIExarotonRepo_Expecter) ValidateApiKey(ctx interface{}, apiKey interface{}) *MockIExarotonRepo_ValidateApiKey_Call {
 	return &MockIExarotonRepo_ValidateApiKey_Call{Call: _e.mock.On("ValidateApiKey", ctx, apiKey)}
 }
 
 func (_c *MockIExarotonRepo_ValidateApiKey_Call) Run(run func(ctx context.Context, apiKey string)) *MockIExarotonRepo_ValidateApiKey_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }

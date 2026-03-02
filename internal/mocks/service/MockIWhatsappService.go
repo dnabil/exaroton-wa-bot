@@ -72,15 +72,26 @@ type MockIWhatsappService_GetGroups_Call struct {
 }
 
 // GetGroups is a helper method to define mock.On call
-//   - ctx
-//   - req
+//   - ctx context.Context
+//   - req *dto.GetWhatsappGroupReq
 func (_e *MockIWhatsappService_Expecter) GetGroups(ctx interface{}, req interface{}) *MockIWhatsappService_GetGroups_Call {
 	return &MockIWhatsappService_GetGroups_Call{Call: _e.mock.On("GetGroups", ctx, req)}
 }
 
 func (_c *MockIWhatsappService_GetGroups_Call) Run(run func(ctx context.Context, req *dto.GetWhatsappGroupReq)) *MockIWhatsappService_GetGroups_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*dto.GetWhatsappGroupReq))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *dto.GetWhatsappGroupReq
+		if args[1] != nil {
+			arg1 = args[1].(*dto.GetWhatsappGroupReq)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -118,15 +129,26 @@ type MockIWhatsappService_UnwhitelistGroup_Call struct {
 }
 
 // UnwhitelistGroup is a helper method to define mock.On call
-//   - ctx
-//   - req
+//   - ctx context.Context
+//   - req *dto.UnwhitelistWhatsappGroupReq
 func (_e *MockIWhatsappService_Expecter) UnwhitelistGroup(ctx interface{}, req interface{}) *MockIWhatsappService_UnwhitelistGroup_Call {
 	return &MockIWhatsappService_UnwhitelistGroup_Call{Call: _e.mock.On("UnwhitelistGroup", ctx, req)}
 }
 
 func (_c *MockIWhatsappService_UnwhitelistGroup_Call) Run(run func(ctx context.Context, req *dto.UnwhitelistWhatsappGroupReq)) *MockIWhatsappService_UnwhitelistGroup_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*dto.UnwhitelistWhatsappGroupReq))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *dto.UnwhitelistWhatsappGroupReq
+		if args[1] != nil {
+			arg1 = args[1].(*dto.UnwhitelistWhatsappGroupReq)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -164,15 +186,26 @@ type MockIWhatsappService_WhitelistGroup_Call struct {
 }
 
 // WhitelistGroup is a helper method to define mock.On call
-//   - ctx
-//   - req
+//   - ctx context.Context
+//   - req *dto.WhitelistWhatsappGroupReq
 func (_e *MockIWhatsappService_Expecter) WhitelistGroup(ctx interface{}, req interface{}) *MockIWhatsappService_WhitelistGroup_Call {
 	return &MockIWhatsappService_WhitelistGroup_Call{Call: _e.mock.On("WhitelistGroup", ctx, req)}
 }
 
 func (_c *MockIWhatsappService_WhitelistGroup_Call) Run(run func(ctx context.Context, req *dto.WhitelistWhatsappGroupReq)) *MockIWhatsappService_WhitelistGroup_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*dto.WhitelistWhatsappGroupReq))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *dto.WhitelistWhatsappGroupReq
+		if args[1] != nil {
+			arg1 = args[1].(*dto.WhitelistWhatsappGroupReq)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
