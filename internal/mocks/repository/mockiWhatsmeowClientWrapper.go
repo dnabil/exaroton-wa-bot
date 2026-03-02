@@ -151,14 +151,20 @@ type mockiWhatsmeowClientWrapper_GetJoinedGroups_Call struct {
 }
 
 // GetJoinedGroups is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *mockiWhatsmeowClientWrapper_Expecter) GetJoinedGroups(ctx interface{}) *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call {
 	return &mockiWhatsmeowClientWrapper_GetJoinedGroups_Call{Call: _e.mock.On("GetJoinedGroups", ctx)}
 }
 
 func (_c *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call) Run(run func(ctx context.Context)) *mockiWhatsmeowClientWrapper_GetJoinedGroups_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -299,14 +305,20 @@ type mockiWhatsmeowClientWrapper_GetQRChannel_Call struct {
 }
 
 // GetQRChannel is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *mockiWhatsmeowClientWrapper_Expecter) GetQRChannel(ctx interface{}) *mockiWhatsmeowClientWrapper_GetQRChannel_Call {
 	return &mockiWhatsmeowClientWrapper_GetQRChannel_Call{Call: _e.mock.On("GetQRChannel", ctx)}
 }
 
 func (_c *mockiWhatsmeowClientWrapper_GetQRChannel_Call) Run(run func(ctx context.Context)) *mockiWhatsmeowClientWrapper_GetQRChannel_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -355,15 +367,26 @@ type mockiWhatsmeowClientWrapper_GetUserInfo_Call struct {
 }
 
 // GetUserInfo is a helper method to define mock.On call
-//   - context1
-//   - jIDs
+//   - context1 context.Context
+//   - jIDs []types.JID
 func (_e *mockiWhatsmeowClientWrapper_Expecter) GetUserInfo(context1 interface{}, jIDs interface{}) *mockiWhatsmeowClientWrapper_GetUserInfo_Call {
 	return &mockiWhatsmeowClientWrapper_GetUserInfo_Call{Call: _e.mock.On("GetUserInfo", context1, jIDs)}
 }
 
 func (_c *mockiWhatsmeowClientWrapper_GetUserInfo_Call) Run(run func(context1 context.Context, jIDs []types.JID)) *mockiWhatsmeowClientWrapper_GetUserInfo_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].([]types.JID))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 []types.JID
+		if args[1] != nil {
+			arg1 = args[1].([]types.JID)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -445,14 +468,20 @@ type mockiWhatsmeowClientWrapper_Logout_Call struct {
 }
 
 // Logout is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *mockiWhatsmeowClientWrapper_Expecter) Logout(ctx interface{}) *mockiWhatsmeowClientWrapper_Logout_Call {
 	return &mockiWhatsmeowClientWrapper_Logout_Call{Call: _e.mock.On("Logout", ctx)}
 }
 
 func (_c *mockiWhatsmeowClientWrapper_Logout_Call) Run(run func(ctx context.Context)) *mockiWhatsmeowClientWrapper_Logout_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -463,6 +492,84 @@ func (_c *mockiWhatsmeowClientWrapper_Logout_Call) Return(err error) *mockiWhats
 }
 
 func (_c *mockiWhatsmeowClientWrapper_Logout_Call) RunAndReturn(run func(ctx context.Context) error) *mockiWhatsmeowClientWrapper_Logout_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// PairPhone provides a mock function for the type mockiWhatsmeowClientWrapper
+func (_mock *mockiWhatsmeowClientWrapper) PairPhone(ctx context.Context, phone string, showPushNotification bool, clientDisplayName string) (string, error) {
+	ret := _mock.Called(ctx, phone, showPushNotification, clientDisplayName)
+
+	if len(ret) == 0 {
+		panic("no return value specified for PairPhone")
+	}
+
+	var r0 string
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, bool, string) (string, error)); ok {
+		return returnFunc(ctx, phone, showPushNotification, clientDisplayName)
+	}
+	if returnFunc, ok := ret.Get(0).(func(context.Context, string, bool, string) string); ok {
+		r0 = returnFunc(ctx, phone, showPushNotification, clientDisplayName)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, string, bool, string) error); ok {
+		r1 = returnFunc(ctx, phone, showPushNotification, clientDisplayName)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
+}
+
+// mockiWhatsmeowClientWrapper_PairPhone_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PairPhone'
+type mockiWhatsmeowClientWrapper_PairPhone_Call struct {
+	*mock.Call
+}
+
+// PairPhone is a helper method to define mock.On call
+//   - ctx context.Context
+//   - phone string
+//   - showPushNotification bool
+//   - clientDisplayName string
+func (_e *mockiWhatsmeowClientWrapper_Expecter) PairPhone(ctx interface{}, phone interface{}, showPushNotification interface{}, clientDisplayName interface{}) *mockiWhatsmeowClientWrapper_PairPhone_Call {
+	return &mockiWhatsmeowClientWrapper_PairPhone_Call{Call: _e.mock.On("PairPhone", ctx, phone, showPushNotification, clientDisplayName)}
+}
+
+func (_c *mockiWhatsmeowClientWrapper_PairPhone_Call) Run(run func(ctx context.Context, phone string, showPushNotification bool, clientDisplayName string)) *mockiWhatsmeowClientWrapper_PairPhone_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		var arg2 bool
+		if args[2] != nil {
+			arg2 = args[2].(bool)
+		}
+		var arg3 string
+		if args[3] != nil {
+			arg3 = args[3].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+			arg3,
+		)
+	})
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_PairPhone_Call) Return(s string, err error) *mockiWhatsmeowClientWrapper_PairPhone_Call {
+	_c.Call.Return(s, err)
+	return _c
+}
+
+func (_c *mockiWhatsmeowClientWrapper_PairPhone_Call) RunAndReturn(run func(ctx context.Context, phone string, showPushNotification bool, clientDisplayName string) (string, error)) *mockiWhatsmeowClientWrapper_PairPhone_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -490,14 +597,20 @@ type mockiWhatsmeowClientWrapper_RegisterEventHandler_Call struct {
 }
 
 // RegisterEventHandler is a helper method to define mock.On call
-//   - f
+//   - f func(any)
 func (_e *mockiWhatsmeowClientWrapper_Expecter) RegisterEventHandler(f interface{}) *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call {
 	return &mockiWhatsmeowClientWrapper_RegisterEventHandler_Call{Call: _e.mock.On("RegisterEventHandler", f)}
 }
 
 func (_c *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call) Run(run func(f func(any))) *mockiWhatsmeowClientWrapper_RegisterEventHandler_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(func(any)))
+		var arg0 func(any)
+		if args[0] != nil {
+			arg0 = args[0].(func(any))
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -550,10 +663,10 @@ type mockiWhatsmeowClientWrapper_SendMessage_Call struct {
 }
 
 // SendMessage is a helper method to define mock.On call
-//   - ctx
-//   - to
-//   - message
-//   - extra
+//   - ctx context.Context
+//   - to types.JID
+//   - message *waE2E.Message
+//   - extra ...whatsmeow.SendRequestExtra
 func (_e *mockiWhatsmeowClientWrapper_Expecter) SendMessage(ctx interface{}, to interface{}, message interface{}, extra ...interface{}) *mockiWhatsmeowClientWrapper_SendMessage_Call {
 	return &mockiWhatsmeowClientWrapper_SendMessage_Call{Call: _e.mock.On("SendMessage",
 		append([]interface{}{ctx, to, message}, extra...)...)}
@@ -561,8 +674,30 @@ func (_e *mockiWhatsmeowClientWrapper_Expecter) SendMessage(ctx interface{}, to 
 
 func (_c *mockiWhatsmeowClientWrapper_SendMessage_Call) Run(run func(ctx context.Context, to types.JID, message *waE2E.Message, extra ...whatsmeow.SendRequestExtra)) *mockiWhatsmeowClientWrapper_SendMessage_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		variadicArgs := args[3].([]whatsmeow.SendRequestExtra)
-		run(args[0].(context.Context), args[1].(types.JID), args[2].(*waE2E.Message), variadicArgs...)
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 types.JID
+		if args[1] != nil {
+			arg1 = args[1].(types.JID)
+		}
+		var arg2 *waE2E.Message
+		if args[2] != nil {
+			arg2 = args[2].(*waE2E.Message)
+		}
+		var arg3 []whatsmeow.SendRequestExtra
+		var variadicArgs []whatsmeow.SendRequestExtra
+		if len(args) > 3 {
+			variadicArgs = args[3].([]whatsmeow.SendRequestExtra)
+		}
+		arg3 = variadicArgs
+		run(
+			arg0,
+			arg1,
+			arg2,
+			arg3...,
+		)
 	})
 	return _c
 }
@@ -600,14 +735,20 @@ type mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call struct {
 }
 
 // UnregisterEventHandler is a helper method to define mock.On call
-//   - handlerID
+//   - handlerID uint32
 func (_e *mockiWhatsmeowClientWrapper_Expecter) UnregisterEventHandler(handlerID interface{}) *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call {
 	return &mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call{Call: _e.mock.On("UnregisterEventHandler", handlerID)}
 }
 
 func (_c *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call) Run(run func(handlerID uint32)) *mockiWhatsmeowClientWrapper_UnregisterEventHandler_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(uint32))
+		var arg0 uint32
+		if args[0] != nil {
+			arg0 = args[0].(uint32)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
