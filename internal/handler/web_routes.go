@@ -64,7 +64,7 @@ func (web *Web) LoadRoutes() {
 	{
 		WebRoutes.WaLoginPageRoute = waGroup.GET("/", web.WhatsappLoginPage())
 		WebRoutes.WaLoginPageQRRoute = waGroup.GET("/qr", web.WhatsappLoginQRPage())
-		WebRoutes.WaLoginPageNumberRoute = waGroup.GET("/number", nil) // TODO: implement
+		WebRoutes.WaLoginPageNumberRoute = waGroup.GET("/number", web.WhatsappLoginNumberPage())
 	}
 
 	// settings

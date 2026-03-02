@@ -67,6 +67,12 @@ func (w *Web) WhatsappLoginQRPage() echo.HandlerFunc {
 	}
 }
 
+func (w *Web) WhatsappLoginNumberPage() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.Render(http.StatusOK, pages.WhatsappLoginNumber, nil)
+	}
+}
+
 func (w *Web) APIWhatsappQRLogin() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ws, err := wsUpgrader.Upgrade(c.Response(), c.Request(), nil)

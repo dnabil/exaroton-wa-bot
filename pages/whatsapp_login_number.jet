@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <title>WhatsApp Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/public/styles/pico.min.css" />
+</head>
+
+<body>
+    <main class="container" style="max-width:420px; height:100vh; display:flex; align-items:center;">
+        <article style="width:100%; text-align:center;">
+            <h2>Enter phone number</h2>
+            <p style="color:gray; margin-top:-10px;">
+                Enter your WhatsApp phone number including country code.
+            </p>
+
+            <div style="margin-top:30px; text-align:left;">
+                <label>
+                    <input type="tel" name="phone" placeholder="+628123456789" pattern="^\+[1-9]\d{7,14}$" required />
+                    <small>Use international format, example: +628123456789</small>
+                </label>
+                <button id="btn-submit" style="margin-top:25px; width:100%;">Next</button>
+            </div>
+
+            <p style="margin-top:20px;">
+                <a href="{{ route.web.WaLoginPageRoute.Path }}">Back</a>
+            </p>
+        </article>
+    </main>
+</body>
+
+<script>
+    // TODO: implement
+</script>
+
+</html>

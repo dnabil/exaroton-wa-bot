@@ -80,6 +80,9 @@
             <div class="loading"></div>
         </div>
         <div id="error-message"></div>
+        <p style="margin-top:20px;">
+            <a href="{{ route.web.WaLoginPageRoute.Path }}">Back</a>
+        </p>
     </main>
 
     <script src="/public/scripts/qrcode.min.js"></script>
