@@ -28,7 +28,7 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 					return errV
 				}
 
-				return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+				return c.Redirect(http.StatusSeeOther, WebRoutes.LoginPageRoute.Path)
 			}
 
 			return err
@@ -41,7 +41,7 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 					return errV
 				}
 
-				return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+				return c.Redirect(http.StatusSeeOther, WebRoutes.LoginPageRoute.Path)
 			}
 
 			return err
@@ -51,19 +51,19 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 			return err
 		}
 
-		return c.Redirect(http.StatusSeeOther, homepageRoute.Path)
+		return c.Redirect(http.StatusSeeOther, WebRoutes.HomepageRoute.Path)
 	}
 }
 
 func (w *Web) WhatsappLoginPage() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.Render(http.StatusOK, pages.WhatsappLogin, &dto.WhatsappLoginPageData{
-			WSPath: waLoginQRRoute.Path,
+		return c.Render(http.StatusOK, pages.WhatsappLoginQr, &dto.WhatsappLoginPageData{
+			WSPath: APIRoutes.WaLoginQRRoute.Path,
 		})
 	}
 }
 
-func (w *Web) WhatsappQRLogin() echo.HandlerFunc {
+func (w *Web) APIWhatsappQRLogin() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ws, err := wsUpgrader.Upgrade(c.Response(), c.Request(), nil)
 		if err != nil {

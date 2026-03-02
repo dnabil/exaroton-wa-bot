@@ -60,16 +60,16 @@ func webErrorHandler(err error, c echo.Context) error {
 	switch {
 	// already logged in
 	case errors.Is(err, errs.ErrUserAlreadyLoggedIn) || errors.Is(err, errs.ErrWAAlreadyLoggedIn):
-		return c.Redirect(http.StatusSeeOther, homepageRoute.Path)
+		return c.Redirect(http.StatusSeeOther, WebRoutes.HomepageRoute.Path)
 
 	// is not logged in
 	case errors.Is(err, errs.ErrUserNotLoggedIn):
-		return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+		return c.Redirect(http.StatusSeeOther, WebRoutes.LoginPageRoute.Path)
 	case errors.Is(err, errs.ErrWANotLoggedIn):
-		return c.Redirect(http.StatusSeeOther, waLoginPageRoute.Path)
+		return c.Redirect(http.StatusSeeOther, WebRoutes.WaLoginPageRoute.Path)
 
 	case errors.Is(err, errs.ErrLoginFailed):
-		return c.Redirect(http.StatusSeeOther, loginPageRoute.Path)
+		return c.Redirect(http.StatusSeeOther, WebRoutes.LoginPageRoute.Path)
 	}
 
 	// end of custom error check
