@@ -220,6 +220,7 @@ func (w *waClient) SendMessage(ctx context.Context, to dto.WhatsappJID, message 
 type iWhatsmeowClientWrapper interface {
 	IsLoggedIn() bool
 	Connect() error
+	PairPhone(ctx context.Context, phone string, showPushNotification bool, clientDisplayName string) (string, error)
 	Disconnect()
 	GetQRChannel(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
 	Logout(ctx context.Context) error
@@ -246,6 +247,10 @@ func (w *whatsmeowClientWrapper) IsLoggedIn() bool {
 
 func (w *whatsmeowClientWrapper) Connect() error {
 	return w.client.Connect()
+}
+
+func (w *whatsmeowClientWrapper) PairPhone(ctx context.Context, phone string, showPushNotification bool, clientDisplayName string) (string, error) {
+	return w.client.PairPhone(ctx, phone, showPushNotification, whatsmeow.PairClientChrome, clientDisplayName)
 }
 
 func (w *whatsmeowClientWrapper) Disconnect() {

@@ -94,7 +94,7 @@ Here's a breakdown of the key directories and their responsibilities:
 
 Before you begin development, please ensure you have the following tools installed:
 
-- **Mockery v3 (v3.2.5 or higher):**
+- **Mockery v3 (v3.6.4 or higher):**
   - **Purpose:** Used for automatically generating mock objects for interfaces, crucial for writing isolated and efficient unit tests.
   - **Installation:** Follow the instructions on the official Mockery GitHub page: [https://vektra.github.io/mockery/v3/](https://vektra.github.io/mockery/v3/)
 - **YQ v4:**

@@ -71,14 +71,20 @@ type MockIServerSettingsService_GetExarotonAPIKey_Call struct {
 }
 
 // GetExarotonAPIKey is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIServerSettingsService_Expecter) GetExarotonAPIKey(ctx interface{}) *MockIServerSettingsService_GetExarotonAPIKey_Call {
 	return &MockIServerSettingsService_GetExarotonAPIKey_Call{Call: _e.mock.On("GetExarotonAPIKey", ctx)}
 }
 
 func (_c *MockIServerSettingsService_GetExarotonAPIKey_Call) Run(run func(ctx context.Context)) *MockIServerSettingsService_GetExarotonAPIKey_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -127,15 +133,26 @@ type MockIServerSettingsService_GetExarotonServerInfo_Call struct {
 }
 
 // GetExarotonServerInfo is a helper method to define mock.On call
-//   - ctx
-//   - serverIdx
+//   - ctx context.Context
+//   - serverIdx uint
 func (_e *MockIServerSettingsService_Expecter) GetExarotonServerInfo(ctx interface{}, serverIdx interface{}) *MockIServerSettingsService_GetExarotonServerInfo_Call {
 	return &MockIServerSettingsService_GetExarotonServerInfo_Call{Call: _e.mock.On("GetExarotonServerInfo", ctx, serverIdx)}
 }
 
 func (_c *MockIServerSettingsService_GetExarotonServerInfo_Call) Run(run func(ctx context.Context, serverIdx uint)) *MockIServerSettingsService_GetExarotonServerInfo_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uint
+		if args[1] != nil {
+			arg1 = args[1].(uint)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -184,15 +201,26 @@ type MockIServerSettingsService_GetExarotonServerPlayerList_Call struct {
 }
 
 // GetExarotonServerPlayerList is a helper method to define mock.On call
-//   - ctx
-//   - serverIdx
+//   - ctx context.Context
+//   - serverIdx uint
 func (_e *MockIServerSettingsService_Expecter) GetExarotonServerPlayerList(ctx interface{}, serverIdx interface{}) *MockIServerSettingsService_GetExarotonServerPlayerList_Call {
 	return &MockIServerSettingsService_GetExarotonServerPlayerList_Call{Call: _e.mock.On("GetExarotonServerPlayerList", ctx, serverIdx)}
 }
 
 func (_c *MockIServerSettingsService_GetExarotonServerPlayerList_Call) Run(run func(ctx context.Context, serverIdx uint)) *MockIServerSettingsService_GetExarotonServerPlayerList_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uint
+		if args[1] != nil {
+			arg1 = args[1].(uint)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -241,14 +269,20 @@ type MockIServerSettingsService_ListExarotonServer_Call struct {
 }
 
 // ListExarotonServer is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIServerSettingsService_Expecter) ListExarotonServer(ctx interface{}) *MockIServerSettingsService_ListExarotonServer_Call {
 	return &MockIServerSettingsService_ListExarotonServer_Call{Call: _e.mock.On("ListExarotonServer", ctx)}
 }
 
 func (_c *MockIServerSettingsService_ListExarotonServer_Call) Run(run func(ctx context.Context)) *MockIServerSettingsService_ListExarotonServer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -294,9 +328,9 @@ type MockIServerSettingsService_StartExarotonServer_Call struct {
 }
 
 // StartExarotonServer is a helper method to define mock.On call
-//   - ctx
-//   - serverIdx
-//   - opts
+//   - ctx context.Context
+//   - serverIdx uint
+//   - opts ...service.StartExarotonServerOption
 func (_e *MockIServerSettingsService_Expecter) StartExarotonServer(ctx interface{}, serverIdx interface{}, opts ...interface{}) *MockIServerSettingsService_StartExarotonServer_Call {
 	return &MockIServerSettingsService_StartExarotonServer_Call{Call: _e.mock.On("StartExarotonServer",
 		append([]interface{}{ctx, serverIdx}, opts...)...)}
@@ -304,8 +338,25 @@ func (_e *MockIServerSettingsService_Expecter) StartExarotonServer(ctx interface
 
 func (_c *MockIServerSettingsService_StartExarotonServer_Call) Run(run func(ctx context.Context, serverIdx uint, opts ...service.StartExarotonServerOption)) *MockIServerSettingsService_StartExarotonServer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		variadicArgs := args[2].([]service.StartExarotonServerOption)
-		run(args[0].(context.Context), args[1].(uint), variadicArgs...)
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uint
+		if args[1] != nil {
+			arg1 = args[1].(uint)
+		}
+		var arg2 []service.StartExarotonServerOption
+		var variadicArgs []service.StartExarotonServerOption
+		if len(args) > 2 {
+			variadicArgs = args[2].([]service.StartExarotonServerOption)
+		}
+		arg2 = variadicArgs
+		run(
+			arg0,
+			arg1,
+			arg2...,
+		)
 	})
 	return _c
 }
@@ -343,15 +394,26 @@ type MockIServerSettingsService_StopExarotonServer_Call struct {
 }
 
 // StopExarotonServer is a helper method to define mock.On call
-//   - ctx
-//   - serverIdx
+//   - ctx context.Context
+//   - serverIdx uint
 func (_e *MockIServerSettingsService_Expecter) StopExarotonServer(ctx interface{}, serverIdx interface{}) *MockIServerSettingsService_StopExarotonServer_Call {
 	return &MockIServerSettingsService_StopExarotonServer_Call{Call: _e.mock.On("StopExarotonServer", ctx, serverIdx)}
 }
 
 func (_c *MockIServerSettingsService_StopExarotonServer_Call) Run(run func(ctx context.Context, serverIdx uint)) *MockIServerSettingsService_StopExarotonServer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uint
+		if args[1] != nil {
+			arg1 = args[1].(uint)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -389,15 +451,26 @@ type MockIServerSettingsService_UpdateExarotonAPIKey_Call struct {
 }
 
 // UpdateExarotonAPIKey is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
+//   - ctx context.Context
+//   - apiKey string
 func (_e *MockIServerSettingsService_Expecter) UpdateExarotonAPIKey(ctx interface{}, apiKey interface{}) *MockIServerSettingsService_UpdateExarotonAPIKey_Call {
 	return &MockIServerSettingsService_UpdateExarotonAPIKey_Call{Call: _e.mock.On("UpdateExarotonAPIKey", ctx, apiKey)}
 }
 
 func (_c *MockIServerSettingsService_UpdateExarotonAPIKey_Call) Run(run func(ctx context.Context, apiKey string)) *MockIServerSettingsService_UpdateExarotonAPIKey_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -446,15 +519,26 @@ type MockIServerSettingsService_ValidateExarotonAPIKey_Call struct {
 }
 
 // ValidateExarotonAPIKey is a helper method to define mock.On call
-//   - ctx
-//   - apiKey
+//   - ctx context.Context
+//   - apiKey string
 func (_e *MockIServerSettingsService_Expecter) ValidateExarotonAPIKey(ctx interface{}, apiKey interface{}) *MockIServerSettingsService_ValidateExarotonAPIKey_Call {
 	return &MockIServerSettingsService_ValidateExarotonAPIKey_Call{Call: _e.mock.On("ValidateExarotonAPIKey", ctx, apiKey)}
 }
 
 func (_c *MockIServerSettingsService_ValidateExarotonAPIKey_Call) Run(run func(ctx context.Context, apiKey string)) *MockIServerSettingsService_ValidateExarotonAPIKey_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 string
+		if args[1] != nil {
+			arg1 = args[1].(string)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }

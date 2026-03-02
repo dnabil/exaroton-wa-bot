@@ -61,15 +61,26 @@ type MockCommand_Execute_Call struct {
 }
 
 // Execute is a helper method to define mock.On call
-//   - c
-//   - args
+//   - c context.Context
+//   - args []string
 func (_e *MockCommand_Expecter) Execute(c interface{}, args interface{}) *MockCommand_Execute_Call {
 	return &MockCommand_Execute_Call{Call: _e.mock.On("Execute", c, args)}
 }
 
 func (_c *MockCommand_Execute_Call) Run(run func(c context.Context, args []string)) *MockCommand_Execute_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].([]string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 []string
+		if args[1] != nil {
+			arg1 = args[1].([]string)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }

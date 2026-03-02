@@ -1,5 +1,15 @@
 package handler
 
+import "github.com/labstack/echo/v4"
+
+// shared api routes
+var APIRoutes = new(struct {
+	// TODO: remove all direct references to routes in DTOs (use the variables instead)
+
+	WaLoginQRRoute     *echo.Route
+	WaLoginNumberRoute *echo.Route
+})
+
 func (web *Web) LoadAPIRoutes() {
 	apiGroup := web.Router.Group("/api")
 
@@ -11,6 +21,7 @@ func (web *Web) LoadAPIRoutes() {
 	// other middlewares
 	authMdw := web.middleware.Auth()
 	waAuthMdw := web.middleware.WhatsappLoggedIn(false)
+	waGuestMdw := web.middleware.WhatsappLoggedIn(true)
 
 	// settings
 	settingsGroup := apiGroup.Group("/settings", authMdw, waAuthMdw)
@@ -33,4 +44,10 @@ func (web *Web) LoadAPIRoutes() {
 		}
 	}
 
+	// whatsapp login
+	waLoginGroup := apiGroup.Group("/whatsapp/login", authMdw, waGuestMdw)
+	{
+		APIRoutes.WaLoginQRRoute = waLoginGroup.GET("/qr", web.APIWhatsappQRLogin())
+		APIRoutes.WaLoginNumberRoute = waLoginGroup.GET("/number", nil)
+	}
 }

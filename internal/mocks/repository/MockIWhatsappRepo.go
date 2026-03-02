@@ -109,14 +109,20 @@ type MockIWhatsappRepo_GetGroups_Call struct {
 }
 
 // GetGroups is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIWhatsappRepo_Expecter) GetGroups(ctx interface{}) *MockIWhatsappRepo_GetGroups_Call {
 	return &MockIWhatsappRepo_GetGroups_Call{Call: _e.mock.On("GetGroups", ctx)}
 }
 
 func (_c *MockIWhatsappRepo_GetGroups_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_GetGroups_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -255,15 +261,26 @@ type MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call struct {
 }
 
 // GetWhitelistedGroupJIDs is a helper method to define mock.On call
-//   - ctx
-//   - tx
+//   - ctx context.Context
+//   - tx *gorm.DB
 func (_e *MockIWhatsappRepo_Expecter) GetWhitelistedGroupJIDs(ctx interface{}, tx interface{}) *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call {
 	return &MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call{Call: _e.mock.On("GetWhitelistedGroupJIDs", ctx, tx)}
 }
 
 func (_c *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call) Run(run func(ctx context.Context, tx *gorm.DB)) *MockIWhatsappRepo_GetWhitelistedGroupJIDs_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*gorm.DB))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *gorm.DB
+		if args[1] != nil {
+			arg1 = args[1].(*gorm.DB)
+		}
+		run(
+			arg0,
+			arg1,
+		)
 	})
 	return _c
 }
@@ -345,14 +362,20 @@ type MockIWhatsappRepo_IsSyncComplete_Call struct {
 }
 
 // IsSyncComplete is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIWhatsappRepo_Expecter) IsSyncComplete(ctx interface{}) *MockIWhatsappRepo_IsSyncComplete_Call {
 	return &MockIWhatsappRepo_IsSyncComplete_Call{Call: _e.mock.On("IsSyncComplete", ctx)}
 }
 
 func (_c *MockIWhatsappRepo_IsSyncComplete_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_IsSyncComplete_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -401,14 +424,20 @@ type MockIWhatsappRepo_Login_Call struct {
 }
 
 // Login is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIWhatsappRepo_Expecter) Login(ctx interface{}) *MockIWhatsappRepo_Login_Call {
 	return &MockIWhatsappRepo_Login_Call{Call: _e.mock.On("Login", ctx)}
 }
 
 func (_c *MockIWhatsappRepo_Login_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_Login_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -446,14 +475,20 @@ type MockIWhatsappRepo_Logout_Call struct {
 }
 
 // Logout is a helper method to define mock.On call
-//   - ctx
+//   - ctx context.Context
 func (_e *MockIWhatsappRepo_Expecter) Logout(ctx interface{}) *MockIWhatsappRepo_Logout_Call {
 	return &MockIWhatsappRepo_Logout_Call{Call: _e.mock.On("Logout", ctx)}
 }
 
 func (_c *MockIWhatsappRepo_Logout_Call) Run(run func(ctx context.Context)) *MockIWhatsappRepo_Logout_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -491,14 +526,20 @@ type MockIWhatsappRepo_RegisterEventHandler_Call struct {
 }
 
 // RegisterEventHandler is a helper method to define mock.On call
-//   - f
+//   - f func(any)
 func (_e *MockIWhatsappRepo_Expecter) RegisterEventHandler(f interface{}) *MockIWhatsappRepo_RegisterEventHandler_Call {
 	return &MockIWhatsappRepo_RegisterEventHandler_Call{Call: _e.mock.On("RegisterEventHandler", f)}
 }
 
 func (_c *MockIWhatsappRepo_RegisterEventHandler_Call) Run(run func(f func(any))) *MockIWhatsappRepo_RegisterEventHandler_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(func(any)))
+		var arg0 func(any)
+		if args[0] != nil {
+			arg0 = args[0].(func(any))
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -536,14 +577,20 @@ type MockIWhatsappRepo_UnregisterEventHandler_Call struct {
 }
 
 // UnregisterEventHandler is a helper method to define mock.On call
-//   - handlerID
+//   - handlerID uint32
 func (_e *MockIWhatsappRepo_Expecter) UnregisterEventHandler(handlerID interface{}) *MockIWhatsappRepo_UnregisterEventHandler_Call {
 	return &MockIWhatsappRepo_UnregisterEventHandler_Call{Call: _e.mock.On("UnregisterEventHandler", handlerID)}
 }
 
 func (_c *MockIWhatsappRepo_UnregisterEventHandler_Call) Run(run func(handlerID uint32)) *MockIWhatsappRepo_UnregisterEventHandler_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(uint32))
+		var arg0 uint32
+		if args[0] != nil {
+			arg0 = args[0].(uint32)
+		}
+		run(
+			arg0,
+		)
 	})
 	return _c
 }
@@ -581,16 +628,32 @@ type MockIWhatsappRepo_UnwhitelistGroup_Call struct {
 }
 
 // UnwhitelistGroup is a helper method to define mock.On call
-//   - ctx
-//   - tx
-//   - req
+//   - ctx context.Context
+//   - tx *gorm.DB
+//   - req *dto.UnwhitelistWhatsappGroupReq
 func (_e *MockIWhatsappRepo_Expecter) UnwhitelistGroup(ctx interface{}, tx interface{}, req interface{}) *MockIWhatsappRepo_UnwhitelistGroup_Call {
 	return &MockIWhatsappRepo_UnwhitelistGroup_Call{Call: _e.mock.On("UnwhitelistGroup", ctx, tx, req)}
 }
 
 func (_c *MockIWhatsappRepo_UnwhitelistGroup_Call) Run(run func(ctx context.Context, tx *gorm.DB, req *dto.UnwhitelistWhatsappGroupReq)) *MockIWhatsappRepo_UnwhitelistGroup_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(*dto.UnwhitelistWhatsappGroupReq))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *gorm.DB
+		if args[1] != nil {
+			arg1 = args[1].(*gorm.DB)
+		}
+		var arg2 *dto.UnwhitelistWhatsappGroupReq
+		if args[2] != nil {
+			arg2 = args[2].(*dto.UnwhitelistWhatsappGroupReq)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }
@@ -628,16 +691,32 @@ type MockIWhatsappRepo_WhitelistGroup_Call struct {
 }
 
 // WhitelistGroup is a helper method to define mock.On call
-//   - ctx
-//   - tx
-//   - req
+//   - ctx context.Context
+//   - tx *gorm.DB
+//   - req *dto.WhitelistWhatsappGroupReq
 func (_e *MockIWhatsappRepo_Expecter) WhitelistGroup(ctx interface{}, tx interface{}, req interface{}) *MockIWhatsappRepo_WhitelistGroup_Call {
 	return &MockIWhatsappRepo_WhitelistGroup_Call{Call: _e.mock.On("WhitelistGroup", ctx, tx, req)}
 }
 
 func (_c *MockIWhatsappRepo_WhitelistGroup_Call) Run(run func(ctx context.Context, tx *gorm.DB, req *dto.WhitelistWhatsappGroupReq)) *MockIWhatsappRepo_WhitelistGroup_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(*dto.WhitelistWhatsappGroupReq))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *gorm.DB
+		if args[1] != nil {
+			arg1 = args[1].(*gorm.DB)
+		}
+		var arg2 *dto.WhitelistWhatsappGroupReq
+		if args[2] != nil {
+			arg2 = args[2].(*dto.WhitelistWhatsappGroupReq)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }

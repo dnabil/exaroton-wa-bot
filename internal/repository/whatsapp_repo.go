@@ -15,6 +15,7 @@ type IWhatsappRepo interface {
 	UnregisterEventHandler(handlerID uint32) bool
 	Disconnect()
 	Login(ctx context.Context) (<-chan whatsmeow.QRChannelItem, error)
+	// LoginWithNumber(ctx context.Context, phone string, showPushNotification bool, clientDisplayName string) (string, error)
 	Logout(ctx context.Context) error
 	IsLoggedIn() bool
 	GetPhoneNumber() string // self

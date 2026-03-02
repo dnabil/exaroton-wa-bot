@@ -73,16 +73,32 @@ type MockIServerSettingsRepo_Get_Call struct {
 }
 
 // Get is a helper method to define mock.On call
-//   - ctx
-//   - tx
-//   - key
+//   - ctx context.Context
+//   - tx *gorm.DB
+//   - key string
 func (_e *MockIServerSettingsRepo_Expecter) Get(ctx interface{}, tx interface{}, key interface{}) *MockIServerSettingsRepo_Get_Call {
 	return &MockIServerSettingsRepo_Get_Call{Call: _e.mock.On("Get", ctx, tx, key)}
 }
 
 func (_c *MockIServerSettingsRepo_Get_Call) Run(run func(ctx context.Context, tx *gorm.DB, key string)) *MockIServerSettingsRepo_Get_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(string))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *gorm.DB
+		if args[1] != nil {
+			arg1 = args[1].(*gorm.DB)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }
@@ -120,16 +136,32 @@ type MockIServerSettingsRepo_Upsert_Call struct {
 }
 
 // Upsert is a helper method to define mock.On call
-//   - ctx
-//   - tx
-//   - settings
+//   - ctx context.Context
+//   - tx *gorm.DB
+//   - settings *entity.ServerSettings
 func (_e *MockIServerSettingsRepo_Expecter) Upsert(ctx interface{}, tx interface{}, settings interface{}) *MockIServerSettingsRepo_Upsert_Call {
 	return &MockIServerSettingsRepo_Upsert_Call{Call: _e.mock.On("Upsert", ctx, tx, settings)}
 }
 
 func (_c *MockIServerSettingsRepo_Upsert_Call) Run(run func(ctx context.Context, tx *gorm.DB, settings *entity.ServerSettings)) *MockIServerSettingsRepo_Upsert_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(*gorm.DB), args[2].(*entity.ServerSettings))
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 *gorm.DB
+		if args[1] != nil {
+			arg1 = args[1].(*gorm.DB)
+		}
+		var arg2 *entity.ServerSettings
+		if args[2] != nil {
+			arg2 = args[2].(*entity.ServerSettings)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
 	})
 	return _c
 }

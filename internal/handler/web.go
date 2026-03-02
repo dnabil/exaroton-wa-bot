@@ -118,6 +118,10 @@ func (t *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Con
 	return jetTempl.Execute(w, jet.VarMap{
 		"currentPage":      reflect.ValueOf(name),
 		"validationErrors": reflect.ValueOf(valErr),
+		"route": reflect.ValueOf(map[string]any{
+			"web": WebRoutes,
+			"api": APIRoutes,
+		}),
 	}, data)
 }
 

@@ -9,17 +9,18 @@ import (
 )
 
 // shared web routes
-var (
-	homepageRoute *echo.Route
+var WebRoutes = new(struct {
+	// TODO: remove all direct references to routes in DTOs (use the variables instead)
 
-	loginPageRoute *echo.Route
-	loginRoute     *echo.Route //lint:ignore U1000 Ignore unused var temporarily
-
-	waLoginPageRoute *echo.Route
-	waLoginQRRoute   *echo.Route
-
-	settingsExarotonPageRoute *echo.Route //lint:ignore U1000 Ignore unused var temporarily
-)
+	HomepageRoute             *echo.Route
+	LoginPageRoute            *echo.Route
+	LoginRoute                *echo.Route
+	WaLoginPageRoute          *echo.Route
+	WaLoginPageQRRoute        *echo.Route
+	WaLoginPageNumberRoute    *echo.Route
+	WaLoginQRRoute            *echo.Route
+	SettingsExarotonPageRoute *echo.Route
+})
 
 func (web *Web) LoadRoutes() {
 	// MAIN GROUP
@@ -49,20 +50,21 @@ func (web *Web) LoadRoutes() {
 	waGuestMdw := web.middleware.WhatsappLoggedIn(true)
 
 	// homepage route
-	homepageRoute = webGroup.GET("/", web.HomePage(), authMdw, waAuthMdw)
+	WebRoutes.HomepageRoute = webGroup.GET("/", web.HomePage(), authMdw, waAuthMdw)
 
 	// user routes
 	userGroup := webGroup.Group("/user")
 	{
-		loginPageRoute = userGroup.GET("/login", web.UserLoginPage(nil), guestMdw)
-		loginRoute = userGroup.POST("/login", web.UserLogin(), guestMdw)
+		WebRoutes.LoginPageRoute = userGroup.GET("/login", web.UserLoginPage(nil), guestMdw)
+		WebRoutes.LoginRoute = userGroup.POST("/login", web.UserLogin(), guestMdw)
 	}
 
 	// whatsapp login routes
-	waGroup := webGroup.Group("/wa")
+	waGroup := webGroup.Group("/whatsapp/login", authMdw, waGuestMdw)
 	{
-		waLoginPageRoute = waGroup.GET("/login", web.WhatsappLoginPage(), authMdw, waGuestMdw)
-		waLoginQRRoute = waGroup.GET("/qr", web.WhatsappQRLogin(), authMdw, waGuestMdw)
+		WebRoutes.WaLoginPageRoute = waGroup.GET("/", web.WhatsappLoginPage())
+		WebRoutes.WaLoginPageQRRoute = waGroup.GET("/qr", web.WhatsappLoginQRPage())
+		WebRoutes.WaLoginPageNumberRoute = waGroup.GET("/number", web.WhatsappLoginNumberPage())
 	}
 
 	// settings
@@ -70,7 +72,7 @@ func (web *Web) LoadRoutes() {
 	{
 		serverGroup := settingsGroup.Group("/server")
 		{
-			settingsExarotonPageRoute = serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
+			WebRoutes.SettingsExarotonPageRoute = serverGroup.GET("/exaroton", web.SettingsExarotonPage(nil))
 		}
 
 		// whatsapp settings
