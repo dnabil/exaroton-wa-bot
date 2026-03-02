@@ -23,4 +23,6 @@ COPY --from=builder /app/pages ../pages
 
 EXPOSE 8080
 
+VOLUME ["/app/db"]
+
 CMD ["./app", "--cfg=../config.yml"]
