@@ -36,8 +36,16 @@ make sure you have:
 docker run -it \
   -p 8080:8080 \
   --name exaroton-wa-bot \
-  -v {YOUR config.yml PATH HERE}:/app/config.yml \
+  -v {YOUR ABSOLUTE config.yml PATH HERE}:/app/config.yml \
+  -v exaroton-wa-bot_db:/app/db \
   dnabil/exaroton-wa-bot:latest
+```
+
+config.yml path e.g:
+
+linux
+```
+/home/youruser/exaroton-wa-bot/db
 ```
 
 ### Getting Started
