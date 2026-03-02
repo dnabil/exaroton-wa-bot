@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="utf-8" />
+    <title>WhatsApp Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/public/styles/pico.min.css" />
+</head>
+
+<body>
+    <main style="display:flex; justify-content:center; align-items:center; height:100vh;">
+        <article style="text-align:center;">
+            <h1>WhatsApp Login</h1>
+            <a role="button" href="{{route.web.WaLoginPageQRRoute.Path}}">via QR</a>
+            <a role="button" href="{{route.web.WaLoginPageNumberRoute.Path}}">via Number</a>
+        </article>
+    </main>
+</body>
+
+</html>

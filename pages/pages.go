@@ -9,7 +9,8 @@ const (
 	Index           = "index.jet"
 	Error           = "error.jet"
 	Login           = "login.jet"
-	WhatsappLoginQr = "whatsapp_login_qr.jet"
+	WhatsappLogin   = "whatsapp_login.jet"
+	WhatsappLoginQR = "whatsapp_login_qr.jet"
 
 	SettingsExaroton = "settings_exaroton.jet"
 	SettingsWhatsapp = "settings_whatsapp.jet"

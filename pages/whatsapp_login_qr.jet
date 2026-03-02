@@ -85,8 +85,8 @@
     <script src="/public/scripts/qrcode.min.js"></script>
     <script>
         // constants
-        const homePath = "{{ .HomePath }}";
-        const wsPath = "{{ .WSPath }}";
+        const homePath = "{{ route.web.HomepageRoute.Path }}";
+        const wsPath = "{{ route.api.WaLoginQRRoute.Path }}";
         const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
         const wsUrl = `${wsProtocol}://${window.location.host}${wsPath}`;
 

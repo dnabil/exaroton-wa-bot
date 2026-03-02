@@ -57,9 +57,13 @@ func (w *Web) UserLogin() echo.HandlerFunc {
 
 func (w *Web) WhatsappLoginPage() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.Render(http.StatusOK, pages.WhatsappLoginQr, &dto.WhatsappLoginPageData{
-			WSPath: APIRoutes.WaLoginQRRoute.Path,
-		})
+		return c.Render(http.StatusOK, pages.WhatsappLogin, nil)
+	}
+}
+
+func (w *Web) WhatsappLoginQRPage() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.Render(http.StatusOK, pages.WhatsappLoginQR, nil)
 	}
 }
 

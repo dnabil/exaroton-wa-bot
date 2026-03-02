@@ -16,6 +16,8 @@ var WebRoutes = new(struct {
 	LoginPageRoute            *echo.Route
 	LoginRoute                *echo.Route
 	WaLoginPageRoute          *echo.Route
+	WaLoginPageQRRoute        *echo.Route
+	WaLoginPageNumberRoute    *echo.Route
 	WaLoginQRRoute            *echo.Route
 	SettingsExarotonPageRoute *echo.Route
 })
@@ -58,9 +60,11 @@ func (web *Web) LoadRoutes() {
 	}
 
 	// whatsapp login routes
-	waGroup := webGroup.Group("/wa")
+	waGroup := webGroup.Group("/whatsapp/login", authMdw, waGuestMdw)
 	{
-		WebRoutes.WaLoginPageRoute = waGroup.GET("/login", web.WhatsappLoginPage(), authMdw, waGuestMdw)
+		WebRoutes.WaLoginPageRoute = waGroup.GET("/", web.WhatsappLoginPage())
+		WebRoutes.WaLoginPageQRRoute = waGroup.GET("/qr", web.WhatsappLoginQRPage())
+		WebRoutes.WaLoginPageNumberRoute = waGroup.GET("/number", nil) // TODO: implement
 	}
 
 	// settings
